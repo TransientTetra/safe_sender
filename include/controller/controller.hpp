@@ -1,0 +1,8 @@
+//
+// Created by mkj on 3/6/20.
+//
+
+#ifndef SAFE_SENDER_CONTROLLER_HPP
+#define SAFE_SENDER_CONTROLLER_HPP
+
+#endif //SAFE_SENDER_CONTROLLER_HPP
