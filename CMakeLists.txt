@@ -3,4 +3,4 @@ project(safe_sender)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(safe_sender src/main.cpp)
+add_executable(safe_sender src/main.cpp src/controller/application.cpp)
