@@ -9,7 +9,7 @@ class Encryption
 private:
 protected:
 public:
-	virtual RawBytes encrypt(RawBytes &data) = 0;
+	virtual RawBytes encrypt(const RawBytes &data) = 0;
 };
 
 

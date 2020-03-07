@@ -7,6 +7,7 @@ class EncryptionAES : public Encryption
 private:
 protected:
 public:
+	RawBytes encrypt(const RawBytes &data);
 };
 
 

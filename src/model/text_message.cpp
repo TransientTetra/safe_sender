@@ -2,8 +2,9 @@
 
 void TextMessage::encrypt(Encryption &encryption)
 {
-	RawBytes preEncryption = txtToRawBytes();
+	RawBytes preEncryption(rawText);
 	RawBytes postEncryption = encryption.encrypt(preEncryption);
+	rawText = postEncryption.toString();
 	return;
 }
 
@@ -22,5 +23,11 @@ TextMessage::TextMessage(std::string text)
 void TextMessage::print(std::ostream &out)
 {
 	out << rawText;
+	return;
+}
+
+void TextMessage::append(std::string str)
+{
+	rawText.append(str);
 	return;
 }
