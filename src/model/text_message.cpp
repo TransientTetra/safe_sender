@@ -1,12 +1,9 @@
-//
-// Created by mkj on 3/7/20.
-//
-
 #include "../../include/model/text_message.hpp"
 
 void TextMessage::encrypt(Encryption &encryption)
 {
-	encryption.encrypt()
+	RawBytes preEncryption = txtToRawBytes();
+	RawBytes postEncryption = encryption.encrypt(preEncryption);
 	return;
 }
 

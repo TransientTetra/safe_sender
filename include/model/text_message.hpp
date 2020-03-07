@@ -1,11 +1,8 @@
-//
-// Created by mkj on 3/7/20.
-//
-
 #ifndef SAFE_SENDER_TEXT_MESSAGE_HPP
 #define SAFE_SENDER_TEXT_MESSAGE_HPP
 #include "sendable.hpp"
 #include "encryptable.hpp"
+#include "raw_bytes.hpp"
 #include <string>
 #include <ostream>
 

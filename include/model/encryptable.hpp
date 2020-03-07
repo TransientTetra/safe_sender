@@ -1,7 +1,3 @@
-//
-// Created by mkj on 3/7/20.
-//
-
 #ifndef SAFE_SENDER_ENCRYPTABLE_HPP
 #define SAFE_SENDER_ENCRYPTABLE_HPP
 #include "encryption.hpp"

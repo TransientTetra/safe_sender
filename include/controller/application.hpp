@@ -1,7 +1,3 @@
-//
-// Created by mkj on 3/6/20.
-//
-
 #ifndef SAFE_SENDER_APPLICATION_HPP
 #define SAFE_SENDER_APPLICATION_HPP
 

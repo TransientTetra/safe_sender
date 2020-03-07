@@ -1,10 +1,7 @@
-//
-// Created by mkj on 3/7/20.
-//
-
 #ifndef SAFE_SENDER_ENCRYPTION_HPP
 #define SAFE_SENDER_ENCRYPTION_HPP
 #include <string>
+#include "raw_bytes.hpp"
 
 //a virtual class that all encryption algorithms must inherit from
 class Encryption
@@ -12,6 +9,7 @@ class Encryption
 private:
 protected:
 public:
+	virtual RawBytes encrypt(RawBytes &data) = 0;
 };
 
 

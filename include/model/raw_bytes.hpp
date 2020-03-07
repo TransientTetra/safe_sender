@@ -1,14 +1,13 @@
-//
-// Created by mkj on 3/7/20.
-//
-
 #ifndef SAFE_SENDER_RAW_BYTES_HPP
 #define SAFE_SENDER_RAW_BYTES_HPP
 
+#include <vector>
+#include <cstddef>
 
 class RawBytes
 {
 private:
+	std::vector<std::byte> byteVector;
 protected:
 public:
 };
