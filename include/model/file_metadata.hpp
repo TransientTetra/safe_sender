@@ -1,0 +1,11 @@
+#ifndef SAFE_SENDER_FILE_METADATA_HPP
+#define SAFE_SENDER_FILE_METADATA_HPP
+
+
+class FileMetadata
+{
+
+};
+
+
+#endif //SAFE_SENDER_FILE_METADATA_HPP
