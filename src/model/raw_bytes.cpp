@@ -27,3 +27,28 @@ void RawBytes::print(std::ostream &o)
 		o << std::setw(2) << std::setfill('0') << std::hex << static_cast<unsigned int>(byte) << " ";
 	}
 }
+
+void RawBytes::push(std::byte &byte)
+{
+	byteVector.push_back(byte);
+}
+
+RawBytes::RawBytes()
+{
+
+}
+
+const std::byte &RawBytes::getByte(unsigned long i) const
+{
+	return byteVector[i];
+}
+
+const std::byte *RawBytes::getVectorPtr() const
+{
+	return &byteVector[0];
+}
+
+void RawBytes::pop()
+{
+	byteVector.pop_back();
+}

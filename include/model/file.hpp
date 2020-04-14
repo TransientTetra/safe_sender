@@ -3,11 +3,25 @@
 
 
 #include "file_metadata.hpp"
+#include "raw_bytes.hpp"
+#include "encryptable.hpp"
+#include "sendable.hpp"
 
-class File
+class File : public Encryptable, Sendable
 {
 private:
-	FileMetadata& metadata;
+	FileMetadata metadata;
+	RawBytes data;
+public:
+	File(std::string path);
+
+	void save(std::string path);
+
+	const std::string &getFilename() const;
+	const std::string &getExtension() const;
+	const unsigned long &getDataSize() const;
+
+	void encrypt(Encryption &encryption);
 };
 
 

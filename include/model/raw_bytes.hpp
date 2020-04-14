@@ -12,10 +12,15 @@ private:
 	std::vector<std::byte> byteVector;
 protected:
 public:
+	RawBytes();
 	RawBytes(std::string str);
 
 	std::string toString();
 	void print(std::ostream &o);
+	void push(std::byte &byte);
+	void pop();
+	const std::byte &getByte(unsigned long i) const;
+	const std::byte *getVectorPtr() const;
 };
 
 
