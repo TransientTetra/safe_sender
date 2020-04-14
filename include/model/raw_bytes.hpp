@@ -14,13 +14,14 @@ protected:
 public:
 	RawBytes();
 	RawBytes(std::string str);
+	RawBytes(unsigned long size);
 
 	std::string toString();
 	void print(std::ostream &o);
 	void push(std::byte &byte);
 	void pop();
 	const std::byte &getByte(unsigned long i) const;
-	const std::byte *getVectorPtr() const;
+	std::byte *getVectorPtr();
 };
 
 

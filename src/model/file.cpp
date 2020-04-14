@@ -6,18 +6,11 @@ File::File(std::string path)
 {
 	std::ifstream file_in;
 	file_in.open(path);
-	unsigned long size = 0;
-	while (file_in)
-	{
-		++size;
-		char c;
-		file_in.get(c);
-		data.push(reinterpret_cast<std::byte &>(c));
-	}
-	//a workaround because ifstream keeps adding \n at the end of file for some reason
-	--size;
-	data.pop();
+	unsigned long size = std::filesystem::file_size(std::filesystem::path(path));
+	data = RawBytes(size);
+	file_in.read(reinterpret_cast<char*>(data.getVectorPtr()), size);
 
+	//todo filename contains extension, remove
 	metadata = FileMetadata(std::filesystem::path(path).filename(), std::filesystem::path(path).extension(), size);
 }
 
@@ -25,10 +18,6 @@ void File::save(std::string path)
 {
 	std::ofstream file_out;
 	file_out.open(path);
-//	for (unsigned long i = 0; i < getDataSize(); ++i)
-//	{
-//		file_out.put(reinterpret_cast<const char &>(data.getByte(i)));
-//	}
 	file_out.write(reinterpret_cast<const char*>(data.getVectorPtr()), getDataSize());
 }
 

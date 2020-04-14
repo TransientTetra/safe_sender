@@ -43,7 +43,7 @@ const std::byte &RawBytes::getByte(unsigned long i) const
 	return byteVector[i];
 }
 
-const std::byte *RawBytes::getVectorPtr() const
+std::byte *RawBytes::getVectorPtr()
 {
 	return &byteVector[0];
 }
@@ -51,4 +51,9 @@ const std::byte *RawBytes::getVectorPtr() const
 void RawBytes::pop()
 {
 	byteVector.pop_back();
+}
+
+RawBytes::RawBytes(unsigned long size)
+{
+	byteVector = std::vector<std::byte>(size);
 }
