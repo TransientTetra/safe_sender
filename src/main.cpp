@@ -8,9 +8,10 @@
 
 int main()
 {
+	EncryptionAES encryptionAes(CBC);
 	File file("/home/mkj/Temp/New");
+	file.encrypt(encryptionAes);
 	file.save("/home/mkj/Temp/New2");
-	EncryptionAES encryptionAes;
 	TextMessage txt("elo");
 	txt.print(std::cerr);
 	txt.encrypt(encryptionAes);

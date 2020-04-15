@@ -3,6 +3,13 @@
 #include <string>
 #include "raw_bytes.hpp"
 
+enum CipherMode
+{
+	ECB,
+	CBC,
+	CFB,
+	OFB
+};
 //a virtual class that all encryption algorithms must inherit from
 class Encryption
 {

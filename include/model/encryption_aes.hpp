@@ -5,8 +5,10 @@
 class EncryptionAES : public Encryption
 {
 private:
+	CipherMode cipherMode;
 protected:
 public:
+	EncryptionAES(CipherMode cipherMode);
 	RawBytes encrypt(const RawBytes &data);
 };
 
