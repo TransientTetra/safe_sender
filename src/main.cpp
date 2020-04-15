@@ -9,7 +9,7 @@
 int main()
 {
 	EncryptionAES encryptionAes(CBC);
-	File file("/home/mkj/Temp/New");
+	File file("/home/mkj/Temp/vpn.zip");
 	file.encrypt(encryptionAes);
 	file.save("/home/mkj/Temp/New2");
 	TextMessage txt("elo");

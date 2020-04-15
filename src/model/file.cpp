@@ -11,7 +11,7 @@ File::File(std::string path)
 	fileIn.read(reinterpret_cast<char*>(data.getVectorPtr()), size);
 
 	//todo filename contains extension, remove
-	metadata = FileMetadata(std::filesystem::path(path)., std::filesystem::path(path).extension(), size);
+	metadata = FileMetadata(std::filesystem::path(path).stem(), std::filesystem::path(path).extension(), size);
 }
 
 void File::save(std::string path)
