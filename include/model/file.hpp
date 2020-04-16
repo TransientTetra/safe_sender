@@ -21,6 +21,7 @@ public:
 	const unsigned long &getDataSize() const;
 
 	void encrypt(Encryption &encryption);
+	void decrypt(Encryption &encryption);
 };
 
 

@@ -42,3 +42,9 @@ void File::encrypt(Encryption &encryption)
 	isEncrypted = true;
 	encryption.encrypt(data);
 }
+
+void File::decrypt(Encryption &encryption)
+{
+	isEncrypted = false;
+	encryption.decrypt(data);
+}

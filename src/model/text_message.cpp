@@ -21,3 +21,9 @@ void TextMessage::append(std::string str)
 {
 	data.append(RawBytes(str));
 }
+
+void TextMessage::decrypt(Encryption &encryption)
+{
+	isEncrypted = false;
+	encryption.encrypt(data);
+}

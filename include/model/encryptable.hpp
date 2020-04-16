@@ -11,6 +11,7 @@ protected:
 	bool isEncrypted;
 public:
 	virtual void encrypt(Encryption &encryption) = 0;
+	virtual void decrypt(Encryption &encryption) = 0;
 };
 
 

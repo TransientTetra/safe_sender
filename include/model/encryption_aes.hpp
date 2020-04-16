@@ -13,6 +13,11 @@ private:
 	void encryptCBC(RawBytes &data);
 	void encryptCFB(RawBytes &data);
 	void encryptOFB(RawBytes &data);
+
+	void decryptECB(RawBytes &data);
+	void decryptCBC(RawBytes &data);
+	void decryptCFB(RawBytes &data);
+	void decryptOFB(RawBytes &data);
 protected:
 public:
 	EncryptionAES(CipherMode cipherMode);
