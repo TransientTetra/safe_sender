@@ -14,11 +14,12 @@ private:
 protected:
 public:
 	RawBytes();
-	RawBytes(std::string str);
+	RawBytes(const std::string &str);
 	RawBytes(unsigned long size);
 	RawBytes(CryptoPP::SecByteBlock secByteBlock);
 
 	std::string toString();
+	CryptoPP::SecByteBlock toSecByteBlock();
 	void print(std::ostream &o);
 	void push(const std::byte &byte);
 	void pop();

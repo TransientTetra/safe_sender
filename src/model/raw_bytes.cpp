@@ -1,7 +1,7 @@
 #include "../../include/model/raw_bytes.hpp"
 #include <iomanip>
 
-RawBytes::RawBytes(std::string str)
+RawBytes::RawBytes(const std::string &str)
 {
 	for (char c : str)
 	{
@@ -83,4 +83,9 @@ RawBytes::RawBytes(CryptoPP::SecByteBlock secByteBlock)
 	{
 		push(*(reinterpret_cast<std::byte *>(secByteBlock.BytePtr() + i)));
 	}
+}
+
+CryptoPP::SecByteBlock RawBytes::toSecByteBlock()
+{
+	return CryptoPP::SecByteBlock(reinterpret_cast<const byte *>(getVectorPtr()), getSize());
 }

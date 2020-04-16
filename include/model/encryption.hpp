@@ -17,6 +17,7 @@ private:
 protected:
 public:
 	virtual void encrypt(RawBytes &data) = 0;
+	virtual void decrypt(RawBytes &data) = 0;
 };
 
 

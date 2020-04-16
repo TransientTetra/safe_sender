@@ -11,20 +11,17 @@
 
 int main()
 {
-	CryptoPP::AutoSeededRandomPool rnd;
-	CryptoPP::SecByteBlock key(0x00, CryptoPP::AES::DEFAULT_KEYLENGTH);
-	rnd.GenerateBlock( key, key.size() );
-	RawBytes a("elo");
-	a = key;
-	RawBytes b("lol");
-	a.append(b);
-	std::cout << a.toString();
 	EncryptionAES encryptionAes(CFB);
-	File file("/home/mkj/Temp/vpn.zip");
+	encryptionAes.setEncryptionKey("6969696969696969");
+	encryptionAes.setIV("000");
+
+	File file("/home/mkj/Temp/New");
 	file.encrypt(encryptionAes);
 	file.save("/home/mkj/Temp/New2");
+
 	TextMessage txt("elo");
 	txt.print(std::cout);
+	std::cout << " ";
 	txt.encrypt(encryptionAes);
 	txt.print(std::cout);
 	return 0;

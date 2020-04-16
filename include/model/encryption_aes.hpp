@@ -17,8 +17,12 @@ protected:
 public:
 	EncryptionAES(CipherMode cipherMode);
 	void encrypt(RawBytes &data);
+	void decrypt(RawBytes &data);
 
 	void setEncryptionKey(std::string str);
+	void setEncryptionKey(RawBytes &bytes);
+	void setIV(std::string str);
+	void setIV(RawBytes &bytes);
 };
 
 
