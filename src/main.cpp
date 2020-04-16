@@ -5,10 +5,17 @@
 #include "../include/model/encryption_aes.hpp"
 #include "../include/model/raw_bytes.hpp"
 #include "../include/model/file.hpp"
+#include <crypto++/randpool.h>
+#include <crypto++/aes.h>
+#include <crypto++/osrng.h>
 
 int main()
 {
+	CryptoPP::AutoSeededRandomPool rnd;
+	CryptoPP::SecByteBlock key(0x00, CryptoPP::AES::DEFAULT_KEYLENGTH);
+	rnd.GenerateBlock( key, key.size() );
 	RawBytes a("elo");
+	a = key;
 	RawBytes b("lol");
 	a.append(b);
 	std::cout << a.toString();

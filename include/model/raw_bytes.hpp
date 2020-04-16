@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <string>
 #include <ostream>
+#include <crypto++/secblock.h>
 
 class RawBytes
 {
@@ -15,14 +16,18 @@ public:
 	RawBytes();
 	RawBytes(std::string str);
 	RawBytes(unsigned long size);
+	RawBytes(CryptoPP::SecByteBlock secByteBlock);
 
 	std::string toString();
 	void print(std::ostream &o);
 	void push(const std::byte &byte);
 	void pop();
+
 	unsigned long getSize();
 	const std::byte &getByte(unsigned long i) const;
 	std::byte *getVectorPtr();
+
+	void operator=(CryptoPP::SecByteBlock secByteBlock);
 
 	void append(RawBytes other);
 };

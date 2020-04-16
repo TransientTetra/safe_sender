@@ -70,3 +70,17 @@ unsigned long RawBytes::getSize()
 {
 	return byteVector.size();
 }
+
+void RawBytes::operator=(CryptoPP::SecByteBlock secByteBlock)
+{
+	*this = RawBytes(secByteBlock);
+}
+
+RawBytes::RawBytes(CryptoPP::SecByteBlock secByteBlock)
+{
+	byteVector = std::vector<std::byte>();
+	for (unsigned long i = 0; i < secByteBlock.size(); ++i)
+	{
+		push(*(reinterpret_cast<std::byte *>(secByteBlock.BytePtr() + i)));
+	}
+}
