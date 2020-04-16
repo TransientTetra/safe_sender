@@ -3,13 +3,21 @@
 #include <string>
 #include "raw_bytes.hpp"
 
+enum CipherMode
+{
+	ECB,
+	CBC,
+	CFB,
+	OFB
+};
 //a virtual class that all encryption algorithms must inherit from
 class Encryption
 {
 private:
 protected:
 public:
-	virtual RawBytes encrypt(const RawBytes &data) = 0;
+	virtual void encrypt(RawBytes &data) = 0;
+	virtual void decrypt(RawBytes &data) = 0;
 };
 
 

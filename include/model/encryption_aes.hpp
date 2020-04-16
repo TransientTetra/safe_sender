@@ -5,9 +5,29 @@
 class EncryptionAES : public Encryption
 {
 private:
+	CipherMode cipherMode;
+	RawBytes encryptionKey;
+	RawBytes initializationVector;
+
+	void encryptECB(RawBytes &data);
+	void encryptCBC(RawBytes &data);
+	void encryptCFB(RawBytes &data);
+	void encryptOFB(RawBytes &data);
+
+	void decryptECB(RawBytes &data);
+	void decryptCBC(RawBytes &data);
+	void decryptCFB(RawBytes &data);
+	void decryptOFB(RawBytes &data);
 protected:
 public:
-	RawBytes encrypt(const RawBytes &data);
+	EncryptionAES(CipherMode cipherMode);
+	void encrypt(RawBytes &data);
+	void decrypt(RawBytes &data);
+
+	void setEncryptionKey(std::string str);
+	void setEncryptionKey(RawBytes &bytes);
+	void setIV(std::string str);
+	void setIV(RawBytes &bytes);
 };
 
 
