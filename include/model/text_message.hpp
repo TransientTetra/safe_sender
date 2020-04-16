@@ -9,10 +9,8 @@
 class TextMessage : public Sendable, public Encryptable
 {
 private:
-	std::string rawText;
 protected:
 public:
-	TextMessage();
 	TextMessage(std::string text);
 	void encrypt(Encryption &encryption);
 	void print(std::ostream &out);

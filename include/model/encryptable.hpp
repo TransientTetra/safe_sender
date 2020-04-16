@@ -7,6 +7,8 @@ class Encryptable
 {
 private:
 protected:
+	RawBytes data;
+	bool isEncrypted;
 public:
 	virtual void encrypt(Encryption &encryption) = 0;
 };

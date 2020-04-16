@@ -4,6 +4,7 @@
 
 File::File(std::string path)
 {
+	isEncrypted = false;
 	std::ifstream fileIn;
 	fileIn.open(path);
 	unsigned long size = std::filesystem::file_size(std::filesystem::path(path));
@@ -38,5 +39,6 @@ const unsigned long &File::getDataSize() const
 
 void File::encrypt(Encryption &encryption)
 {
-	data = encryption.encrypt(data);
+	isEncrypted = true;
+	encryption.encrypt(data);
 }

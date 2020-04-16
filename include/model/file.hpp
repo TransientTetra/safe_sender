@@ -11,7 +11,6 @@ class File : public Encryptable, Sendable
 {
 private:
 	FileMetadata metadata;
-	RawBytes data;
 public:
 	File(std::string path);
 

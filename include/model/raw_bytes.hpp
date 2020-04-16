@@ -18,10 +18,13 @@ public:
 
 	std::string toString();
 	void print(std::ostream &o);
-	void push(std::byte &byte);
+	void push(const std::byte &byte);
 	void pop();
+	unsigned long getSize();
 	const std::byte &getByte(unsigned long i) const;
 	std::byte *getVectorPtr();
+
+	void append(RawBytes other);
 };
 
 

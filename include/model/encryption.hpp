@@ -16,7 +16,7 @@ class Encryption
 private:
 protected:
 public:
-	virtual RawBytes encrypt(const RawBytes &data) = 0;
+	virtual void encrypt(RawBytes &data) = 0;
 };
 
 

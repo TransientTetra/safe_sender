@@ -8,13 +8,17 @@
 
 int main()
 {
-	EncryptionAES encryptionAes(CBC);
+	RawBytes a("elo");
+	RawBytes b("lol");
+	a.append(b);
+	std::cout << a.toString();
+	EncryptionAES encryptionAes(CFB);
 	File file("/home/mkj/Temp/vpn.zip");
 	file.encrypt(encryptionAes);
 	file.save("/home/mkj/Temp/New2");
 	TextMessage txt("elo");
-	txt.print(std::cerr);
+	txt.print(std::cout);
 	txt.encrypt(encryptionAes);
-	txt.print(std::cerr);
+	txt.print(std::cout);
 	return 0;
 }

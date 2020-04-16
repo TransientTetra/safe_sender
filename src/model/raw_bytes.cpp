@@ -28,7 +28,7 @@ void RawBytes::print(std::ostream &o)
 	}
 }
 
-void RawBytes::push(std::byte &byte)
+void RawBytes::push(const std::byte &byte)
 {
 	byteVector.push_back(byte);
 }
@@ -56,4 +56,17 @@ void RawBytes::pop()
 RawBytes::RawBytes(unsigned long size)
 {
 	byteVector = std::vector<std::byte>(size);
+}
+
+void RawBytes::append(RawBytes other)
+{
+	for (unsigned long i = 0; i < other.getSize(); ++i)
+	{
+		push(other.getByte(i));
+	}
+}
+
+unsigned long RawBytes::getSize()
+{
+	return byteVector.size();
 }
