@@ -1,21 +1,21 @@
 #include "../../include/model/encryption.hpp"
 
-void Encryption::setEncryptionKey(RawBytes &bytes)
+void Encryption::setEncryptionKey(EncryptionKey &key)
 {
-	encryptionKey = bytes;
+	encryptionKey = key;
 }
 
-void Encryption::setEncryptionKey(std::string str)
+void Encryption::setIV(InitializationVector &iv)
 {
-	encryptionKey = RawBytes(str);
+	initializationVector = iv;
 }
 
-void Encryption::setIV(std::string str)
+const EncryptionKey Encryption::getEncryptionKey() const
 {
-	initializationVector = RawBytes(str);
+	return encryptionKey;
 }
 
-void Encryption::setIV(RawBytes &bytes)
+const InitializationVector Encryption::getInitializationVector() const
 {
-	initializationVector = bytes;
+	return initializationVector;
 }

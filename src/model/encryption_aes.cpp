@@ -39,8 +39,8 @@ void EncryptionAES::encryptCBC(RawBytes &data)
 
 void EncryptionAES::encryptCFB(RawBytes &data)
 {
-	CryptoPP::CFB_Mode<CryptoPP::AES>::Encryption encryption(encryptionKey.toSecByteBlock(),
-		encryptionKey.getSize(), initializationVector.toSecByteBlock());
+	CryptoPP::CFB_Mode<CryptoPP::AES>::Encryption encryption(encryptionKey.getData().toSecByteBlock(),
+		encryptionKey.getDataSize(), initializationVector.getData().toSecByteBlock());
 	byte *dataPtr = reinterpret_cast<byte *>(data.getVectorPtr());
 	encryption.ProcessData(dataPtr, dataPtr, data.getSize());
 }
@@ -81,8 +81,8 @@ void EncryptionAES::decryptCBC(RawBytes &data)
 
 void EncryptionAES::decryptCFB(RawBytes &data)
 {
-	CryptoPP::CFB_Mode<CryptoPP::AES>::Decryption decryption(encryptionKey.toSecByteBlock(),
-								 encryptionKey.getSize(), initializationVector.toSecByteBlock());
+	CryptoPP::CFB_Mode<CryptoPP::AES>::Decryption decryption(encryptionKey.getData().toSecByteBlock(),
+		encryptionKey.getDataSize(), initializationVector.getData().toSecByteBlock());
 	byte *dataPtr = reinterpret_cast<byte *>(data.getVectorPtr());
 	decryption.ProcessData(dataPtr, dataPtr, data.getSize());
 }

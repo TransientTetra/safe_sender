@@ -66,7 +66,7 @@ void RawBytes::append(RawBytes other)
 	}
 }
 
-unsigned long RawBytes::getSize()
+const unsigned long RawBytes::getSize() const
 {
 	return byteVector.size();
 }

@@ -11,10 +11,11 @@
 
 int main()
 {
-	//todo implement encryptionKey class : sendable, encryptable iv probably as well, move key, iv and their gets and sets to the interface
 	EncryptionAES encryptionAes(CFB);
-	encryptionAes.setEncryptionKey("6969696969696969");
-	encryptionAes.setIV("6969696969696969");
+	EncryptionKey key("6969696969696969");
+	encryptionAes.setEncryptionKey(key);
+	InitializationVector iv("6969696969696969");
+	encryptionAes.setIV(iv);
 
 	File file("/home/mkj/Temp/New");
 	file.encrypt(encryptionAes);

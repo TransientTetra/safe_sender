@@ -5,8 +5,6 @@
 class EncryptionAES : public Encryption
 {
 private:
-	CipherMode cipherMode;
-
 	void encryptECB(RawBytes &data);
 	void encryptCBC(RawBytes &data);
 	void encryptCFB(RawBytes &data);

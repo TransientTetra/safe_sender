@@ -24,7 +24,7 @@ public:
 	void push(const std::byte &byte);
 	void pop();
 
-	unsigned long getSize();
+	const unsigned long getSize() const;
 	const std::byte &getByte(unsigned long i) const;
 	std::byte *getVectorPtr();
 
