@@ -27,11 +27,6 @@ EncryptionAES::EncryptionAES(CipherMode cipherMode)
 	this->cipherMode = cipherMode;
 }
 
-void EncryptionAES::setEncryptionKey(std::string str)
-{
-	encryptionKey = RawBytes(str);
-}
-
 void EncryptionAES::encryptECB(RawBytes &data)
 {
 
@@ -53,21 +48,6 @@ void EncryptionAES::encryptCFB(RawBytes &data)
 void EncryptionAES::encryptOFB(RawBytes &data)
 {
 
-}
-
-void EncryptionAES::setIV(std::string str)
-{
-	initializationVector = RawBytes(str);
-}
-
-void EncryptionAES::setEncryptionKey(RawBytes &bytes)
-{
-	encryptionKey = bytes;
-}
-
-void EncryptionAES::setIV(RawBytes &bytes)
-{
-	initializationVector = bytes;
 }
 
 void EncryptionAES::decrypt(RawBytes &data)

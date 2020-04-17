@@ -6,8 +6,6 @@ class EncryptionAES : public Encryption
 {
 private:
 	CipherMode cipherMode;
-	RawBytes encryptionKey;
-	RawBytes initializationVector;
 
 	void encryptECB(RawBytes &data);
 	void encryptCBC(RawBytes &data);
@@ -23,11 +21,6 @@ public:
 	EncryptionAES(CipherMode cipherMode);
 	void encrypt(RawBytes &data);
 	void decrypt(RawBytes &data);
-
-	void setEncryptionKey(std::string str);
-	void setEncryptionKey(RawBytes &bytes);
-	void setIV(std::string str);
-	void setIV(RawBytes &bytes);
 };
 
 

@@ -11,14 +11,14 @@
 
 int main()
 {
-	//todo implement encryptionKey class : sendable, iv probably as well, move key, iv and their gets and sets to the interface
+	//todo implement encryptionKey class : sendable, encryptable iv probably as well, move key, iv and their gets and sets to the interface
 	EncryptionAES encryptionAes(CFB);
 	encryptionAes.setEncryptionKey("6969696969696969");
 	encryptionAes.setIV("6969696969696969");
 
 	File file("/home/mkj/Temp/New");
 	file.encrypt(encryptionAes);
-	file.decrypt(encryptionAes);
+	//file.decrypt(encryptionAes);
 	file.save("/home/mkj/Temp/New2");
 
 	TextMessage txt("elo");
