@@ -13,7 +13,7 @@ private:
 	FileMetadata metadata;
 protected:
 public:
-	File(const std::string& path);
+	File(const std::string& filepath);
 	File(RawBytes bytes);
 
 	void save(const std::string& path);

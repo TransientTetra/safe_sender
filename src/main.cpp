@@ -11,7 +11,6 @@
 
 int main()
 {
-	//todo make rawbytes inherit from secByteBlock
 	EncryptionAES encryptionAes(CFB);
 	EncryptionKey key("6969696969696969");
 	encryptionAes.setEncryptionKey(key);
@@ -20,8 +19,8 @@ int main()
 
 	File file("/home/mkj/Temp/New");
 	file.encrypt(encryptionAes);
-	//file.decrypt(encryptionAes);
-	file.save("/home/mkj/Temp/New2");
+	file.decrypt(encryptionAes);
+	file.save("/home/mkj/Temp/folder/");
 
 	TextMessage txt("elo");
 	txt.print(std::cout);
