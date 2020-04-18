@@ -19,5 +19,5 @@ void TextMessage::print(std::ostream &out)
 
 void TextMessage::append(std::string str)
 {
-	data.append(RawBytes(str));
+	data += RawBytes(str);
 }

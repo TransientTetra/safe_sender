@@ -32,7 +32,7 @@ void Encryptable::decrypt(Encryption &encryption)
 
 unsigned long Encryptable::getDataSize() const
 {
-	return data.getSize();
+	return data.size();
 }
 
 Encryptable::Encryptable()

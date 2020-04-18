@@ -11,6 +11,7 @@
 
 int main()
 {
+	//todo make rawbytes inherit from secByteBlock
 	EncryptionAES encryptionAes(CFB);
 	EncryptionKey key("6969696969696969");
 	encryptionAes.setEncryptionKey(key);
