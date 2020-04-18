@@ -7,21 +7,19 @@
 #include "encryptable.hpp"
 #include "sendable.hpp"
 
-class File : public Encryptable, Sendable
+class File : public Encryptable, public Sendable
 {
 private:
 	FileMetadata metadata;
+protected:
 public:
-	File(std::string path);
+	File(const std::string& filepath);
+	File(RawBytes bytes);
 
-	void save(std::string path);
+	void save(const std::string& path);
 
 	const std::string &getFilename() const;
 	const std::string &getExtension() const;
-	const unsigned long &getDataSize() const;
-
-	void encrypt(Encryption &encryption);
-	void decrypt(Encryption &encryption);
 };
 
 

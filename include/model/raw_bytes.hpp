@@ -7,30 +7,19 @@
 #include <ostream>
 #include <crypto++/secblock.h>
 
-class RawBytes
+class RawBytes : public CryptoPP::SecByteBlock
 {
 private:
-	std::vector<std::byte> byteVector;
 protected:
 public:
 	RawBytes();
 	RawBytes(const std::string &str);
 	RawBytes(unsigned long size);
-	RawBytes(CryptoPP::SecByteBlock secByteBlock);
 
 	std::string toString();
-	CryptoPP::SecByteBlock toSecByteBlock();
 	void print(std::ostream &o);
-	void push(const std::byte &byte);
-	void pop();
 
-	unsigned long getSize();
-	const std::byte &getByte(unsigned long i) const;
-	std::byte *getVectorPtr();
-
-	void operator=(CryptoPP::SecByteBlock secByteBlock);
-
-	void append(RawBytes other);
+	const byte &getByte(unsigned long i) const;
 };
 
 

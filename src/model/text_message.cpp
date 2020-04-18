@@ -1,15 +1,15 @@
 #include "../../include/model/text_message.hpp"
 
-void TextMessage::encrypt(Encryption &encryption)
+TextMessage::TextMessage(RawBytes bytes)
+: Encryptable(bytes)
 {
-	isEncrypted = true;
-	encryption.encrypt(data);
+
 }
 
-TextMessage::TextMessage(std::string text)
+TextMessage::TextMessage(const std::string &str)
+: Encryptable(str)
 {
-	isEncrypted = false;
-	data = RawBytes(text);
+
 }
 
 void TextMessage::print(std::ostream &out)
@@ -19,11 +19,5 @@ void TextMessage::print(std::ostream &out)
 
 void TextMessage::append(std::string str)
 {
-	data.append(RawBytes(str));
-}
-
-void TextMessage::decrypt(Encryption &encryption)
-{
-	isEncrypted = false;
-	encryption.encrypt(data);
+	data += RawBytes(str);
 }

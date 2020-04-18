@@ -6,14 +6,13 @@
 #include <string>
 #include <ostream>
 
-class TextMessage : public Sendable, public Encryptable
+class TextMessage : public Encryptable, public Sendable
 {
 private:
 protected:
 public:
-	TextMessage(std::string text);
-	void encrypt(Encryption &encryption);
-	void decrypt(Encryption &encryption);
+	TextMessage(const std::string &str);
+	TextMessage(RawBytes bytes);
 	void print(std::ostream &out);
 	void append(std::string str);
 };

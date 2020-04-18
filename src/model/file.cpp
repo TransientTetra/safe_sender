@@ -2,24 +2,29 @@
 #include <fstream>
 #include <filesystem>
 
-File::File(std::string path)
+File::File(const std::string& filepath)
+: Encryptable(filepath)
 {
-	isEncrypted = false;
 	std::ifstream fileIn;
-	fileIn.open(path);
-	unsigned long size = std::filesystem::file_size(std::filesystem::path(path));
+	fileIn.open(filepath);
+	unsigned long size = std::filesystem::file_size(std::filesystem::path(filepath));
 	data = RawBytes(size);
-	fileIn.read(reinterpret_cast<char*>(data.getVectorPtr()), size);
+	fileIn.read(reinterpret_cast<char *>(data.BytePtr()), size);
 
-	//todo filename contains extension, remove
-	metadata = FileMetadata(std::filesystem::path(path).stem(), std::filesystem::path(path).extension(), size);
+	metadata = FileMetadata(std::filesystem::path(filepath).stem(), std::filesystem::path(filepath).extension(), size);
 }
 
-void File::save(std::string path)
+File::File(RawBytes bytes)
+: Encryptable(bytes)
+{
+
+}
+
+void File::save(const std::string& path)
 {
 	std::ofstream fileOut;
-	fileOut.open(path);
-	fileOut.write(reinterpret_cast<const char*>(data.getVectorPtr()), getDataSize());
+	fileOut.open(path + getFilename() + getExtension());
+	fileOut.write(reinterpret_cast<const char*>(data.BytePtr()), getDataSize());
 }
 
 const std::string &File::getFilename() const
@@ -30,21 +35,4 @@ const std::string &File::getFilename() const
 const std::string &File::getExtension() const
 {
 	return metadata.getExtension();
-}
-
-const unsigned long &File::getDataSize() const
-{
-	return metadata.getDataSize();
-}
-
-void File::encrypt(Encryption &encryption)
-{
-	isEncrypted = true;
-	encryption.encrypt(data);
-}
-
-void File::decrypt(Encryption &encryption)
-{
-	isEncrypted = false;
-	encryption.decrypt(data);
 }

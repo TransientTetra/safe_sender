@@ -27,11 +27,6 @@ EncryptionAES::EncryptionAES(CipherMode cipherMode)
 	this->cipherMode = cipherMode;
 }
 
-void EncryptionAES::setEncryptionKey(std::string str)
-{
-	encryptionKey = RawBytes(str);
-}
-
 void EncryptionAES::encryptECB(RawBytes &data)
 {
 
@@ -44,30 +39,14 @@ void EncryptionAES::encryptCBC(RawBytes &data)
 
 void EncryptionAES::encryptCFB(RawBytes &data)
 {
-	CryptoPP::CFB_Mode<CryptoPP::AES>::Encryption encryption(encryptionKey.toSecByteBlock(),
-		encryptionKey.getSize(), initializationVector.toSecByteBlock());
-	byte *dataPtr = reinterpret_cast<byte *>(data.getVectorPtr());
-	encryption.ProcessData(dataPtr, dataPtr, data.getSize());
+	CryptoPP::CFB_Mode<CryptoPP::AES>::Encryption encryption(encryptionKey.getData(),
+		encryptionKey.getDataSize(), initializationVector.getData());
+	encryption.ProcessData(data.BytePtr(), data.BytePtr(), data.size());
 }
 
 void EncryptionAES::encryptOFB(RawBytes &data)
 {
 
-}
-
-void EncryptionAES::setIV(std::string str)
-{
-	initializationVector = RawBytes(str);
-}
-
-void EncryptionAES::setEncryptionKey(RawBytes &bytes)
-{
-	encryptionKey = bytes;
-}
-
-void EncryptionAES::setIV(RawBytes &bytes)
-{
-	initializationVector = bytes;
 }
 
 void EncryptionAES::decrypt(RawBytes &data)
@@ -101,10 +80,9 @@ void EncryptionAES::decryptCBC(RawBytes &data)
 
 void EncryptionAES::decryptCFB(RawBytes &data)
 {
-	CryptoPP::CFB_Mode<CryptoPP::AES>::Decryption decryption(encryptionKey.toSecByteBlock(),
-								 encryptionKey.getSize(), initializationVector.toSecByteBlock());
-	byte *dataPtr = reinterpret_cast<byte *>(data.getVectorPtr());
-	decryption.ProcessData(dataPtr, dataPtr, data.getSize());
+	CryptoPP::CFB_Mode<CryptoPP::AES>::Decryption decryption(encryptionKey.getData(),
+		encryptionKey.getDataSize(), initializationVector.getData());
+	decryption.ProcessData(data.BytePtr(), data.BytePtr(), data.size());
 }
 
 void EncryptionAES::decryptOFB(RawBytes &data)
