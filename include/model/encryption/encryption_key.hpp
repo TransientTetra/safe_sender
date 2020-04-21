@@ -3,7 +3,7 @@
 
 
 #include "encryptable.hpp"
-#include "sendable.hpp"
+#include "../communication/sendable.hpp"
 
 class EncryptionKey : public Encryptable, public Sendable
 {

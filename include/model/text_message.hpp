@@ -1,7 +1,7 @@
 #ifndef SAFE_SENDER_TEXT_MESSAGE_HPP
 #define SAFE_SENDER_TEXT_MESSAGE_HPP
-#include "sendable.hpp"
-#include "encryptable.hpp"
+#include "communication/sendable.hpp"
+#include "encryption/encryptable.hpp"
 #include "raw_bytes.hpp"
 #include <string>
 #include <ostream>
