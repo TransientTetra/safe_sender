@@ -5,21 +5,12 @@
 #include "../include/model/encryption/encryption_aes.hpp"
 #include "../include/model/raw_bytes.hpp"
 #include "../include/model/file.hpp"
+#include "../include/model/communication/sender.hpp"
 #include <crypto++/randpool.h>
 #include <crypto++/aes.h>
 #include <crypto++/osrng.h>
 #include <boost/asio.hpp>
 using boost::asio::ip::tcp;
-enum MessageType
-{
-	TXT_MSG,
-	FILE_MSG
-};
-enum ResponseType
-{
-	ACCEPT,
-	REJECT
-};
 template<class T> T receive_signal(tcp::socket &socket, unsigned long size)
 {
 	boost::asio::streambuf buf(size);
@@ -38,7 +29,7 @@ RawBytes receive(tcp::socket &socket, unsigned long size)
 }
 void send(tcp::socket &socket, Sendable msg)
 {
-	boost::asio::write(socket, boost::asio::buffer(&msg.getData(), msg.getDataSize()));
+	boost::asio::write(socket, boost::asio::buffer(msg.getData().BytePtr(), msg.getDataSize()));
 }
 
 int main(int argc, char **argv)
@@ -60,7 +51,7 @@ int main(int argc, char **argv)
 	{
 		acceptor.accept(socket);
 		MessageType r = receive_signal<MessageType>(socket, sizeof(MessageType));
-		if (r == TXT_MSG)
+		if (r == KEY)
 		{
 			send_signal<ResponseType>(socket, ACCEPT, sizeof(ResponseType));
 		}
@@ -70,20 +61,76 @@ int main(int argc, char **argv)
 			return 15;
 		}
 		unsigned long size = receive_signal<unsigned long>(socket, sizeof(unsigned long));
-		std::cout << size << std::flush;
-		std::cout << receive(socket, size).toString();
+		EncryptionKey key(receive(socket, size));
+		r = receive_signal<MessageType>(socket, sizeof(MessageType));
+		if (r == IV)
+		{
+			send_signal<ResponseType>(socket, ACCEPT, sizeof(ResponseType));
+		}
+		else
+		{
+			send_signal<ResponseType>(socket, REJECT, sizeof(ResponseType));
+			return 15;
+		}
+		size = receive_signal<unsigned long>(socket, sizeof(unsigned long));
+		InitializationVector iv(receive(socket, size));
+
+		EncryptionAES encryptionAes(CFB);
+		encryptionAes.setEncryptionKey(key);
+		encryptionAes.setIV(iv);
+
+		r = receive_signal<MessageType>(socket, sizeof(MessageType));
+		if (r == TXT_MSG)
+		{
+			send_signal<ResponseType>(socket, ACCEPT, sizeof(ResponseType));
+		}
+		else
+		{
+			send_signal<ResponseType>(socket, REJECT, sizeof(ResponseType));
+			return 15;
+		}
+		size = receive_signal<unsigned long>(socket, sizeof(unsigned long));
+		TextMessage msg(receive(socket, size));
+		std::cout << msg.getData().toString() << '\n';
+		msg.decrypt(encryptionAes);
+		std::cout << msg.getData().toString() << '\n';
 	}
 	else
 	{
+		EncryptionKey key("6969696969696969");
+		InitializationVector iv("69696969");
+		EncryptionAES encryptionAes(CFB);
+		encryptionAes.setEncryptionKey(key);
+		encryptionAes.setIV(iv);
 		bool server_accepted;
 		TextMessage str("no siemano");
+		str.encrypt(encryptionAes);
 		//connect can throw Connection refused if there's no server to connect to or sth
 		socket.connect(tcp::endpoint(boost::asio::ip::address::from_string(ip_to_send_to), 1234));
-		boost::system::error_code e;
-		MessageType msg = TXT_MSG;
+		MessageType msg = KEY;
 		send_signal<MessageType>(socket, msg, sizeof(MessageType));
 
 		ResponseType rsp = receive_signal<ResponseType>(socket, sizeof(ResponseType));
+		server_accepted = rsp == ACCEPT;
+		if (server_accepted)
+		{
+			send_signal<unsigned long>(socket, key.getDataSize(), sizeof(unsigned long));
+			send(socket, key);
+		}
+		msg = IV;
+		send_signal<MessageType>(socket, msg, sizeof(MessageType));
+
+		rsp = receive_signal<ResponseType>(socket, sizeof(ResponseType));
+		server_accepted = rsp == ACCEPT;
+		if (server_accepted)
+		{
+			send_signal<unsigned long>(socket, iv.getDataSize(), sizeof(unsigned long));
+			send(socket, iv);
+		}
+		msg = TXT_MSG;
+		send_signal<MessageType>(socket, msg, sizeof(MessageType));
+
+		rsp = receive_signal<ResponseType>(socket, sizeof(ResponseType));
 		server_accepted = rsp == ACCEPT;
 		if (server_accepted)
 		{
