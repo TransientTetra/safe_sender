@@ -4,8 +4,8 @@
 
 #include "file_metadata.hpp"
 #include "raw_bytes.hpp"
-#include "encryptable.hpp"
-#include "sendable.hpp"
+#include "encryption/encryptable.hpp"
+#include "communication/sendable.hpp"
 
 class File : public Encryptable, public Sendable
 {

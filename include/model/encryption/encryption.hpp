@@ -1,9 +1,9 @@
 #ifndef SAFE_SENDER_ENCRYPTION_HPP
 #define SAFE_SENDER_ENCRYPTION_HPP
 #include <string>
-#include "raw_bytes.hpp"
+#include "../raw_bytes.hpp"
 #include "encryption_key.hpp"
-#include "initialization_vector.hpp"
+#include "../initialization_vector.hpp"
 
 enum CipherMode
 {

@@ -1,14 +1,15 @@
 #ifndef SAFE_SENDER_SENDABLE_HPP
 #define SAFE_SENDER_SENDABLE_HPP
 
+
+#include "../data_container.hpp"
+
 //an abstract class that all classes that can be sent must inherit from
-class Sendable
+class Sendable : virtual public DataContainer
 {
 private:
 protected:
-	unsigned long long int dataLengthBytes; //number of bytes of the object to be sent
 public:
-	unsigned long long int getDataLength();
 };
 
 

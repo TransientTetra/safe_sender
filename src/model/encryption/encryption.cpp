@@ -1,4 +1,4 @@
-#include "../../include/model/encryption.hpp"
+#include "../../../include/model/encryption/encryption.hpp"
 
 void Encryption::setEncryptionKey(EncryptionKey &key)
 {

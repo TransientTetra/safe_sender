@@ -2,8 +2,8 @@
 #define SAFE_SENDER_INITIALIZATION_VECTOR_HPP
 
 
-#include "sendable.hpp"
-#include "encryptable.hpp"
+#include "communication/sendable.hpp"
+#include "encryption/encryptable.hpp"
 
 class InitializationVector : public Encryptable, public Sendable
 {
