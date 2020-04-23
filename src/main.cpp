@@ -6,31 +6,11 @@
 #include "../include/model/raw_bytes.hpp"
 #include "../include/model/file.hpp"
 #include "../include/model/communication/sender.hpp"
+#include "../include/model/communication/receiver.hpp"
 #include <crypto++/randpool.h>
 #include <crypto++/aes.h>
 #include <crypto++/osrng.h>
 #include <boost/asio.hpp>
-using boost::asio::ip::tcp;
-template<class T> T receive_signal(tcp::socket &socket, unsigned long size)
-{
-	boost::asio::streambuf buf(size);
-	boost::asio::read( socket, buf);
-	return T(*boost::asio::buffer_cast<const char*>(buf.data()));
-}
-template<class T> void send_signal(tcp::socket &socket, T msg, unsigned long size)
-{
-	boost::asio::write(socket, boost::asio::buffer(&msg, size));
-}
-RawBytes receive(tcp::socket &socket, unsigned long size)
-{
-	boost::asio::streambuf buf(size);
-	boost::asio::read( socket, buf);
-	return RawBytes(boost::asio::buffer_cast<const char*>(buf.data()));
-}
-void send(tcp::socket &socket, Sendable msg)
-{
-	boost::asio::write(socket, boost::asio::buffer(msg.getData().BytePtr(), msg.getDataSize()));
-}
 
 int main(int argc, char **argv)
 {
@@ -40,57 +20,52 @@ int main(int argc, char **argv)
 		return 1;
 	}
 	std::string ip_to_send_to = argv[1];
+	unsigned int port = 1234;
 	bool is_server = *argv[2] != '0';
 
 	boost::asio::io_service io_service;
-	//listen for new connection
-	tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), 1234 ));
-	//socket creation
-	tcp::socket socket(io_service);
 	if (is_server)
 	{
-		acceptor.accept(socket);
-		MessageType r = receive_signal<MessageType>(socket, sizeof(MessageType));
-		if (r == KEY)
+		Receiver receiver(io_service, 1234);
+		receiver.open();
+		if (receiver.receiveSignal<MessageType>() == KEY)
 		{
-			send_signal<ResponseType>(socket, ACCEPT, sizeof(ResponseType));
+			receiver.sendSignal<ResponseType>(ACCEPT);
 		}
 		else
 		{
-			send_signal<ResponseType>(socket, REJECT, sizeof(ResponseType));
+			receiver.sendSignal<ResponseType>(REJECT);
 			return 15;
 		}
-		unsigned long size = receive_signal<unsigned long>(socket, sizeof(unsigned long));
-		EncryptionKey key(receive(socket, size));
-		r = receive_signal<MessageType>(socket, sizeof(MessageType));
-		if (r == IV)
+		unsigned long size = receiver.receiveSignal<unsigned long>();
+		EncryptionKey key(receiver.receive(size));
+		if (receiver.receiveSignal<MessageType>() == IV)
 		{
-			send_signal<ResponseType>(socket, ACCEPT, sizeof(ResponseType));
+			receiver.sendSignal<ResponseType>(ACCEPT);
 		}
 		else
 		{
-			send_signal<ResponseType>(socket, REJECT, sizeof(ResponseType));
+			receiver.sendSignal<ResponseType>(REJECT);
 			return 15;
 		}
-		size = receive_signal<unsigned long>(socket, sizeof(unsigned long));
-		InitializationVector iv(receive(socket, size));
+		size = receiver.receiveSignal<unsigned long>();
+		InitializationVector iv(receiver.receive(size));
 
 		EncryptionAES encryptionAes(CFB);
 		encryptionAes.setEncryptionKey(key);
 		encryptionAes.setIV(iv);
 
-		r = receive_signal<MessageType>(socket, sizeof(MessageType));
-		if (r == TXT_MSG)
+		if (receiver.receiveSignal<MessageType>() == TXT_MSG)
 		{
-			send_signal<ResponseType>(socket, ACCEPT, sizeof(ResponseType));
+			receiver.sendSignal<ResponseType>(ACCEPT);
 		}
 		else
 		{
-			send_signal<ResponseType>(socket, REJECT, sizeof(ResponseType));
+			receiver.sendSignal<ResponseType>(REJECT);
 			return 15;
 		}
-		size = receive_signal<unsigned long>(socket, sizeof(unsigned long));
-		TextMessage msg(receive(socket, size));
+		size = receiver.receiveSignal<unsigned long>();
+		TextMessage msg(receiver.receive(size));
 		std::cout << msg.getData().toString() << '\n';
 		msg.decrypt(encryptionAes);
 		std::cout << msg.getData().toString() << '\n';
@@ -102,40 +77,31 @@ int main(int argc, char **argv)
 		EncryptionAES encryptionAes(CFB);
 		encryptionAes.setEncryptionKey(key);
 		encryptionAes.setIV(iv);
-		bool server_accepted;
 		TextMessage str("no siemano");
 		str.encrypt(encryptionAes);
 		//connect can throw Connection refused if there's no server to connect to or sth
-		socket.connect(tcp::endpoint(boost::asio::ip::address::from_string(ip_to_send_to), 1234));
-		MessageType msg = KEY;
-		send_signal<MessageType>(socket, msg, sizeof(MessageType));
+		Sender sender(io_service, ip_to_send_to, port);
+		sender.connect();
+		sender.sendSignal<MessageType>(KEY);
 
-		ResponseType rsp = receive_signal<ResponseType>(socket, sizeof(ResponseType));
-		server_accepted = rsp == ACCEPT;
-		if (server_accepted)
+		if (sender.receiveSignal<ResponseType>() == ACCEPT)
 		{
-			send_signal<unsigned long>(socket, key.getDataSize(), sizeof(unsigned long));
-			send(socket, key);
+			sender.sendSignal(key.getDataSize());
+			sender.send(key);
 		}
-		msg = IV;
-		send_signal<MessageType>(socket, msg, sizeof(MessageType));
+		sender.sendSignal(IV);
 
-		rsp = receive_signal<ResponseType>(socket, sizeof(ResponseType));
-		server_accepted = rsp == ACCEPT;
-		if (server_accepted)
+		if (sender.receiveSignal<ResponseType>() == ACCEPT)
 		{
-			send_signal<unsigned long>(socket, iv.getDataSize(), sizeof(unsigned long));
-			send(socket, iv);
+			sender.sendSignal(iv.getDataSize());
+			sender.send(iv);
 		}
-		msg = TXT_MSG;
-		send_signal<MessageType>(socket, msg, sizeof(MessageType));
+		sender.sendSignal(TXT_MSG);
 
-		rsp = receive_signal<ResponseType>(socket, sizeof(ResponseType));
-		server_accepted = rsp == ACCEPT;
-		if (server_accepted)
+		if (sender.receiveSignal<ResponseType>() == ACCEPT)
 		{
-			send_signal<unsigned long>(socket, str.getDataSize(), sizeof(unsigned long));
-			send(socket, str);
+			sender.sendSignal(str.getDataSize());
+			sender.send(str);
 		}
 	}
 	return 0;
