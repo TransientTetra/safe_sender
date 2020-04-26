@@ -1,11 +1,9 @@
 #ifndef SAFE_SENDER_RAW_BYTES_HPP
 #define SAFE_SENDER_RAW_BYTES_HPP
 
-#include <vector>
-#include <cstddef>
 #include <string>
 #include <ostream>
-#include <crypto++/secblock.h>
+#include "cryptopp/secblock.h"
 
 class RawBytes : public CryptoPP::SecByteBlock
 {
@@ -19,7 +17,7 @@ public:
 	std::string toString();
 	void print(std::ostream &o);
 
-	const byte &getByte(unsigned long i) const;
+	const CryptoPP::byte &getByte(unsigned long i) const;
 };
 
 

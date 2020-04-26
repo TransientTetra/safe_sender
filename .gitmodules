@@ -1,0 +1,32 @@
+[submodule "lib/cryptopp"]
+	path = lib/cryptopp
+	url = https://github.com/weidai11/cryptopp.git
+	branch = master
+[submodule "lib/boost/test"]
+	path = lib/boost/test
+	url = https://github.com/boostorg/test.git
+	branch = master
+[submodule "lib/boost/system"]
+	path = lib/boost/system
+	url = https://github.com/boostorg/system.git
+	branch = master
+[submodule "lib/boost/asio"]
+	path = lib/boost/asio
+	url = https://github.com/boostorg/asio.git
+	branch = master
+[submodule "lib/boost/thread"]
+	path = lib/boost/thread
+	url = https://github.com/boostorg/thread.git
+	branch = master
+[submodule "lib/boost/config"]
+	path = lib/boost/config
+	url = https://github.com/boostorg/config.git
+	branch = master
+[submodule "lib/boost/winapi"]
+	path = lib/boost/winapi
+	url = https://github.com/boostorg/winapi.git
+	branch = master
+[submodule "lib/boost/predef"]
+	path = lib/boost/predef
+	url = https://github.com/boostorg/predef.git
+	branch = master

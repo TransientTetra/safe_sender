@@ -1,4 +1,4 @@
-#include "../../include/model/encryption_key.hpp"
+#include "../../../include/model/encryption/encryption_key.hpp"
 
 EncryptionKey::EncryptionKey(const std::string& str)
 : Encryptable(str)

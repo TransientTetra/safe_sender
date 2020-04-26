@@ -1,5 +1,10 @@
-#include "../../include/model/encryptable.hpp"
-#include "../../include/model/encryption.hpp"
+#include "../../../include/model/encryption/encryptable.hpp"
+#include "../../../include/model/encryption/encryption.hpp"
+
+Encryptable::Encryptable()
+{
+
+}
 
 Encryptable::Encryptable(const std::string& str)
 {
@@ -11,11 +16,6 @@ Encryptable::Encryptable(RawBytes &bytes)
 {
 	isEncrypted = false;
 	data = bytes;
-}
-
-RawBytes &Encryptable::getData()
-{
-	return data;
 }
 
 void Encryptable::encrypt(Encryption &encryption)
@@ -30,12 +30,3 @@ void Encryptable::decrypt(Encryption &encryption)
 	encryption.decrypt(data);
 }
 
-unsigned long Encryptable::getDataSize() const
-{
-	return data.size();
-}
-
-Encryptable::Encryptable()
-{
-
-}
