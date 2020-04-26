@@ -30,3 +30,11 @@
 	path = lib/boost/predef
 	url = https://github.com/boostorg/predef.git
 	branch = master
+[submodule "lib/imgui"]
+	path = lib/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = master
+[submodule "lib/glew"]
+	path = lib/glew
+	url = https://github.com/nigels-com/glew.git
+	branch = master

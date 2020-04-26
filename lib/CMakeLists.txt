@@ -1181,4 +1181,17 @@ message(STATUS "Compiler definitions: ${CRYPTOPP_COMPILE_DEFINITIONS}")
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 ##HERE ENDS CRYPTOPP CMAKELISTS
+include_directories(imgui)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/SDL2")
+set(
+        IMGUI_SRC
+
+        imgui/imgui.cpp
+        imgui/imgui_draw.cpp
+        imgui/imgui_widgets.cpp
+        imgui/examples/imgui_impl_sdl.cpp
+        imgui/examples/imgui_impl_opengl3.cpp
+)
+set(IMGUI_SRC ${IMGUI_SRC})
+add_library(imgui ${IMGUI_SRC})
 add_subdirectory(boost)
