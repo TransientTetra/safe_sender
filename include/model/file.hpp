@@ -18,8 +18,9 @@ public:
 
 	void save(const std::string& path);
 
-	const std::string &getFilename() const;
-	const std::string &getExtension() const;
+	const FileMetadata &getMetadata() const;
+
+	void setMetadata(const FileMetadata &metadata);
 };
 
 

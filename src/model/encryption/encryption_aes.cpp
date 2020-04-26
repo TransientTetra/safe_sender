@@ -1,7 +1,7 @@
 #include "../../../include/model/encryption/encryption_aes.hpp"
 #include <ostream>
-#include <crypto++/aes.h>
-#include <crypto++/modes.h>
+#include "cryptopp/aes.h"
+#include "cryptopp/modes.h"
 
 void EncryptionAES::encrypt(RawBytes &data)
 {

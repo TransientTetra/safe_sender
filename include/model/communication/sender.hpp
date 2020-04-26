@@ -1,35 +1,21 @@
 #ifndef SAFE_SENDER_SENDER_HPP
 #define SAFE_SENDER_SENDER_HPP
 
-
-#include <boost/asio.hpp>
 #include "../raw_bytes.hpp"
 #include "sendable.hpp"
+#include "communicator.hpp"
+#include "../file.hpp"
+#include "../text_message.hpp"
+#include "../encryption/encryption_key.hpp"
+#include "../initialization_vector.hpp"
 
-enum MessageType
-{
-	TXT_MSG,
-	FILE_MSG,
-	KEY,
-	IV
-};
-enum ResponseType
-{
-	ACCEPT,
-	REJECT
-};
-class Sender
+class Sender : public Communicator
 {
 private:
 	std::string receiverIP;
-	unsigned int receiverPort;
-	boost::asio::ip::tcp::tcp::socket socket;
-	bool connected;
-
+	void send(Sendable &data);
 protected:
 public:
-	//constructor used by server when sending signals
-	Sender(boost::asio::io_service &ioService);
 	//constructor used by client when sending data
 	Sender(boost::asio::io_service &ioService, std::string ip, unsigned int port);
 
@@ -39,14 +25,8 @@ public:
 	const unsigned int &getReceiverPort() const;
 
 	bool connect();
-	void send(Sendable &data);
-
-	template<class T> ResponseType sendSignal(T msg, int size)
-	{
-		boost::asio::write(socket, boost::asio::buffer(&msg, size));
-		//todo handle server responses
-		return ACCEPT;
-	}
+	void sendFile(File &file, EncryptionKey &key, InitializationVector &iv, bool isEncrypted);
+	void sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, bool isEncrypted);
 };
 
 
