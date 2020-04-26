@@ -4,7 +4,7 @@ project(safe_sender)
 set(CMAKE_CXX_STANDARD 17)
 
 
-include_directories(lib)
+include_directories(lib) #for cryptopp
 include_directories(lib/boost/asio/include)
 include_directories(lib/boost/system/include)
 include_directories(lib/boost/thread/include)
@@ -13,4 +13,4 @@ add_subdirectory(src)
 #add_subdirectory(tst)
 add_subdirectory(lib)
 add_executable(safe_sender src/main.cpp)
-target_link_libraries(safe_sender safe_sender_lib cryptopp-shared -lboost_system -lboost_thread -pthread)
+target_link_libraries(safe_sender safe_sender_lib boost_test cryptopp-shared -lboost_system -lboost_thread -pthread)
