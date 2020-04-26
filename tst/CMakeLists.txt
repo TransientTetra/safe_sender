@@ -5,8 +5,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(
         TST
+        test.cpp
 )
 set(TST ${TST})
 add_executable(${BINARY} ${TST})
 add_test(NAME ${BINARY} COMMAND ${BINARY})
-target_link_libraries(${BINARY} PUBLIC ${CMAKE_PROJECT_NAME}_lib)
+target_link_libraries(${BINARY} PUBLIC ${CMAKE_PROJECT_NAME}_lib boost_test)

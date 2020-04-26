@@ -7,7 +7,6 @@
 #include "../include/model/file.hpp"
 #include "../include/model/communication/sender.hpp"
 #include "../include/model/communication/receiver.hpp"
-#include <boost/asio.hpp>
 
 int main(int argc, char **argv)
 {

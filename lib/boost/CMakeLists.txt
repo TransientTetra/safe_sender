@@ -3,6 +3,11 @@ project(boost_test)
 
 set(CMAKE_CXX_STANDARD 17)
 
+add_subdirectory(system)
+add_subdirectory(config)
+add_subdirectory(winapi)
+add_subdirectory(predef)
+
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/src)
 set(
         BOOST_TEST_SRC
@@ -31,3 +36,22 @@ set(
 set(BOOST_TEST_SRC ${BOOST_TEST_SRC})
 
 add_library(boost_test ${BOOST_TEST_SRC})
+
+
+project(boost_thread)
+
+set(CMAKE_CXX_STANDARD 17)
+
+set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thread/src)
+set(
+        BOOST_THREAD_SRC
+
+        ${SRC_DIR}/pthread/once.cpp
+        ${SRC_DIR}/pthread/once_atomic.cpp
+        ${SRC_DIR}/pthread/thread.cpp
+        ${SRC_DIR}/future.cpp
+        ${SRC_DIR}/tss_null.cpp
+)
+set(BOOST_THREAD_SRC ${BOOST_THREAD_SRC})
+
+add_library(boost_thread ${BOOST_THREAD_SRC})

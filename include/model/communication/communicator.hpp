@@ -1,7 +1,7 @@
 #ifndef SAFE_SENDER_COMMUNICATOR_HPP
 #define SAFE_SENDER_COMMUNICATOR_HPP
 
-#include <boost/asio.hpp>
+#include "boost/asio.hpp"
 
 enum MessageType
 {

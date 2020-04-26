@@ -18,3 +18,15 @@
 	path = lib/boost/thread
 	url = https://github.com/boostorg/thread.git
 	branch = master
+[submodule "lib/boost/config"]
+	path = lib/boost/config
+	url = https://github.com/boostorg/config.git
+	branch = master
+[submodule "lib/boost/winapi"]
+	path = lib/boost/winapi
+	url = https://github.com/boostorg/winapi.git
+	branch = master
+[submodule "lib/boost/predef"]
+	path = lib/boost/predef
+	url = https://github.com/boostorg/predef.git
+	branch = master
