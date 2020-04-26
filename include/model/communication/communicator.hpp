@@ -6,9 +6,7 @@
 enum MessageType
 {
 	TXT_MSG,
-	FILE_MSG,
-	KEY,
-	IV
+	FILE_MSG
 };
 enum ResponseType
 {

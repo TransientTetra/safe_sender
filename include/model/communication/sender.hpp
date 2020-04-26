@@ -4,11 +4,16 @@
 #include "../raw_bytes.hpp"
 #include "sendable.hpp"
 #include "communicator.hpp"
+#include "../file.hpp"
+#include "../text_message.hpp"
+#include "../encryption/encryption_key.hpp"
+#include "../initialization_vector.hpp"
 
 class Sender : public Communicator
 {
 private:
 	std::string receiverIP;
+	void send(Sendable &data);
 protected:
 public:
 	//constructor used by client when sending data
@@ -20,7 +25,8 @@ public:
 	const unsigned int &getReceiverPort() const;
 
 	bool connect();
-	void send(Sendable &data);
+	void sendFile(File &file, EncryptionKey &key, InitializationVector &iv, bool isEncrypted);
+	void sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, bool isEncrypted);
 };
 
 

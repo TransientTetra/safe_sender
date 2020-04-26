@@ -3,7 +3,7 @@
 #include <filesystem>
 
 File::File(const std::string& filepath)
-: Encryptable(filepath)
+: Encryptable(filepath) //this is an ugly hack because encryptable needs to be initialized
 {
 	std::ifstream fileIn;
 	fileIn.open(filepath);
@@ -23,16 +23,16 @@ File::File(RawBytes bytes)
 void File::save(const std::string& path)
 {
 	std::ofstream fileOut;
-	fileOut.open(path + getFilename() + getExtension());
+	fileOut.open(path + metadata.getFilename() + metadata.getExtension());
 	fileOut.write(reinterpret_cast<const char*>(data.BytePtr()), getDataSize());
 }
 
-const std::string &File::getFilename() const
+const FileMetadata &File::getMetadata() const
 {
-	return metadata.getFilename();
+	return metadata;
 }
 
-const std::string &File::getExtension() const
+void File::setMetadata(const FileMetadata &metadata)
 {
-	return metadata.getExtension();
+	File::metadata = metadata;
 }

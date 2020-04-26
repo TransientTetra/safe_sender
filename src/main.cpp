@@ -26,49 +26,12 @@ int main(int argc, char **argv)
 	boost::asio::io_service io_service;
 	if (is_server)
 	{
-		Receiver receiver(io_service, 1234);
-		receiver.open();
-		if (receiver.receiveSignal<MessageType>() == KEY)
+		Receiver receiver(io_service, port);
+		while(1)
 		{
-			receiver.sendSignal<ResponseType>(ACCEPT);
+			receiver.open();
+			receiver.listenAndReceive();
 		}
-		else
-		{
-			receiver.sendSignal<ResponseType>(REJECT);
-			return 15;
-		}
-		unsigned long size = receiver.receiveSignal<unsigned long>();
-		EncryptionKey key(receiver.receive(size));
-		if (receiver.receiveSignal<MessageType>() == IV)
-		{
-			receiver.sendSignal<ResponseType>(ACCEPT);
-		}
-		else
-		{
-			receiver.sendSignal<ResponseType>(REJECT);
-			return 15;
-		}
-		size = receiver.receiveSignal<unsigned long>();
-		InitializationVector iv(receiver.receive(size));
-
-		EncryptionAES encryptionAes(CFB);
-		encryptionAes.setEncryptionKey(key);
-		encryptionAes.setIV(iv);
-
-		if (receiver.receiveSignal<MessageType>() == TXT_MSG)
-		{
-			receiver.sendSignal<ResponseType>(ACCEPT);
-		}
-		else
-		{
-			receiver.sendSignal<ResponseType>(REJECT);
-			return 15;
-		}
-		size = receiver.receiveSignal<unsigned long>();
-		TextMessage msg(receiver.receive(size));
-		std::cout << msg.getData().toString() << '\n';
-		msg.decrypt(encryptionAes);
-		std::cout << msg.getData().toString() << '\n';
 	}
 	else
 	{
@@ -78,31 +41,14 @@ int main(int argc, char **argv)
 		encryptionAes.setEncryptionKey(key);
 		encryptionAes.setIV(iv);
 		TextMessage str("no siemano");
+		File file("/home/mkj/Temp/New");
+		file.encrypt(encryptionAes);
 		str.encrypt(encryptionAes);
 		//connect can throw Connection refused if there's no server to connect to or sth
 		Sender sender(io_service, ip_to_send_to, port);
 		sender.connect();
-		sender.sendSignal<MessageType>(KEY);
-
-		if (sender.receiveSignal<ResponseType>() == ACCEPT)
-		{
-			sender.sendSignal(key.getDataSize());
-			sender.send(key);
-		}
-		sender.sendSignal(IV);
-
-		if (sender.receiveSignal<ResponseType>() == ACCEPT)
-		{
-			sender.sendSignal(iv.getDataSize());
-			sender.send(iv);
-		}
-		sender.sendSignal(TXT_MSG);
-
-		if (sender.receiveSignal<ResponseType>() == ACCEPT)
-		{
-			sender.sendSignal(str.getDataSize());
-			sender.send(str);
-		}
+		//sender.sendTxtMsg(str, key, iv, true);
+		sender.sendFile(file, key, iv, true);
 	}
 	return 0;
 }

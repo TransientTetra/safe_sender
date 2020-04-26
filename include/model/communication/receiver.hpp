@@ -9,12 +9,15 @@ class Receiver : public Communicator
 private:
 	std::string senderIP;
 	boost::asio::ip::tcp::tcp::acceptor acceptor;
+
+	RawBytes receive(unsigned long size);
 protected:
 public:
 	Receiver(boost::asio::io_service &ioService, unsigned int port);
 
 	void open();
-	RawBytes receive(unsigned long size);
+
+	void listenAndReceive();
 };
 
 
