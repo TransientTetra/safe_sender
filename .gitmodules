@@ -1,0 +1,20 @@
+[submodule "lib/cryptopp"]
+	path = lib/cryptopp
+	url = https://github.com/weidai11/cryptopp.git
+	branch = master
+[submodule "lib/boost/test"]
+	path = lib/boost/test
+	url = https://github.com/boostorg/test.git
+	branch = master
+[submodule "lib/boost/system"]
+	path = lib/boost/system
+	url = https://github.com/boostorg/system.git
+	branch = master
+[submodule "lib/boost/asio"]
+	path = lib/boost/asio
+	url = https://github.com/boostorg/asio.git
+	branch = master
+[submodule "lib/boost/thread"]
+	path = lib/boost/thread
+	url = https://github.com/boostorg/thread.git
+	branch = master

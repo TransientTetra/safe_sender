@@ -7,9 +7,6 @@
 #include "../include/model/file.hpp"
 #include "../include/model/communication/sender.hpp"
 #include "../include/model/communication/receiver.hpp"
-#include <crypto++/randpool.h>
-#include <crypto++/aes.h>
-#include <crypto++/osrng.h>
 #include <boost/asio.hpp>
 
 int main(int argc, char **argv)
