@@ -28,6 +28,7 @@ RawBytes Receiver::receive(unsigned long size)
 
 void Receiver::listenAndReceive()
 {
+	open();
 	//while (true)
 	{
 		//todo cipher mode choosing
@@ -79,4 +80,9 @@ void Receiver::listenAndReceive()
 			std::cerr << "Error while receiving data\n";
 		}
 	}
+}
+
+std::thread Receiver::threadListenAndReceive()
+{
+	return std::thread([=] {listenAndReceive();});
 }

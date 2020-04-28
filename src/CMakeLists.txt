@@ -22,7 +22,8 @@ set(
         model/communication/receiver.cpp
         model/communication/sender.cpp
         model/communication/communicator.cpp
-        view/frame.cpp ../include/view/frame.hpp view/main_frame.cpp view/main_frame.hpp)
+        view/frame.cpp
+        view/main_frame.cpp)
 set(SRC ${SRC})
 
 include_directories(../include BINARY)

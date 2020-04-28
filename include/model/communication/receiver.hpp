@@ -1,6 +1,7 @@
 #ifndef SAFE_SENDER_RECEIVER_HPP
 #define SAFE_SENDER_RECEIVER_HPP
 
+#include <thread>
 #include "communicator.hpp"
 #include "../raw_bytes.hpp"
 
@@ -18,6 +19,7 @@ public:
 	void open();
 
 	void listenAndReceive();
+	std::thread threadListenAndReceive();
 };
 
 
