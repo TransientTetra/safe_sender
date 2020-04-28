@@ -81,8 +81,3 @@ void Receiver::listenAndReceive()
 		}
 	}
 }
-
-std::thread Receiver::threadListenAndReceive()
-{
-	return std::thread([=] {listenAndReceive();});
-}

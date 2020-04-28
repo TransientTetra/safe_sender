@@ -19,7 +19,6 @@ public:
 	void open();
 
 	void listenAndReceive();
-	std::thread threadListenAndReceive();
 };
 
 
