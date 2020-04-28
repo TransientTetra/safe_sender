@@ -1,0 +1,18 @@
+#ifndef SAFE_SENDER_MAIN_FRAME_HPP
+#define SAFE_SENDER_MAIN_FRAME_HPP
+
+
+#include "frame.hpp"
+
+class MainFrame : public Frame
+{
+private:
+protected:
+public:
+	MainFrame(Window *window, const std::string &name);
+
+	void draw() override;
+};
+
+
+#endif //SAFE_SENDER_MAIN_FRAME_HPP
