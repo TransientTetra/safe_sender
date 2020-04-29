@@ -28,7 +28,6 @@ RawBytes Receiver::receive(unsigned long size)
 
 void Receiver::listenAndReceive()
 {
-	open();
 	//while (true)
 	{
 		//todo cipher mode choosing

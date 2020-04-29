@@ -1,4 +1,5 @@
 #include <iostream>
+#include "controller/application.hpp"
 #include "constants.hpp"
 #include "view/main_frame.hpp"
 #include "model/communication/sender.hpp"
@@ -8,6 +9,9 @@
 // Main code
 int main(int argc, char** argv)
 {
+	Application application(DEFAULT_WINDOW_TITLE);
+	application.run();
+	return 0;
 	if (argc < 3)
 	{
 		std::cerr << "safe_sender <ip> <is_server ? 1 : 0>\n";
@@ -40,24 +44,5 @@ int main(int argc, char** argv)
 		sender.sendTxtMsg(str, key, iv, true);
 		//sender.sendFile(file, key, iv, true);
 	}
-	return 0;
-	Window window(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 900);
-	MainFrame frame(&window, "frame");
-	while (window.isOpen())
-	{
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-			ImGui_ImplSDL2_ProcessEvent(&event);
-			if (event.type == SDL_QUIT)
-				window.setClose();
-			if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE
-			&& event.window.windowID == SDL_GetWindowID(window.getSDLWindow()))
-				window.setClose();
-		}
-		frame.draw();
-		window.render();
-	}
-
 	return 0;
 }

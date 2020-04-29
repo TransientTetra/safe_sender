@@ -3,19 +3,27 @@
 
 
 #include <string>
+#include <model/communication/receiver.hpp>
+#include <model/communication/sender.hpp>
+#include <view/window.hpp>
 
 class Application
 {
 private:
-	std::string ipAddress;
-	std::string otherIP;
+	//todo make progressbars work
+	float encryptionProgress;
+	float sendingProgress;
+	std::string ip;
+	std::string title;
+	std::thread receiverThread;
+	Receiver* receiver;
+	Sender* sender;
+	Window window;
 protected:
 public:
-	Application();
-	Application(std::string ipAddress);
+	Application(std::string title);
 
 	void run();
-	void connect(std::string ip);
 };
 
 

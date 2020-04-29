@@ -1,29 +1,66 @@
 #include "view/main_frame.hpp"
 
-MainFrame::MainFrame(Window *window, const std::string &name)
+MainFrame::MainFrame(Window *window, const std::string &name, std::string *ip, float* encryptionProgress,
+	float* sendingProgress)
 : Frame(window, name)
-{}
+{
+	applicationIPToSendTo = ip;
+	applicationEncryptionProgress = encryptionProgress;
+	applicationSendingProgress = sendingProgress;
+}
 
 void MainFrame::draw()
 {
 	Frame::draw();
-	static float f = 0.0f;
-	static int counter = 0;
-	static bool b = true;
 
-	ImGui::Begin("Hello, world!");                          // Create a sdlWindow called "Hello, world!" and append into it.
+	ImGui::Begin(name.c_str());
+	ImGui::Columns(3);
+	ImGui::SetColumnWidth(0, 220);
+	ImGui::SetColumnWidth(1, 220);
+	ImGui::SetColumnWidth(2, 220);
+	ImGui::Text("Sending progress");
+	ImGui::ProgressBar(*applicationEncryptionProgress);
 
-	ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-	ImGui::Checkbox("Demo Window", &b);      // Edit bools storing our sdlWindow open/close state
-	ImGui::Checkbox("Another Window", &b);
+	ImGui::Text("Encryption progress");
+	ImGui::ProgressBar(*applicationSendingProgress);
 
-	ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+	ImGui::Text("Cipher mode");
+	static int currentChoice = 0;
+	if(ImGui::RadioButton("CFB", currentChoice == 0)) currentChoice = 0;
+	if(ImGui::RadioButton("CBC", currentChoice == 1)) currentChoice = 1;
+	if(ImGui::RadioButton("ECB", currentChoice == 2)) currentChoice = 2;
+	if(ImGui::RadioButton("OFB", currentChoice == 3)) currentChoice = 3;
 
-	if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-		counter++;
-	ImGui::SameLine();
-	ImGui::Text("counter = %d", counter);
+	static char ipBuf[16];
+	ImGui::Text("Input IP to connect to");
+	ImGui::InputText("", ipBuf, sizeof(ipBuf) / sizeof(char));
+	if (ImGui::Button("Connect")) *applicationIPToSendTo = ipBuf;
 
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	ImGui::NextColumn();
+	static char msgBuf[256];
+	ImGui::Text("Write your message");
+	ImGui::InputTextMultiline("##msgwin", msgBuf, sizeof(msgBuf) / sizeof(char),
+		ImVec2(200, 250));
+
+	static char keyBuf[256];
+	ImGui::Text("Enter encryption key");
+	ImGui::Text("leave empty for no encryption");
+	ImGui::InputText("##key", keyBuf, sizeof(keyBuf) / sizeof(char));
+
+	ImGui::NextColumn();
+	ImGui::Text("Connected to:");
+	ImGui::Text("%s", applicationIPToSendTo->c_str());
+	if (ImGui::Button("Disconnect")) *applicationIPToSendTo = "None";
+
+	ImGui::NewLine();
+	ImGui::Text("Chosen file:");
+	ImGui::Text("None");
+	if (ImGui::Button("Browse"));
+
+	ImGui::NewLine();
+	ImGui::NewLine();
+	if (ImGui::Button("Encrypt and send message"));
+	if (ImGui::Button("Encrypt and send file"));
+
 	ImGui::End();
 }

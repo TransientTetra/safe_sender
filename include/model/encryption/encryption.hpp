@@ -7,10 +7,10 @@
 
 enum CipherMode
 {
-	ECB,
-	CBC,
 	CFB,
-	OFB
+	CBC,
+	ECB,
+	OFB,
 };
 //a virtual class that all encryption algorithms must inherit from
 class Encryption

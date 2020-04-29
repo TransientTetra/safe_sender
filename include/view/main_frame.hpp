@@ -7,9 +7,12 @@
 class MainFrame : public Frame
 {
 private:
+	std::string* applicationIPToSendTo;
+	float* applicationEncryptionProgress;
+	float* applicationSendingProgress;
 protected:
 public:
-	MainFrame(Window *window, const std::string &name);
+	MainFrame(Window *window, const std::string &name, std::string* ip, float* encryptionProg, float* sendingProg);
 
 	void draw() override;
 };
