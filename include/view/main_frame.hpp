@@ -1,18 +1,16 @@
 #ifndef SAFE_SENDER_MAIN_FRAME_HPP
 #define SAFE_SENDER_MAIN_FRAME_HPP
 
-
+#include <controller/application.hpp>
 #include "frame.hpp"
 
 class MainFrame : public Frame
 {
 private:
-	std::string* applicationIPToSendTo;
-	float* applicationEncryptionProgress;
-	float* applicationSendingProgress;
+	ModifiableFields* applicationFields;
 protected:
 public:
-	MainFrame(Window *window, const std::string &name, std::string* ip, float* encryptionProg, float* sendingProg);
+	MainFrame(Window *window, const std::string &name, ModifiableFields* modifiableFields);
 
 	void draw() override;
 };
