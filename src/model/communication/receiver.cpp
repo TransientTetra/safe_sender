@@ -30,6 +30,7 @@ void Receiver::listenAndReceive()
 {
 	//while (true)
 	{
+		open();
 		//todo cipher mode choosing
 		EncryptionAES encryption(CFB);
 		MessageType type = receiveSignal<MessageType>();
