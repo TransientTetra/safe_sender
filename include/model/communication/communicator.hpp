@@ -14,6 +14,13 @@ enum ResponseType
 	REJECT
 };
 
+struct Packet
+{
+	MessageType messageType;
+	ResponseType responseType;
+	unsigned long size;
+};
+
 class Communicator
 {
 private:
@@ -33,6 +40,8 @@ public:
 		boost::asio::read( socket, buf);
 		return T(*boost::asio::buffer_cast<const char*>(buf.data()));
 	}
+	void sendPacket(Packet frame);
+	Packet receivePacket();
 };
 
 
