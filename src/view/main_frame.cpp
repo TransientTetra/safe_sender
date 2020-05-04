@@ -1,12 +1,11 @@
 #include "view/main_frame.hpp"
-#include "constants.hpp"
 
 MainFrame::MainFrame(Window *window, const std::string &name, ModifiableFields* modifiableFields)
 : Frame(window, name), applicationFields(modifiableFields)
 {
 }
 
-void MainFrame::draw(Receiver *receiver, Sender *sender)
+void MainFrame::draw()
 {
 	Frame::draw();
 
@@ -36,8 +35,6 @@ void MainFrame::draw(Receiver *receiver, Sender *sender)
 	if (ImGui::Button("Connect"))
 	{
 		applicationFields->ipToSendTo = ipBuf;
-		sender = new Sender(applicationFields->ipToSendTo, DEFAULT_PORT);
-		sender->connect();
 	}
 
 	ImGui::NextColumn();
@@ -67,13 +64,6 @@ void MainFrame::draw(Receiver *receiver, Sender *sender)
 	{
 		applicationFields->message = msgBuf;
 		applicationFields->key = keyBuf;
-		TextMessage *txt = new TextMessage(applicationFields->message);
-		InitializationVector *iv = new InitializationVector("0");
-		EncryptionKey *key = new EncryptionKey(applicationFields->key);
-		sender->sendTxtMsg(*txt, *key, *iv, false);
-		delete txt;
-		delete iv;
-		delete key;
 	}
 	if (ImGui::Button("Encrypt and send file"))
 	{

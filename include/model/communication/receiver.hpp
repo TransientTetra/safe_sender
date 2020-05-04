@@ -14,7 +14,7 @@ private:
 	RawBytes receive(unsigned long size);
 protected:
 public:
-	Receiver(unsigned int port);
+	Receiver(boost::asio::io_service &ioService, unsigned int port);
 
 	void open();
 

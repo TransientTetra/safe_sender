@@ -19,7 +19,8 @@ Application::Application(std::string title)
 
 void Application::run()
 {
-	receiver = new Receiver(DEFAULT_PORT);
+	boost::asio::io_service ioService;
+	receiver = new Receiver(ioService, DEFAULT_PORT);
 	receiverThread = std::thread(&Receiver::listenAndReceive, receiver);
 	MainFrame frame(&window, "Main frame", &modifiableFields);
 	while (window.isOpen())
@@ -36,7 +37,7 @@ void Application::run()
 				std::terminate();
 			}
 		}
-		frame.draw(receiver, sender);
+		frame.draw();
 		window.render();
 	}
 }
