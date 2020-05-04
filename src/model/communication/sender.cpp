@@ -50,25 +50,27 @@ void Sender::send(Sendable &data)
 	boost::asio::write(socket, boost::asio::buffer(data.getData().BytePtr(), data.getDataSize()));
 }
 
-void Sender::sendFile(File &file, EncryptionKey &key, InitializationVector &iv, bool isEncrypted)
+void Sender::sendFile(File &file, bool isEncrypted, EncryptionKey &key, InitializationVector &iv, CipherMode mode)
 {
 	try
 	{
-		sendSignal(FILE_MSG);
-		if (receiveSignal<ResponseType>() != ACCEPT)
+		Packet packet;
+		packet.messageType = FILE_MSG;
+		packet.messageSize = file.getDataSize();
+		packet.ivSize = iv.getDataSize();
+		packet.keySize = key.getDataSize();
+		packet.isEncrypted = isEncrypted;
+		packet.cipherMode = mode;
+		if (receivePacket().responseType != ACCEPT)
 		{
 			//todo handle server rejection
 		}
-		sendSignal(isEncrypted);
 		if (isEncrypted)
 		{
-			sendSignal(key.getDataSize());
 			send(key);
-			sendSignal(iv.getDataSize());
 			send(iv);
 		}
 		//todo send metadata here
-		sendSignal(file.getDataSize());
 		send(file);
 	}
 	catch (std::exception &e)
@@ -77,24 +79,27 @@ void Sender::sendFile(File &file, EncryptionKey &key, InitializationVector &iv, 
 	}
 }
 
-void Sender::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, bool isEncrypted)
+void Sender::sendTxtMsg(TextMessage &msg, bool isEncrypted, EncryptionKey &key, InitializationVector &iv, CipherMode m)
 {
 	try
 	{
-		sendSignal(TXT_MSG);
-		if (receiveSignal<ResponseType>() != ACCEPT)
+		Packet packet;
+		packet.messageType = TXT_MSG;
+		packet.messageSize = msg.getDataSize();
+		packet.ivSize = iv.getDataSize();
+		packet.keySize = key.getDataSize();
+		packet.isEncrypted = isEncrypted;
+		packet.cipherMode = m;
+		sendPacket(packet);
+		if (receivePacket().responseType != ACCEPT)
 		{
 			//todo handle server rejection
 		}
-		sendSignal(isEncrypted);
 		if (isEncrypted)
 		{
-			sendSignal(key.getDataSize());
 			send(key);
-			sendSignal(iv.getDataSize());
 			send(iv);
 		}
-		sendSignal(msg.getDataSize());
 		send(msg);
 	}
 	catch (std::exception &e)

@@ -22,7 +22,7 @@ void Application::run()
 	boost::asio::io_service ioService;
 	receiver = new Receiver(ioService, DEFAULT_PORT);
 	receiverThread = std::thread(&Receiver::listenAndReceive, receiver);
-	MainFrame frame(&window, "Main frame", &modifiableFields);
+	MainFrame frame(&window, "Main frame");
 	while (window.isOpen())
 	{
 		SDL_Event event;

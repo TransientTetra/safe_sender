@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE TestEncryptionAES
+#define BOOST_TEST_MODULE tst
 #include "boost/test/unit_test.hpp"
 #include "model/encryption/encryption_aes.hpp"
 

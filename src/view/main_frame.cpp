@@ -1,7 +1,7 @@
 #include "view/main_frame.hpp"
 
-MainFrame::MainFrame(Window *window, const std::string &name, ModifiableFields* modifiableFields)
-: Frame(window, name), applicationFields(modifiableFields)
+MainFrame::MainFrame(Window *window, const std::string &name)
+: Frame(window, name)
 {
 }
 
@@ -16,10 +16,10 @@ void MainFrame::draw()
 	ImGui::SetColumnWidth(1, 220);
 	ImGui::SetColumnWidth(2, 220);
 	ImGui::Text("Sending progress");
-	ImGui::ProgressBar(applicationFields->encryptionProgress);
+	ImGui::ProgressBar(0.5);
 
 	ImGui::Text("Encryption progress");
-	ImGui::ProgressBar(applicationFields->sendingProgress);
+	ImGui::ProgressBar(0.5);
 
 	ImGui::Text("Cipher mode");
 	static int currentChoice = 0;
@@ -27,14 +27,12 @@ void MainFrame::draw()
 	if(ImGui::RadioButton("CBC", currentChoice == 1)) currentChoice = 1;
 	if(ImGui::RadioButton("ECB", currentChoice == 2)) currentChoice = 2;
 	if(ImGui::RadioButton("OFB", currentChoice == 3)) currentChoice = 3;
-	applicationFields->cipherMode = static_cast<CipherMode>(currentChoice);
 
 	static char ipBuf[16];
 	ImGui::Text("Input IP to connect to");
 	ImGui::InputText("", ipBuf, sizeof(ipBuf) / sizeof(char));
 	if (ImGui::Button("Connect"))
 	{
-		applicationFields->ipToSendTo = ipBuf;
 	}
 
 	ImGui::NextColumn();
@@ -50,8 +48,8 @@ void MainFrame::draw()
 
 	ImGui::NextColumn();
 	ImGui::Text("Connected to:");
-	ImGui::Text("%s", applicationFields->ipToSendTo.c_str());
-	if (ImGui::Button("Disconnect")) applicationFields->ipToSendTo = "None";
+	ImGui::Text("%s", "ip");
+	if (ImGui::Button("Disconnect")) ;
 
 	ImGui::NewLine();
 	ImGui::Text("Chosen file:");
@@ -62,13 +60,10 @@ void MainFrame::draw()
 	ImGui::NewLine();
 	if (ImGui::Button("Encrypt and send message"))
 	{
-		applicationFields->message = msgBuf;
-		applicationFields->key = keyBuf;
 	}
 	if (ImGui::Button("Encrypt and send file"))
 	{
 		//todo here file picker
-		applicationFields->key = keyBuf;
 	}
 
 	ImGui::End();

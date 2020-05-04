@@ -9,9 +9,9 @@
 // Main code
 int main(int argc, char** argv)
 {
-	Application application(DEFAULT_WINDOW_TITLE);
-	application.run();
-	return 0;
+//	Application application(DEFAULT_WINDOW_TITLE);
+//	application.run();
+//	return 0;
 	if (argc < 3)
 	{
 		std::cerr << "safe_sender <ip> <is_server ? 1 : 0>\n";
@@ -35,13 +35,13 @@ int main(int argc, char** argv)
 		encryptionAes.setEncryptionKey(key);
 		encryptionAes.setIV(iv);
 		TextMessage str("no siemano");
-		File file("/home/mkj/Temp/New");
-		file.encrypt(encryptionAes);
+		//File file("/home/mkj/Temp/New");
+		//file.encrypt(encryptionAes);
 		str.encrypt(encryptionAes);
 		//connect can throw Connection refused if there's no server to connect to or sth
 		Sender sender(io_service, ip_to_send_to, DEFAULT_PORT);
 		sender.connect();
-		sender.sendTxtMsg(str, key, iv, true);
+		sender.sendTxtMsg(str, true, key, iv, CFB);
 		//sender.sendFile(file, key, iv, true);
 	}
 	return 0;

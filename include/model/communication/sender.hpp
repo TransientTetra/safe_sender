@@ -25,8 +25,8 @@ public:
 	const unsigned int &getReceiverPort() const;
 
 	bool connect();
-	void sendFile(File &file, EncryptionKey &key, InitializationVector &iv, bool isEncrypted);
-	void sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, bool isEncrypted);
+	void sendFile(File &file, bool isEncrypted, EncryptionKey &key, InitializationVector &iv, CipherMode mode);
+	void sendTxtMsg(TextMessage &msg, bool isEncrypted, EncryptionKey &key, InitializationVector &iv, CipherMode m);
 };
 
 

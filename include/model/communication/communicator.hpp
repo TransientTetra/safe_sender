@@ -2,6 +2,7 @@
 #define SAFE_SENDER_COMMUNICATOR_HPP
 
 #include "boost/asio.hpp"
+#include "model/encryption/encryption.hpp"
 
 enum MessageType
 {
@@ -18,7 +19,11 @@ struct Packet
 {
 	MessageType messageType;
 	ResponseType responseType;
-	unsigned long size;
+	CipherMode cipherMode;
+	unsigned long messageSize;
+	unsigned long ivSize;
+	unsigned long keySize;
+	bool isEncrypted;
 };
 
 class Communicator
@@ -28,20 +33,14 @@ protected:
 	boost::asio::ip::tcp::tcp::socket socket;
 	unsigned int port;
 	bool connected;
+
 public:
 	Communicator(boost::asio::io_service &ioService);
-	template<class T> void sendSignal(T msg)
-	{
-		boost::asio::write(socket, boost::asio::buffer(&msg, sizeof(T)));
-	}
-	template<class T> T receiveSignal()
-	{
-		boost::asio::streambuf buf(sizeof(T));
-		boost::asio::read( socket, buf);
-		return T(*boost::asio::buffer_cast<const char*>(buf.data()));
-	}
 	void sendPacket(Packet frame);
 	Packet receivePacket();
+
+	char *serializePacket(Packet packet);
+	Packet deserializePacket(const char* binary);
 };
 
 

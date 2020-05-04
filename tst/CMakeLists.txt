@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(
         TST
-        test_encryption_aes.cpp)
+        test_encryption_aes.cpp test_communicator.cpp)
 set(TST ${TST})
 include_directories(BINARY ../include)
 add_executable(${BINARY} ${TST})

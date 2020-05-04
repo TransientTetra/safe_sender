@@ -30,43 +30,44 @@ void Receiver::listenAndReceive()
 {
 	//while (true)
 	{
+		Encryption *encryption;
 		open();
 		//todo cipher mode choosing
-		EncryptionAES encryption(CFB);
-		MessageType type = receiveSignal<MessageType>();
+		Packet receivedPacket = receivePacket();
+		bool isEncrypted = receivedPacket.isEncrypted;
 		//todo ask user if accepts here and send appropriate signal
-		sendSignal(ACCEPT);
+		Packet responsePacket;
+		responsePacket.responseType = ACCEPT;
+		sendPacket(responsePacket);
 		try
 		{
-			bool isEncrypted = receiveSignal<bool>();
 			if (isEncrypted)
 			{
-				unsigned long keySize = receiveSignal<unsigned long>();
-				EncryptionKey aesKey = receive(keySize);
-				unsigned long ivSize = receiveSignal<unsigned long>();
-				InitializationVector iv = receive(ivSize);
-				encryption.setEncryptionKey(aesKey);
-				encryption.setIV(iv);
+				encryption = new EncryptionAES(receivedPacket.cipherMode);
+				EncryptionKey aesKey = receive(receivedPacket.keySize);
+				InitializationVector iv = receive(receivedPacket.ivSize);
+				encryption->setEncryptionKey(aesKey);
+				encryption->setIV(iv);
 			}
-			if (type == FILE_MSG)
+			if (receivedPacket.messageType == FILE_MSG)
 			{
-				//todo handle file metadata sending
+				//todo handle file metadata receiving
 			}
-			unsigned long size = receiveSignal<unsigned long>();
 
 			Sendable *msg;
-			switch (type)
+			switch (receivedPacket.messageType)
 			{
 				case TXT_MSG:
-					msg = new TextMessage(receive(size));
-					if (isEncrypted) dynamic_cast<TextMessage*>(msg)->decrypt(encryption);
+					msg = new TextMessage(receivedPacket.messageSize);
+					if (isEncrypted) dynamic_cast<TextMessage*>(msg)->decrypt(*encryption);
 					dynamic_cast<TextMessage*>(msg)->print(std::cout);
 					break;
 				case FILE_MSG:
-					msg = new File(receive(size));
-					if (isEncrypted) dynamic_cast<File*>(msg)->decrypt(encryption);
+					msg = new File(receivedPacket.messageSize);
+					if (isEncrypted) dynamic_cast<File*>(msg)->decrypt(*encryption);
 					//todo fix this once metadata sending is resolved
-					dynamic_cast<File*>(msg)->setMetadata(FileMetadata("test", "txt", size));
+					dynamic_cast<File*>(msg)->setMetadata(
+						FileMetadata("test", "txt", receivedPacket.messageSize));
 					//todo handle path getting
 					dynamic_cast<File*>(msg)->save("/home/bsk/Temp/");
 					break;
@@ -79,5 +80,6 @@ void Receiver::listenAndReceive()
 		{
 			std::cerr << "Error while receiving data\n";
 		}
+		if (isEncrypted) delete encryption;
 	}
 }

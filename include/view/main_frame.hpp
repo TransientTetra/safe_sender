@@ -10,7 +10,7 @@ private:
 	ModifiableFields* applicationFields;
 protected:
 public:
-	MainFrame(Window *window, const std::string &name, ModifiableFields* modifiableFields);
+	MainFrame(Window *window, const std::string &name);
 
 	void draw() override;
 };
