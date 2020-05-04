@@ -6,8 +6,8 @@
 #include "../../../include/model/text_message.hpp"
 #include "../../../include/model/file.hpp"
 
-Receiver::Receiver(boost::asio::io_service &ioService, unsigned int port)
-: Communicator(ioService),
+Receiver::Receiver(unsigned int port)
+: Communicator(),
 acceptor(ioService, boost::asio::ip::tcp::tcp::endpoint(boost::asio::ip::tcp::tcp::v4(), port))
 {
 	this->port = port;

@@ -1,6 +1,6 @@
 #include "../../../include/model/communication/communicator.hpp"
 
-Communicator::Communicator(boost::asio::io_service &ioService)
+Communicator::Communicator()
 : socket(ioService)
 {
 
@@ -18,7 +18,7 @@ Packet Communicator::receivePacket()
 {
 	boost::asio::streambuf buf(sizeof(Packet));
 	boost::asio::read( socket, buf);
-	char *buffer = boost::asio::buffer_cast<char*>(buf.data());
+	const char *buffer = boost::asio::buffer_cast<const char*>(buf.data());
 	Packet ret;
 	memcpy(&ret, buffer, sizeof(Packet));
 	return ret;

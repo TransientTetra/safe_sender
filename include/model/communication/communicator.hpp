@@ -25,11 +25,12 @@ class Communicator
 {
 private:
 protected:
+	boost::asio::io_service ioService;
 	boost::asio::ip::tcp::tcp::socket socket;
 	unsigned int port;
 	bool connected;
 public:
-	Communicator(boost::asio::io_service &ioService);
+	Communicator();
 	template<class T> void sendSignal(T msg)
 	{
 		boost::asio::write(socket, boost::asio::buffer(&msg, sizeof(T)));

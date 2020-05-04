@@ -5,8 +5,8 @@
 #include <utility>
 #include <iostream>
 
-Sender::Sender(boost::asio::io_service &ioService, std::string ip, unsigned int port)
-: Communicator(ioService), receiverIP(std::move(ip))
+Sender::Sender(std::string ip, unsigned int port)
+: Communicator(), receiverIP(std::move(ip))
 {
 	this->port = port;
 	connected = false;

@@ -12,7 +12,7 @@ protected:
 public:
 	MainFrame(Window *window, const std::string &name, ModifiableFields* modifiableFields);
 
-	void draw() override;
+	void draw(Receiver *receiver, Sender *sender);
 };
 
 
