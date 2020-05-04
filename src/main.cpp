@@ -9,9 +9,9 @@
 // Main code
 int main(int argc, char** argv)
 {
-//	Application application(DEFAULT_WINDOW_TITLE);
-//	application.run();
-//	return 0;
+	Application application(DEFAULT_WINDOW_TITLE);
+	application.run();
+	return 0;
 	if (argc < 3)
 	{
 		std::cerr << "safe_sender <ip> <is_server ? 1 : 0>\n";
