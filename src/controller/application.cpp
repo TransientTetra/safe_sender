@@ -8,13 +8,6 @@ Application::Application(std::string title)
 : window(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH)
 {
 	this->title = title;
-	modifiableFields.ipToSendTo = "None";
-	modifiableFields.encryptionProgress = 0;
-	modifiableFields.sendingProgress = 0;
-	modifiableFields.message = "";
-	modifiableFields.filePath = "";
-	modifiableFields.key = "";
-	modifiableFields.cipherMode = CFB;
 }
 
 void Application::run()

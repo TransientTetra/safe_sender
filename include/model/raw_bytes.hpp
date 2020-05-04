@@ -3,7 +3,7 @@
 
 #include <string>
 #include <ostream>
-#include "cryptopp/secblock.h"
+#include <cryptopp/secblock.h>
 
 class RawBytes : public CryptoPP::SecByteBlock
 {
@@ -17,7 +17,7 @@ public:
 	std::string toString();
 	void print(std::ostream &o);
 
-	const CryptoPP::byte &getByte(unsigned long i) const;
+	const byte &getByte(unsigned long i) const;
 };
 
 

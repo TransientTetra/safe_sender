@@ -9,22 +9,10 @@
 #include <model/encryption/encryption.hpp>
 
 
-struct ModifiableFields
-{
-	std::string ipToSendTo;
-	float encryptionProgress;
-	float sendingProgress;
-	std::string message;
-	std::string filePath;
-	std::string key;
-	CipherMode cipherMode;
-};
-
 class Application
 {
 private:
 	//todo make progressbars work
-	ModifiableFields modifiableFields;
 	std::string title;
 	std::thread receiverThread;
 	Receiver* receiver;

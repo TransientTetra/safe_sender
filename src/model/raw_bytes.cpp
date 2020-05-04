@@ -26,13 +26,13 @@ std::string RawBytes::toString()
 
 void RawBytes::print(std::ostream &o)
 {
-	for (CryptoPP::byte byte : *this)
+	for (byte byte : *this)
 	{
 		o << std::setw(2) << std::setfill('0') << std::hex << byte << " ";
 	}
 }
 
-const CryptoPP::byte &RawBytes::getByte(unsigned long i) const
+const byte &RawBytes::getByte(unsigned long i) const
 {
 	return BytePtr()[i];
 }
