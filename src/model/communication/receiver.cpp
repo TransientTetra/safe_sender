@@ -58,12 +58,12 @@ void Receiver::listenAndReceive()
 			switch (receivedPacket.messageType)
 			{
 				case TXT_MSG:
-					msg = new TextMessage(receivedPacket.messageSize);
+					msg = new TextMessage(receive(receivedPacket.messageSize));
 					if (isEncrypted) dynamic_cast<TextMessage*>(msg)->decrypt(*encryption);
 					dynamic_cast<TextMessage*>(msg)->print(std::cout);
 					break;
 				case FILE_MSG:
-					msg = new File(receivedPacket.messageSize);
+					msg = new File(receive(receivedPacket.messageSize));
 					if (isEncrypted) dynamic_cast<File*>(msg)->decrypt(*encryption);
 					//todo fix this once metadata sending is resolved
 					dynamic_cast<File*>(msg)->setMetadata(
