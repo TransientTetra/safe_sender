@@ -9,6 +9,7 @@ set(
         imgui/imgui_widgets.cpp
         imgui/examples/imgui_impl_sdl.cpp
         imgui/examples/imgui_impl_opengl3.cpp
+        imgui-filebrowser/imfilebrowser.h
 )
 set(IMGUI_SRC ${IMGUI_SRC})
 add_library(imgui ${IMGUI_SRC})
