@@ -3,6 +3,7 @@
 MainFrame::MainFrame(Window *window, const std::string &name)
 : Frame(window, name)
 {
+	currentCipherModeChoice = 0;
 }
 
 void MainFrame::draw()
@@ -16,54 +17,53 @@ void MainFrame::draw()
 	ImGui::SetColumnWidth(1, 220);
 	ImGui::SetColumnWidth(2, 220);
 	ImGui::Text("Sending progress");
-	ImGui::ProgressBar(0.5);
+	ImGui::ProgressBar(application->getSendingProgress());
 
 	ImGui::Text("Encryption progress");
-	ImGui::ProgressBar(0.5);
+	ImGui::ProgressBar(application->getEncryptionProgress());
 
 	ImGui::Text("Cipher mode");
-	static int currentChoice = 0;
-	if(ImGui::RadioButton("CFB", currentChoice == 0)) currentChoice = 0;
-	if(ImGui::RadioButton("CBC", currentChoice == 1)) currentChoice = 1;
-	if(ImGui::RadioButton("ECB", currentChoice == 2)) currentChoice = 2;
-	if(ImGui::RadioButton("OFB", currentChoice == 3)) currentChoice = 3;
+	if(ImGui::RadioButton("CFB", currentCipherModeChoice == 0)) currentCipherModeChoice = 0;
+	if(ImGui::RadioButton("CBC", currentCipherModeChoice == 1)) currentCipherModeChoice = 1;
+	if(ImGui::RadioButton("ECB", currentCipherModeChoice == 2)) currentCipherModeChoice = 2;
+	if(ImGui::RadioButton("OFB", currentCipherModeChoice == 3)) currentCipherModeChoice = 3;
+	application->setCipherMode(currentCipherModeChoice);
 
-	static char ipBuf[16];
 	ImGui::Text("Input IP to connect to");
 	ImGui::InputText("", ipBuf, sizeof(ipBuf) / sizeof(char));
 	if (ImGui::Button("Connect"))
 	{
+		application->connect(std::string(ipBuf));
 	}
 
 	ImGui::NextColumn();
-	static char msgBuf[256];
 	ImGui::Text("Write your message");
 	ImGui::InputTextMultiline("##msgwin", msgBuf, sizeof(msgBuf) / sizeof(char),
 		ImVec2(200, 250));
 
-	static char keyBuf[256];
 	ImGui::Text("Enter encryption key");
 	ImGui::Text("leave empty for no encryption");
 	ImGui::InputText("##key", keyBuf, sizeof(keyBuf) / sizeof(char));
 
 	ImGui::NextColumn();
 	ImGui::Text("Connected to:");
-	ImGui::Text("%s", "ip");
-	if (ImGui::Button("Disconnect")) ;
+	ImGui::Text("%s", application->getIP().c_str());
+	if (ImGui::Button("Disconnect")) application->disconnect();
 
 	ImGui::NewLine();
 	ImGui::Text("Chosen file:");
-	ImGui::Text("None");
-	if (ImGui::Button("Browse"));
+	ImGui::Text("%s", application->getChosenFile().c_str());
+	if (ImGui::Button("Browse")) application->chooseFile();
 
 	ImGui::NewLine();
 	ImGui::NewLine();
 	if (ImGui::Button("Encrypt and send message"))
 	{
+		application->encryptAndSendMsg();
 	}
 	if (ImGui::Button("Encrypt and send file"))
 	{
-		//todo here file picker
+		application->encryptAndSendFile();
 	}
 
 	ImGui::End();

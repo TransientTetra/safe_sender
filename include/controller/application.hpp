@@ -8,11 +8,19 @@
 #include <view/window.hpp>
 #include <model/encryption/encryption.hpp>
 
+enum ApplicationState
+{
+	DISCONNECTED,
+	CONNECTED,
+	ENCRYPTING,
+	SENDING
+};
 
 class Application
 {
 private:
 	//todo make progressbars work
+	ApplicationState state;
 	std::string title;
 	std::thread receiverThread;
 	Receiver* receiver;
@@ -23,6 +31,19 @@ public:
 	Application(std::string title);
 
 	void run();
+
+	float getSendingProgress();
+	float getEncryptionProgress();
+	std::string getIP();
+	std::string getChosenFile();
+
+	void setCipherMode(int mode);
+	void connect(std::string ip);
+	void disconnect();
+	void chooseFile();
+
+	void encryptAndSendMsg();
+	void encryptAndSendFile();
 };
 
 

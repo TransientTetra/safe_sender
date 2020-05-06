@@ -16,6 +16,7 @@ void Application::run()
 	receiver = new Receiver(ioService, DEFAULT_PORT);
 	receiverThread = std::thread(&Receiver::listenAndReceive, receiver);
 	MainFrame frame(&window, "Main frame");
+	frame.attachApplication(this);
 	while (window.isOpen())
 	{
 		SDL_Event event;
@@ -33,4 +34,54 @@ void Application::run()
 		frame.draw();
 		window.render();
 	}
+}
+
+float Application::getSendingProgress()
+{
+	return 0;
+}
+
+float Application::getEncryptionProgress()
+{
+	return 0;
+}
+
+void Application::setCipherMode(int mode)
+{
+
+}
+
+void Application::connect(std::string ip)
+{
+
+}
+
+void Application::chooseFile()
+{
+	//todo file browsing
+}
+
+void Application::disconnect()
+{
+
+}
+
+void Application::encryptAndSendMsg()
+{
+
+}
+
+void Application::encryptAndSendFile()
+{
+
+}
+
+std::string Application::getIP()
+{
+	return std::string();
+}
+
+std::string Application::getChosenFile()
+{
+	return std::string();
 }

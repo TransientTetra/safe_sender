@@ -12,3 +12,8 @@ void Frame::draw()
 	ImGui_ImplSDL2_NewFrame(window->getSDLWindow());
 	ImGui::NewFrame();
 }
+
+void Frame::attachApplication(Application *application)
+{
+	this->application = application;
+}
