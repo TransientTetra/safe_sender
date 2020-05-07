@@ -66,8 +66,8 @@ void Receiver::listenAndReceive()
 					msg = new File(receive(receivedPacket.messageSize));
 					if (isEncrypted) dynamic_cast<File*>(msg)->decrypt(*encryption);
 					//todo fix this once metadata sending is resolved
-					dynamic_cast<File*>(msg)->setMetadata(
-						FileMetadata("test", "txt", receivedPacket.messageSize));
+//					dynamic_cast<File*>(msg)->setMetadata(
+//						FileMetadata("test", "txt", receivedPacket.messageSize));
 					//todo handle path getting
 					dynamic_cast<File*>(msg)->save("/home/bsk/Temp/");
 					break;

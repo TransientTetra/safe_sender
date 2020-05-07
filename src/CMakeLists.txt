@@ -11,7 +11,6 @@ set(
         model/encryption/encryption_aes.cpp
         model/raw_bytes.cpp
         model/encryption/encryptable.cpp
-        model/file_metadata.cpp
         model/file.cpp
         model/encryption/encryption_sha_256.cpp
         model/encryption/encryption_rsa.cpp

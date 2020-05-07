@@ -2,16 +2,18 @@
 #include <fstream>
 #include <filesystem>
 
-File::File(const std::string& filepath)
-: Encryptable(filepath) //this is an ugly hack because encryptable needs to be initialized
+File::File(const std::string& filePath)
+: Encryptable(filePath) //this is an ugly hack because encryptable needs to be initialized
 {
 	std::ifstream fileIn;
-	fileIn.open(filepath);
-	unsigned long size = std::filesystem::file_size(std::filesystem::path(filepath));
+	fileIn.open(filePath);
+	unsigned long size = std::filesystem::file_size(std::filesystem::path(filePath));
 	data = RawBytes(size);
 	fileIn.read(reinterpret_cast<char *>(data.BytePtr()), size);
 
-	metadata = FileMetadata(std::filesystem::path(filepath).stem(), std::filesystem::path(filepath).extension(), size);
+	metadata.filename = std::filesystem::path(filePath).stem();
+	metadata.extension = std::filesystem::path(filePath).extension();
+	metadata.dataSize = size;
 }
 
 File::File(RawBytes bytes)
@@ -23,7 +25,7 @@ File::File(RawBytes bytes)
 void File::save(const std::string& path)
 {
 	std::ofstream fileOut;
-	fileOut.open(path + metadata.getFilename() + metadata.getExtension());
+	fileOut.open(path + metadata.filename + metadata.extension);
 	fileOut.write(reinterpret_cast<const char*>(data.BytePtr()), getDataSize());
 }
 

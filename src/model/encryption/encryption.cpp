@@ -19,3 +19,8 @@ const InitializationVector Encryption::getInitializationVector() const
 {
 	return initializationVector;
 }
+
+float Encryption::getProgress()
+{
+	return 0;
+}

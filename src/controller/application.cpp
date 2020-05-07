@@ -1,5 +1,5 @@
 #include "boost/asio.hpp"
-#include <iostream>
+#include <filesystem>
 #include "view/main_frame.hpp"
 #include "controller/application.hpp"
 #include "constants.hpp"
@@ -45,6 +45,8 @@ float Application::getSendingProgress()
 
 float Application::getEncryptionProgress()
 {
+	if (getState() == ENCRYPTING)
+		return encryption->getProgress();
 	return 0;
 }
 
@@ -53,21 +55,41 @@ void Application::setCipherMode(int mode)
 
 }
 
+
+
 void Application::connect(std::string ip)
 {
+	if (!validateIP(ip))
+		//todo show error message
+		return;
 	if (getState() == CONNECTED) disconnect();
 	setState(DISCONNECTED);
-}
-
-void Application::setFile(std::string filePath)
-{
-	//todo file browsing
-	std::cerr << filePath;
+	sender = new Sender(ioService, ip, DEFAULT_PORT);
+	if (sender->connect())
+		setState(CONNECTED);
+	else
+	{
+		//todo show error message
+		disconnect();
+	}
 }
 
 void Application::disconnect()
 {
+	if (getState() == CONNECTED)
+	{
+		delete sender;
+		setState(DISCONNECTED);
+	}
+}
 
+void Application::setFile(std::string filePath)
+{
+	if (!std::filesystem::exists(filePath))
+	{
+		return;
+	}
+	this->filePath = filePath;
 }
 
 void Application::encryptAndSendMsg()
@@ -82,12 +104,15 @@ void Application::encryptAndSendFile()
 
 std::string Application::getIP()
 {
-	return std::string();
+	if (getState() == CONNECTED)
+		return sender->getReceiverIP();
+	else
+		return "";
 }
 
 std::string Application::getChosenFile()
 {
-	return std::string();
+	return filePath;
 }
 
 ApplicationState Application::getState()
@@ -98,4 +123,13 @@ ApplicationState Application::getState()
 void Application::setState(ApplicationState state)
 {
 	this->state = state;
+}
+
+bool Application::validateIP(std::string ip)
+{
+	boost::system::error_code ec;
+	boost::asio::ip::address::from_string(ip, ec);
+	if (ec)
+		return false;
+	return true;
 }

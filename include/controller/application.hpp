@@ -23,9 +23,18 @@ private:
 	ApplicationState state;
 	std::string title;
 	std::thread receiverThread;
+	std::thread encryptionThread;
+	std::thread sendingThread;
+
 	Receiver* receiver;
 	Sender* sender;
 	Window window;
+	boost::asio::io_service ioService;
+
+	std::string filePath;
+	File* file;
+	TextMessage* textMessage;
+	Encryption* encryption;
 protected:
 public:
 	Application(std::string title);
@@ -47,6 +56,8 @@ public:
 
 	void encryptAndSendMsg();
 	void encryptAndSendFile();
+
+	static bool validateIP(std::string ip);
 };
 
 

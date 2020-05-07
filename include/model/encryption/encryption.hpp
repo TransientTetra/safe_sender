@@ -29,6 +29,7 @@ public:
 
 	virtual const InitializationVector getInitializationVector() const;
 	virtual void setIV(InitializationVector &iv);
+	virtual float getProgress();
 };
 
 

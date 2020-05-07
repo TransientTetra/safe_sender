@@ -56,7 +56,7 @@ void MainFrame::draw()
 
 	ImGui::NewLine();
 	ImGui::Text("Chosen file:");
-	ImGui::Text("%s", application->getChosenFile().c_str());
+	ImGui::Text("%s", std::filesystem::path(application->getChosenFile()).filename().c_str());
 	if (ImGui::Button("Browse"))
 	{
 		fileBrowser.Open();
