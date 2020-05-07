@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 	if (is_server)
 	{
 		Receiver receiver(io_service, DEFAULT_PORT);
-		std::thread receiverThread(&Receiver::listenAndReceive, &receiver);
+		std::thread receiverThread(&Receiver::listen, &receiver);
 		receiverThread.join();
 	}
 	else

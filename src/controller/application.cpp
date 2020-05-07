@@ -14,8 +14,10 @@ Application::Application(std::string title)
 void Application::run()
 {
 	boost::asio::io_service ioService;
-	receiver = new Receiver(ioService, DEFAULT_PORT);
-	receiverThread = std::thread(&Receiver::listenAndReceive, receiver);
+	receiver.reset(new Receiver(ioService, DEFAULT_PORT));
+	receiver->attachApplication(this);
+	//todo receiver thread
+	receiverThread = receiver->getListenerThread();
 	MainFrame frame(&window, "Main frame");
 	frame.attachApplication(this);
 
@@ -54,7 +56,7 @@ float Application::getEncryptionProgress()
 
 void Application::setCipherMode(int mode)
 {
-
+	cipherMode = static_cast<CipherMode>(mode);
 }
 
 void Application::connect(std::string ip)
@@ -62,9 +64,7 @@ void Application::connect(std::string ip)
 	if (!validateIP(ip))
 		//todo show error message
 		return;
-	if (getState() == CONNECTED) disconnect();
-	setState(DISCONNECTED);
-	sender = new Sender(ioService, ip, DEFAULT_PORT);
+	sender.reset(new Sender(ioService, ip, DEFAULT_PORT));
 	if (sender->connect())
 		setState(CONNECTED);
 	else
@@ -78,12 +78,12 @@ void Application::disconnect()
 {
 	if (getState() == CONNECTED)
 	{
-		delete sender;
+//		delete sender;
 		setState(DISCONNECTED);
 	}
 }
 
-void Application::setFile(std::string filePath)
+void Application::setFilePath(std::string filePath)
 {
 	if (!std::filesystem::exists(filePath))
 	{
@@ -92,9 +92,17 @@ void Application::setFile(std::string filePath)
 	this->filePath = filePath;
 }
 
-void Application::encryptAndSendMsg()
+void Application::encryptAndSendMsg(std::string msg)
 {
-
+	if (msg == "")
+	{
+		//todo display error saying msg is empty
+		return;
+	}
+	if (getState() == CONNECTED)
+	{
+		textMessage.reset(new TextMessage(msg));
+	}
 }
 
 void Application::encryptAndSendFile()
@@ -132,4 +140,9 @@ bool Application::validateIP(std::string ip)
 	if (ec)
 		return false;
 	return true;
+}
+
+CipherMode Application::getCipherMode() const
+{
+	return cipherMode;
 }

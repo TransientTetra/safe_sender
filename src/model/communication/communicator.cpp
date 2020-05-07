@@ -16,7 +16,7 @@ void Communicator::sendPacket(Packet packet)
 Packet Communicator::receivePacket()
 {
 	boost::asio::streambuf buf(sizeof(Packet));
-	boost::asio::read( socket, buf);
+	boost::asio::read(socket, buf);
 	const char *buffer = boost::asio::buffer_cast<const char*>(buf.data());
 	return deserializePacket(buffer);
 }

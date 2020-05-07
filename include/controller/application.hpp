@@ -26,14 +26,15 @@ private:
 	std::thread encryptionThread;
 	std::thread sendingThread;
 
-	Receiver* receiver;
-	Sender* sender;
+	std::unique_ptr<Receiver> receiver;
+	std::unique_ptr<Sender> sender;
 	Window window;
 	boost::asio::io_service ioService;
 
+	CipherMode cipherMode;
 	std::string filePath;
-	File* file;
-	TextMessage* textMessage;
+	std::unique_ptr<File> file;
+	std::unique_ptr<TextMessage> textMessage;
 	Encryption* encryption;
 protected:
 public:
@@ -50,11 +51,14 @@ public:
 	std::string getChosenFile();
 
 	void setCipherMode(int mode);
+
+	CipherMode getCipherMode() const;
+
 	void connect(std::string ip);
 	void disconnect();
-	void setFile(std::string filePath);
+	void setFilePath(std::string filePath);
 
-	void encryptAndSendMsg();
+	void encryptAndSendMsg(std::string msg);
 	void encryptAndSendFile();
 
 	static bool validateIP(std::string ip);

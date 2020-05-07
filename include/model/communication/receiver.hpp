@@ -2,14 +2,17 @@
 #define SAFE_SENDER_RECEIVER_HPP
 
 #include <thread>
+#include <boost/enable_shared_from_this.hpp>
 #include "communicator.hpp"
 #include "../raw_bytes.hpp"
-
+class Application;
 class Receiver : public Communicator
 {
 private:
 	std::string senderIP;
 	boost::asio::ip::tcp::tcp::acceptor acceptor;
+
+	Application* application;
 
 	RawBytes receive(unsigned long size);
 protected:
@@ -18,7 +21,9 @@ public:
 
 	void open();
 
-	void listenAndReceive();
+	std::thread getListenerThread();
+	void listen();
+	void attachApplication(Application *application);
 };
 
 

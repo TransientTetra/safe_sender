@@ -66,7 +66,7 @@ void MainFrame::draw()
 	ImGui::NewLine();
 	if (ImGui::Button("Encrypt and send message"))
 	{
-		application->encryptAndSendMsg();
+		application->encryptAndSendMsg(std::string(msgBuf));
 	}
 	if (ImGui::Button("Encrypt and send file"))
 	{
@@ -77,7 +77,7 @@ void MainFrame::draw()
 	fileBrowser.Display();
 	if (fileBrowser.HasSelected())
 	{
-		application->setFile(fileBrowser.GetSelected().string());
+		application->setFilePath(fileBrowser.GetSelected().string());
 		fileBrowser.ClearSelected();
 	}
 	ImGui::EndFrame();

@@ -1,10 +1,9 @@
 #include <iostream>
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
 #include "../../../include/model/communication/receiver.hpp"
-#include "../../../include/model/initialization_vector.hpp"
-#include "../../../include/model/encryption/encryption_key.hpp"
 #include "../../../include/model/encryption/encryption_aes.hpp"
-#include "../../../include/model/text_message.hpp"
-#include "../../../include/model/file.hpp"
+#include "controller/application.hpp"
 
 Receiver::Receiver(boost::asio::io_service &ioService, unsigned int port)
 : Communicator(ioService),
@@ -26,13 +25,13 @@ RawBytes Receiver::receive(unsigned long size)
 	return RawBytes(boost::asio::buffer_cast<const char*>(buf.data()));
 }
 
-void Receiver::listenAndReceive()
+void Receiver::listen()
 {
 	//while (true)
 	{
-		Encryption *encryption;
+		std::unique_ptr<Encryption> encryption;
 		open();
-		//todo cipher mode choosing
+		CipherMode cipherMode = application->getCipherMode();
 		Packet receivedPacket = receivePacket();
 		bool isEncrypted = receivedPacket.isEncrypted;
 		//todo ask user if accepts here and send appropriate signal
@@ -43,7 +42,7 @@ void Receiver::listenAndReceive()
 		{
 			if (isEncrypted)
 			{
-				encryption = new EncryptionAES(receivedPacket.cipherMode);
+				encryption.reset(new EncryptionAES(receivedPacket.cipherMode));
 				EncryptionKey aesKey = receive(receivedPacket.keySize);
 				InitializationVector iv = receive(receivedPacket.ivSize);
 				encryption->setEncryptionKey(aesKey);
@@ -80,6 +79,15 @@ void Receiver::listenAndReceive()
 		{
 			std::cerr << "Error while receiving data\n";
 		}
-		if (isEncrypted) delete encryption;
 	}
+}
+
+void Receiver::attachApplication(Application *application)
+{
+	this->application = application;
+}
+
+std::thread Receiver::getListenerThread()
+{
+	return std::thread(&Receiver::listen, this);
 }
