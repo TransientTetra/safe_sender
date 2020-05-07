@@ -2,6 +2,8 @@
 #define SAFE_SENDER_MAIN_FRAME_HPP
 
 #include "frame.hpp"
+#include <imgui-filebrowser/imfilebrowser.h>
+
 
 class MainFrame : public Frame
 {
@@ -10,6 +12,7 @@ private:
 	char ipBuf[16];
 	char msgBuf[256];
 	char keyBuf[256];
+	ImGui::FileBrowser fileBrowser;
 protected:
 public:
 	MainFrame(Window *window, const std::string &name);

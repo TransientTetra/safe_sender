@@ -32,6 +32,9 @@ public:
 
 	void run();
 
+	ApplicationState getState();
+	void setState(ApplicationState state);
+
 	float getSendingProgress();
 	float getEncryptionProgress();
 	std::string getIP();
@@ -40,7 +43,7 @@ public:
 	void setCipherMode(int mode);
 	void connect(std::string ip);
 	void disconnect();
-	void chooseFile();
+	void setFile(std::string filePath);
 
 	void encryptAndSendMsg();
 	void encryptAndSendFile();

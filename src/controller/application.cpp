@@ -8,6 +8,7 @@ Application::Application(std::string title)
 : window(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH)
 {
 	this->title = title;
+	state = DISCONNECTED;
 }
 
 void Application::run()
@@ -17,6 +18,7 @@ void Application::run()
 	receiverThread = std::thread(&Receiver::listenAndReceive, receiver);
 	MainFrame frame(&window, "Main frame");
 	frame.attachApplication(this);
+
 	while (window.isOpen())
 	{
 		SDL_Event event;
@@ -53,12 +55,14 @@ void Application::setCipherMode(int mode)
 
 void Application::connect(std::string ip)
 {
-
+	if (getState() == CONNECTED) disconnect();
+	setState(DISCONNECTED);
 }
 
-void Application::chooseFile()
+void Application::setFile(std::string filePath)
 {
 	//todo file browsing
+	std::cerr << filePath;
 }
 
 void Application::disconnect()
@@ -84,4 +88,14 @@ std::string Application::getIP()
 std::string Application::getChosenFile()
 {
 	return std::string();
+}
+
+ApplicationState Application::getState()
+{
+	return state;
+}
+
+void Application::setState(ApplicationState state)
+{
+	this->state = state;
 }

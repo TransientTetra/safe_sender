@@ -3,7 +3,11 @@
 MainFrame::MainFrame(Window *window, const std::string &name)
 : Frame(window, name)
 {
+	ipBuf[0] = '\0';
+	msgBuf[0] = '\0';
+	keyBuf[0] = '\0';
 	currentCipherModeChoice = 0;
+	fileBrowser.SetTitle("Choose file");
 }
 
 void MainFrame::draw()
@@ -53,7 +57,10 @@ void MainFrame::draw()
 	ImGui::NewLine();
 	ImGui::Text("Chosen file:");
 	ImGui::Text("%s", application->getChosenFile().c_str());
-	if (ImGui::Button("Browse")) application->chooseFile();
+	if (ImGui::Button("Browse"))
+	{
+		fileBrowser.Open();
+	}
 
 	ImGui::NewLine();
 	ImGui::NewLine();
@@ -67,4 +74,11 @@ void MainFrame::draw()
 	}
 
 	ImGui::End();
+	fileBrowser.Display();
+	if (fileBrowser.HasSelected())
+	{
+		application->setFile(fileBrowser.GetSelected().string());
+		fileBrowser.ClearSelected();
+	}
+	ImGui::EndFrame();
 }
