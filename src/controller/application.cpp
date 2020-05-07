@@ -40,6 +40,8 @@ void Application::run()
 
 float Application::getSendingProgress()
 {
+	if (getState() == SENDING)
+		return sender->getProgress();
 	return 0;
 }
 
@@ -54,8 +56,6 @@ void Application::setCipherMode(int mode)
 {
 
 }
-
-
 
 void Application::connect(std::string ip)
 {

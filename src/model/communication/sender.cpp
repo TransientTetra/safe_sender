@@ -107,3 +107,9 @@ void Sender::sendTxtMsg(TextMessage &msg, bool isEncrypted, EncryptionKey &key, 
 		std::cerr << "Sending text message failed\n" << std::flush;
 	}
 }
+
+float Sender::getProgress()
+{
+	//todo implement
+	return 0;
+}

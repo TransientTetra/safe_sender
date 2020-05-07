@@ -23,6 +23,7 @@ public:
 
 	const std::string &getReceiverIP() const;
 	const unsigned int &getReceiverPort() const;
+	float getProgress();
 
 	bool connect();
 	void sendFile(File &file, bool isEncrypted, EncryptionKey &key, InitializationVector &iv, CipherMode mode);
