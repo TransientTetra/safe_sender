@@ -38,8 +38,8 @@ public:
 	virtual void sendPacket(Packet frame);
 	virtual Packet receivePacket();
 
-	virtual char *serializePacket(Packet packet);
-	virtual Packet deserializePacket(const char* binary);
+	static char *serializePacket(Packet packet);
+	static Packet deserializePacket(const char* binary);
 };
 
 
