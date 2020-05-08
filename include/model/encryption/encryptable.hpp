@@ -10,7 +10,7 @@ class Encryptable : virtual public DataContainer
 {
 private:
 protected:
-	bool isEncrypted;
+	bool encrypted;
 public:
 	Encryptable();
 	Encryptable(const std::string& str);
@@ -18,6 +18,7 @@ public:
 
 	virtual void encrypt(Encryption &encryption);
 	virtual void decrypt(Encryption &encryption);
+	virtual bool isEncrypted();
 };
 
 

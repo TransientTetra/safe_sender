@@ -50,27 +50,27 @@ void Receiver::listen()
 				//todo handle file metadata receiving
 			}
 
-			Sendable *msg;
+			std::unique_ptr<Sendable> msg;
 			switch (receivedPacket.messageType)
 			{
 				case TXT_MSG:
-					msg = new TextMessage(receive(receivedPacket.messageSize));
-					if (isEncrypted) dynamic_cast<TextMessage*>(msg)->decrypt(*encryption);
-					dynamic_cast<TextMessage*>(msg)->print(std::cout);
+					msg.reset(new TextMessage(receive(receivedPacket.messageSize)));
+					if (isEncrypted) dynamic_cast<TextMessage*>(msg.get())->decrypt(*encryption);
+					//todo display msg
+					dynamic_cast<TextMessage*>(msg.get())->print(std::cout);
 					break;
 				case FILE_MSG:
-					msg = new File(receive(receivedPacket.messageSize));
-					if (isEncrypted) dynamic_cast<File*>(msg)->decrypt(*encryption);
+					msg.reset(new File(receive(receivedPacket.messageSize)));
+					if (isEncrypted) dynamic_cast<File*>(msg.get())->decrypt(*encryption);
 					//todo fix this once metadata sending is resolved
 //					dynamic_cast<File*>(msg)->setMetadata(
 //						FileMetadata("test", "txt", receivedPacket.messageSize));
 					//todo handle path getting
-					dynamic_cast<File*>(msg)->save("/home/bsk/Temp/");
+					dynamic_cast<File*>(msg.get())->save("/home/bsk/Temp/");
 					break;
 				default:
 					break;
 			}
-			//delete msg;
 		}
 		catch (std::exception &e)
 		{

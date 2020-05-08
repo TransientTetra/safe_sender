@@ -66,11 +66,11 @@ void MainFrame::draw()
 	ImGui::NewLine();
 	if (ImGui::Button("Encrypt and send message"))
 	{
-		application->encryptAndSendMsg(std::string(msgBuf));
+		application->encryptAndSendMsg(std::string(msgBuf), std::string(keyBuf));
 	}
 	if (ImGui::Button("Encrypt and send file"))
 	{
-		application->encryptAndSendFile();
+		application->encryptAndSendFile(std::string(keyBuf));
 	}
 
 	ImGui::End();

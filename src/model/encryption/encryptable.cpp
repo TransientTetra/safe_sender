@@ -8,25 +8,30 @@ Encryptable::Encryptable()
 
 Encryptable::Encryptable(const std::string& str)
 {
-	isEncrypted = false;
+	encrypted = false;
 	data = RawBytes(str);
 }
 
 Encryptable::Encryptable(RawBytes &bytes)
 {
-	isEncrypted = false;
+	encrypted = false;
 	data = bytes;
 }
 
 void Encryptable::encrypt(Encryption &encryption)
 {
-	isEncrypted = true;
+	encrypted = true;
 	encryption.encrypt(data);
 }
 
 void Encryptable::decrypt(Encryption &encryption)
 {
-	isEncrypted = false;
+	encrypted = false;
 	encryption.decrypt(data);
+}
+
+bool Encryptable::isEncrypted()
+{
+	return encrypted;
 }
 

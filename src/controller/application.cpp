@@ -1,10 +1,12 @@
 #include <filesystem>
+#include <model/encryption/encryption_aes.hpp>
 #include "view/main_frame.hpp"
 #include "controller/application.hpp"
 #include "constants.hpp"
 
 Application::Application(std::string title)
-: window(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH)
+: window(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH),
+iv("0")
 {
 	this->title = title;
 	state = DISCONNECTED;
@@ -76,7 +78,6 @@ void Application::disconnect()
 {
 	if (getState() == CONNECTED)
 	{
-//		delete sender;
 		setState(DISCONNECTED);
 	}
 }
@@ -90,7 +91,7 @@ void Application::setFilePath(std::string filePath)
 	this->filePath = filePath;
 }
 
-void Application::encryptAndSendMsg(std::string msg)
+void Application::encryptAndSendMsg(std::string msg, std::string key)
 {
 	if (msg == "")
 	{
@@ -100,10 +101,17 @@ void Application::encryptAndSendMsg(std::string msg)
 	if (getState() == CONNECTED)
 	{
 		textMessage.reset(new TextMessage(msg));
+		EncryptionKey ekey(key);
+		if (key != "")
+		{
+			encryption.reset(new EncryptionAES(getCipherMode()));
+			textMessage->encrypt(*encryption);
+		}
+		sender->sendTxtMsg(*textMessage, ekey, iv, getCipherMode());
 	}
 }
 
-void Application::encryptAndSendFile()
+void Application::encryptAndSendFile(std::string key)
 {
 
 }

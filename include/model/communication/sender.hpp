@@ -26,8 +26,8 @@ public:
 	float getProgress();
 
 	bool connect();
-	void sendFile(File &file, bool isEncrypted, EncryptionKey &key, InitializationVector &iv, CipherMode mode);
-	void sendTxtMsg(TextMessage &msg, bool isEncrypted, EncryptionKey &key, InitializationVector &iv, CipherMode m);
+	void sendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode);
+	void sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, CipherMode m);
 };
 
 

@@ -31,11 +31,12 @@ private:
 	Window window;
 	asio::io_service ioService;
 
+	InitializationVector iv;
 	CipherMode cipherMode;
 	std::string filePath;
 	std::unique_ptr<File> file;
 	std::unique_ptr<TextMessage> textMessage;
-	Encryption* encryption;
+	std::unique_ptr<Encryption> encryption;
 protected:
 public:
 	Application(std::string title);
@@ -58,8 +59,8 @@ public:
 	void disconnect();
 	void setFilePath(std::string filePath);
 
-	void encryptAndSendMsg(std::string msg);
-	void encryptAndSendFile();
+	void encryptAndSendMsg(std::string msg, std::string key);
+	void encryptAndSendFile(std::string key);
 
 	static bool validateIP(std::string ip);
 };

@@ -49,7 +49,7 @@ void Sender::send(Sendable &data)
 	asio::write(socket, asio::buffer(data.getData().BytePtr(), data.getDataSize()));
 }
 
-void Sender::sendFile(File &file, bool isEncrypted, EncryptionKey &key, InitializationVector &iv, CipherMode mode)
+void Sender::sendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode)
 {
 	try
 	{
@@ -58,13 +58,13 @@ void Sender::sendFile(File &file, bool isEncrypted, EncryptionKey &key, Initiali
 		packet.messageSize = file.getDataSize();
 		packet.ivSize = iv.getDataSize();
 		packet.keySize = key.getDataSize();
-		packet.isEncrypted = isEncrypted;
+		packet.isEncrypted = file.isEncrypted();
 		packet.cipherMode = mode;
 		if (receivePacket().responseType != ACCEPT)
 		{
 			//todo handle server rejection
 		}
-		if (isEncrypted)
+		if (file.isEncrypted())
 		{
 			send(key);
 			send(iv);
@@ -78,7 +78,7 @@ void Sender::sendFile(File &file, bool isEncrypted, EncryptionKey &key, Initiali
 	}
 }
 
-void Sender::sendTxtMsg(TextMessage &msg, bool isEncrypted, EncryptionKey &key, InitializationVector &iv, CipherMode m)
+void Sender::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, CipherMode m)
 {
 	try
 	{
@@ -87,14 +87,14 @@ void Sender::sendTxtMsg(TextMessage &msg, bool isEncrypted, EncryptionKey &key, 
 		packet.messageSize = msg.getDataSize();
 		packet.ivSize = iv.getDataSize();
 		packet.keySize = key.getDataSize();
-		packet.isEncrypted = isEncrypted;
+		packet.isEncrypted = msg.isEncrypted();
 		packet.cipherMode = m;
 		sendPacket(packet);
 		if (receivePacket().responseType != ACCEPT)
 		{
 			//todo handle server rejection
 		}
-		if (isEncrypted)
+		if (msg.isEncrypted())
 		{
 			send(key);
 			send(iv);
