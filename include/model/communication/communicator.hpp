@@ -1,7 +1,10 @@
 #ifndef SAFE_SENDER_COMMUNICATOR_HPP
 #define SAFE_SENDER_COMMUNICATOR_HPP
 
+#include <asio.hpp>
 #include "model/encryption/encryption.hpp"
+
+using namespace asio::ip;
 
 enum MessageType
 {
@@ -29,12 +32,15 @@ class Communicator
 {
 private:
 protected:
+	tcp::socket socket;
 	unsigned int port;
 	bool connected;
+
+
 public:
 	std::mutex mutex;
 
-	Communicator();
+	Communicator(asio::io_service &ioService);
 	virtual void sendPacket(Packet frame);
 	virtual Packet receivePacket();
 

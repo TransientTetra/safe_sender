@@ -3,8 +3,8 @@
 #include "../../../include/model/encryption/encryption_aes.hpp"
 #include "controller/application.hpp"
 
-Receiver::Receiver(unsigned int port)
-: Communicator()
+Receiver::Receiver(asio::io_service &ioService, unsigned int port)
+: Communicator(ioService), acceptor(ioService, tcp::endpoint(tcp::v4(), port))
 {
 	this->port = port;
 	connected = false;
@@ -12,16 +12,14 @@ Receiver::Receiver(unsigned int port)
 
 void Receiver::open()
 {
-//	acceptor.accept(socket);
+	acceptor.accept(socket);
 }
 
 RawBytes Receiver::receive(unsigned long size)
 {
-	//todo
-//	boost::asio::streambuf buf(size);
-//	boost::asio::read(socket, buf);
-//	return RawBytes(boost::asio::buffer_cast<const char*>(buf.data()));
-return RawBytes();
+	asio::streambuf buf(size);
+	asio::read(socket, buf);
+	return RawBytes(asio::buffer_cast<const char*>(buf.data()));
 }
 
 void Receiver::listen()
@@ -52,7 +50,6 @@ void Receiver::listen()
 				//todo handle file metadata receiving
 			}
 
-			//todo make msg smart ptr
 			Sendable *msg;
 			switch (receivedPacket.messageType)
 			{
@@ -73,6 +70,7 @@ void Receiver::listen()
 				default:
 					break;
 			}
+			//delete msg;
 		}
 		catch (std::exception &e)
 		{

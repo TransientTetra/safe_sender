@@ -9,13 +9,14 @@ class Receiver : public Communicator
 {
 private:
 	std::string senderIP;
+	tcp::acceptor acceptor;
 
 	Application* application;
 
 	RawBytes receive(unsigned long size);
 protected:
 public:
-	Receiver(unsigned int port);
+	Receiver(asio::io_service &ioService, unsigned int port);
 
 	void open();
 

@@ -1,26 +1,24 @@
 #include "../../../include/model/communication/communicator.hpp"
 
-Communicator::Communicator()
+Communicator::Communicator(asio::io_service &ioService)
+: socket(ioService)
 {
 
 }
 
 void Communicator::sendPacket(Packet packet)
 {
-	//todo
 	char *buffer = serializePacket(packet);
-//	boost::asio::write(socket, boost::asio::buffer(buffer, sizeof(Packet)));
+	asio::write(socket, asio::buffer(buffer, sizeof(Packet)));
 	delete[] buffer;
 }
 
 Packet Communicator::receivePacket()
 {
-	//todo
-//	boost::asio::streambuf buf(sizeof(Packet));
-//	boost::asio::read(socket, buf);
-//	const char *buffer = boost::asio::buffer_cast<const char*>(buf.data());
-//	return deserializePacket(buffer);
-return Packet();
+	asio::streambuf buf(sizeof(Packet));
+	asio::read(socket, buf);
+	const char *buffer = asio::buffer_cast<const char*>(buf.data());
+	return deserializePacket(buffer);
 }
 
 char *Communicator::serializePacket(Packet packet)

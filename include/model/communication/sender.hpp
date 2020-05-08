@@ -17,7 +17,7 @@ private:
 protected:
 public:
 	//constructor used by client when sending data
-	Sender(std::string ip, unsigned int port);
+	Sender(asio::io_service &ioService, std::string ip, unsigned int port);
 
 	void setReceiverIPAndPort(std::string ip, unsigned int port);
 
