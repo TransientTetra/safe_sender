@@ -1,7 +1,6 @@
 #ifndef SAFE_SENDER_COMMUNICATOR_HPP
 #define SAFE_SENDER_COMMUNICATOR_HPP
 
-#include "boost/asio.hpp"
 #include "model/encryption/encryption.hpp"
 
 enum MessageType
@@ -30,15 +29,12 @@ class Communicator
 {
 private:
 protected:
-	boost::asio::ip::tcp::tcp::socket socket;
 	unsigned int port;
 	bool connected;
-
-
 public:
 	std::mutex mutex;
 
-	Communicator(boost::asio::io_service &ioService);
+	Communicator();
 	virtual void sendPacket(Packet frame);
 	virtual Packet receivePacket();
 

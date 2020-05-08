@@ -6,3 +6,7 @@
 	path = lib/imgui-filebrowser
 	url = https://github.com/AirGuanZ/imgui-filebrowser.git
 	branch = master
+[submodule "lib/googletest"]
+	path = lib/googletest
+	url = https://github.com/google/googletest.git
+	branch = master

@@ -13,3 +13,4 @@ set(
 )
 set(IMGUI_SRC ${IMGUI_SRC})
 add_library(imgui ${IMGUI_SRC})
+add_subdirectory(googletest)

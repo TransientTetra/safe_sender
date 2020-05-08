@@ -1,13 +1,10 @@
 #include <iostream>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include "../../../include/model/communication/receiver.hpp"
 #include "../../../include/model/encryption/encryption_aes.hpp"
 #include "controller/application.hpp"
 
-Receiver::Receiver(boost::asio::io_service &ioService, unsigned int port)
-: Communicator(ioService),
-acceptor(ioService, boost::asio::ip::tcp::tcp::endpoint(boost::asio::ip::tcp::tcp::v4(), port))
+Receiver::Receiver(unsigned int port)
+: Communicator()
 {
 	this->port = port;
 	connected = false;
@@ -15,14 +12,16 @@ acceptor(ioService, boost::asio::ip::tcp::tcp::endpoint(boost::asio::ip::tcp::tc
 
 void Receiver::open()
 {
-	acceptor.accept(socket);
+//	acceptor.accept(socket);
 }
 
 RawBytes Receiver::receive(unsigned long size)
 {
-	boost::asio::streambuf buf(size);
-	boost::asio::read(socket, buf);
-	return RawBytes(boost::asio::buffer_cast<const char*>(buf.data()));
+	//todo
+//	boost::asio::streambuf buf(size);
+//	boost::asio::read(socket, buf);
+//	return RawBytes(boost::asio::buffer_cast<const char*>(buf.data()));
+return RawBytes();
 }
 
 void Receiver::listen()
@@ -53,6 +52,7 @@ void Receiver::listen()
 				//todo handle file metadata receiving
 			}
 
+			//todo make msg smart ptr
 			Sendable *msg;
 			switch (receivedPacket.messageType)
 			{
@@ -73,7 +73,6 @@ void Receiver::listen()
 				default:
 					break;
 			}
-			//delete msg;
 		}
 		catch (std::exception &e)
 		{

@@ -20,10 +20,9 @@ int main(int argc, char** argv)
 	std::string ip_to_send_to = argv[1];
 	bool is_server = *argv[2] != '0';
 
-	boost::asio::io_service io_service;
 	if (is_server)
 	{
-		Receiver receiver(io_service, DEFAULT_PORT);
+		Receiver receiver(DEFAULT_PORT);
 		std::thread receiverThread(&Receiver::listen, &receiver);
 		receiverThread.join();
 	}
@@ -39,7 +38,7 @@ int main(int argc, char** argv)
 		//file.encrypt(encryptionAes);
 		str.encrypt(encryptionAes);
 		//connect can throw Connection refused if there's no server to connect to or sth
-		Sender sender(io_service, ip_to_send_to, DEFAULT_PORT);
+		Sender sender(ip_to_send_to, DEFAULT_PORT);
 		sender.connect();
 		sender.sendTxtMsg(str, true, key, iv, CFB);
 		//sender.sendFile(file, key, iv, true);

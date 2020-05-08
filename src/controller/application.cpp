@@ -1,4 +1,3 @@
-#include "boost/asio.hpp"
 #include <filesystem>
 #include "view/main_frame.hpp"
 #include "controller/application.hpp"
@@ -13,11 +12,10 @@ Application::Application(std::string title)
 
 void Application::run()
 {
-	boost::asio::io_service ioService;
-	receiver.reset(new Receiver(ioService, DEFAULT_PORT));
+	receiver.reset(new Receiver(DEFAULT_PORT));
 	receiver->attachApplication(this);
 	//todo receiver thread
-	receiverThread = receiver->getListenerThread();
+	//receiverThread = receiver->getListenerThread();
 	MainFrame frame(&window, "Main frame");
 	frame.attachApplication(this);
 
@@ -31,8 +29,6 @@ void Application::run()
 				&& event.window.windowID == SDL_GetWindowID(window.getSDLWindow())))
 			{
 				window.setClose();
-				//todo exit in humane way (end receiver thread)
-				std::terminate();
 			}
 		}
 		frame.draw();
@@ -64,7 +60,7 @@ void Application::connect(std::string ip)
 	if (!validateIP(ip))
 		//todo show error message
 		return;
-	sender.reset(new Sender(ioService, ip, DEFAULT_PORT));
+	sender.reset(new Sender(ip, DEFAULT_PORT));
 	if (sender->connect())
 		setState(CONNECTED);
 	else
@@ -135,11 +131,12 @@ void Application::setState(ApplicationState state)
 
 bool Application::validateIP(std::string ip)
 {
-	boost::system::error_code ec;
-	boost::asio::ip::address::from_string(ip, ec);
-	if (ec)
-		return false;
-	return true;
+	//todo make this without boost
+//	boost::system::error_code ec;
+//	boost::asio::ip::address::from_string(ip, ec);
+//	if (ec)
+//		return false;
+//	return true;
 }
 
 CipherMode Application::getCipherMode() const

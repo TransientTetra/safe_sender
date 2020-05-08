@@ -22,14 +22,13 @@ private:
 	//todo make progressbars work
 	ApplicationState state;
 	std::string title;
-	std::thread receiverThread;
-	std::thread encryptionThread;
-	std::thread sendingThread;
+//	std::thread receiverThread;
+//	std::thread encryptionThread;
+//	std::thread sendingThread;
 
 	std::unique_ptr<Receiver> receiver;
 	std::unique_ptr<Sender> sender;
 	Window window;
-	boost::asio::io_service ioService;
 
 	CipherMode cipherMode;
 	std::string filePath;
