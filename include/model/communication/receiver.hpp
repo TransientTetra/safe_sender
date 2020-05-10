@@ -18,9 +18,6 @@ protected:
 public:
 	Receiver(asio::io_service &ioService, unsigned int port);
 
-	void open();
-
-	std::thread getListenerThread();
 	void listen();
 	void attachApplication(Application *application);
 };

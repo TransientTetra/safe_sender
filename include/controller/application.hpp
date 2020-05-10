@@ -40,6 +40,7 @@ private:
 protected:
 public:
 	Application(std::string title);
+	~Application();
 
 	void run();
 

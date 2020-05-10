@@ -12,12 +12,20 @@ iv("0")
 	state = DISCONNECTED;
 }
 
+Application::~Application()
+{
+	ioService.stop();
+	if (receiverThread.joinable()) receiverThread.join();
+	if (sendingThread.joinable()) sendingThread.join();
+	if (encryptionThread.joinable()) encryptionThread.join();
+}
+
 void Application::run()
 {
 	receiver.reset(new Receiver(ioService, DEFAULT_PORT));
 	receiver->attachApplication(this);
-	//todo receiver thread
-	receiverThread = receiver->getListenerThread();
+	receiver->listen();
+	receiverThread = std::thread([&]{ioService.run();});
 	MainFrame frame(&window, "Main frame");
 	frame.attachApplication(this);
 
@@ -31,8 +39,6 @@ void Application::run()
 				&& event.window.windowID == SDL_GetWindowID(window.getSDLWindow())))
 			{
 				window.setClose();
-				//todo exit in humane way (end receiver thread)
-				std::terminate();
 			}
 		}
 		frame.draw();

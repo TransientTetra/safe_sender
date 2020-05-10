@@ -1,4 +1,5 @@
 #include <iostream>
+#include <model/communication/session.hpp>
 #include "../../../include/model/communication/receiver.hpp"
 #include "../../../include/model/encryption/encryption_aes.hpp"
 #include "controller/application.hpp"
@@ -10,11 +11,6 @@ Receiver::Receiver(asio::io_service &ioService, unsigned int port)
 	connected = false;
 }
 
-void Receiver::open()
-{
-	acceptor.accept(socket);
-}
-
 RawBytes Receiver::receive(unsigned long size)
 {
 	asio::streambuf buf(size);
@@ -24,10 +20,15 @@ RawBytes Receiver::receive(unsigned long size)
 
 void Receiver::listen()
 {
+	acceptor.async_accept(socket, [&] (asio::error_code error)
+	      {
+			std::make_shared<Session>(std::move(socket))->start();
+			listen();
+	      });
+	return;
 	//while (true)
 	{
 		std::unique_ptr<Encryption> encryption;
-		open();
 		CipherMode cipherMode = application->getCipherMode();
 		Packet receivedPacket = receivePacket();
 		bool isEncrypted = receivedPacket.isEncrypted;
@@ -82,9 +83,4 @@ void Receiver::listen()
 void Receiver::attachApplication(Application *application)
 {
 	this->application = application;
-}
-
-std::thread Receiver::getListenerThread()
-{
-	return std::thread(&Receiver::listen, this);
 }
