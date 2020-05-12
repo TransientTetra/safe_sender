@@ -5,6 +5,11 @@ Communicator::Communicator(asio::io_service &ioService)
 {
 
 }
+Communicator::Communicator(tcp::socket&& socket)
+: socket(std::move(socket))
+{
+
+}
 
 void Communicator::sendPacket(Packet packet)
 {

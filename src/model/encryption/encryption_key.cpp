@@ -16,3 +16,8 @@ EncryptionKey::EncryptionKey()
 {
 
 }
+
+EncryptionKey::~EncryptionKey()
+{
+
+}

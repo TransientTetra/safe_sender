@@ -41,6 +41,7 @@ public:
 	std::mutex mutex;
 
 	Communicator(asio::io_service &ioService);
+	Communicator(tcp::socket&& socket);
 	virtual void sendPacket(Packet frame);
 	virtual Packet receivePacket();
 

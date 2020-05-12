@@ -35,3 +35,8 @@ bool Encryptable::isEncrypted()
 	return encrypted;
 }
 
+Encryptable::~Encryptable()
+{
+
+}
+

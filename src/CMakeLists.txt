@@ -6,7 +6,6 @@ set(
         SRC
         controller/application.cpp
         view/window.cpp
-        model/communication/sendable.cpp
         model/text_message.cpp
         model/encryption/encryption_aes.cpp
         model/raw_bytes.cpp
@@ -20,6 +19,7 @@ set(
         model/data_container.cpp
         model/communication/receiver.cpp
         model/communication/sender.cpp
+        model/communication/sendable.cpp
         model/communication/communicator.cpp
         view/frame.cpp
         view/main_frame.cpp model/communication/session.cpp ../include/model/communication/session.hpp)

@@ -13,13 +13,12 @@ private:
 
 	Application* application;
 
-	RawBytes receive(unsigned long size);
 protected:
 public:
-	Receiver(asio::io_service &ioService, unsigned int port);
+	Receiver(asio::io_service &ioService, unsigned int port, Application* application);
 
 	void listen();
-	void attachApplication(Application *application);
+	void handleAccept();
 };
 
 

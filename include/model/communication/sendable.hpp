@@ -10,6 +10,7 @@ class Sendable : virtual public DataContainer
 private:
 protected:
 public:
+	virtual ~Sendable();
 };
 
 

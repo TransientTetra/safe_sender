@@ -13,6 +13,7 @@ protected:
 public:
 	TextMessage(const std::string &str);
 	TextMessage(RawBytes bytes);
+	~TextMessage();
 	void print(std::ostream &out);
 	void append(std::string str);
 };

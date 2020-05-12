@@ -15,6 +15,7 @@ public:
 	Encryptable();
 	Encryptable(const std::string& str);
 	Encryptable(RawBytes &bytes);
+	virtual ~Encryptable();
 
 	virtual void encrypt(Encryption &encryption);
 	virtual void decrypt(Encryption &encryption);

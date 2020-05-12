@@ -10,6 +10,7 @@ private:
 protected:
 	RawBytes data;
 public:
+	virtual ~DataContainer();
 	virtual RawBytes &getData();
 	virtual unsigned long getDataSize() const;
 };

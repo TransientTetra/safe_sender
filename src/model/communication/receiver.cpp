@@ -4,83 +4,21 @@
 #include "../../../include/model/encryption/encryption_aes.hpp"
 #include "controller/application.hpp"
 
-Receiver::Receiver(asio::io_service &ioService, unsigned int port)
+Receiver::Receiver(asio::io_service &ioService, unsigned int port, Application* application)
 : Communicator(ioService), acceptor(ioService, tcp::endpoint(tcp::v4(), port))
 {
+	this->application = application;
 	this->port = port;
 	connected = false;
 }
 
-RawBytes Receiver::receive(unsigned long size)
-{
-	asio::streambuf buf(size);
-	asio::read(socket, buf);
-	return RawBytes(asio::buffer_cast<const char*>(buf.data()));
-}
-
 void Receiver::listen()
 {
-	acceptor.async_accept(socket, [&] (asio::error_code error)
-	      {
-			std::make_shared<Session>(std::move(socket))->start();
-			listen();
-	      });
-	return;
-	//while (true)
-	{
-		std::unique_ptr<Encryption> encryption;
-		CipherMode cipherMode = application->getCipherMode();
-		Packet receivedPacket = receivePacket();
-		bool isEncrypted = receivedPacket.isEncrypted;
-		//todo ask user if accepts here and send appropriate signal
-		Packet responsePacket;
-		responsePacket.responseType = ACCEPT;
-		sendPacket(responsePacket);
-		try
-		{
-			if (isEncrypted)
-			{
-				encryption.reset(new EncryptionAES(receivedPacket.cipherMode));
-				EncryptionKey aesKey = receive(receivedPacket.keySize);
-				InitializationVector iv = receive(receivedPacket.ivSize);
-				encryption->setEncryptionKey(aesKey);
-				encryption->setIV(iv);
-			}
-			if (receivedPacket.messageType == FILE_MSG)
-			{
-				//todo handle file metadata receiving
-			}
-
-			std::unique_ptr<Sendable> msg;
-			switch (receivedPacket.messageType)
-			{
-				case TXT_MSG:
-					msg.reset(new TextMessage(receive(receivedPacket.messageSize)));
-					if (isEncrypted) dynamic_cast<TextMessage*>(msg.get())->decrypt(*encryption);
-					//todo display msg
-					dynamic_cast<TextMessage*>(msg.get())->print(std::cout);
-					break;
-				case FILE_MSG:
-					msg.reset(new File(receive(receivedPacket.messageSize)));
-					if (isEncrypted) dynamic_cast<File*>(msg.get())->decrypt(*encryption);
-					//todo fix this once metadata sending is resolved
-//					dynamic_cast<File*>(msg)->setMetadata(
-//						FileMetadata("test", "txt", receivedPacket.messageSize));
-					//todo handle path getting
-					dynamic_cast<File*>(msg.get())->save("/home/bsk/Temp/");
-					break;
-				default:
-					break;
-			}
-		}
-		catch (std::exception &e)
-		{
-			std::cerr << "Error while receiving data\n";
-		}
-	}
+	acceptor.async_accept(socket, std::bind(&Receiver::handleAccept, this));
 }
 
-void Receiver::attachApplication(Application *application)
+void Receiver::handleAccept()
 {
-	this->application = application;
+	std::make_shared<Session>(std::move(socket), application)->start();
+	listen();
 }

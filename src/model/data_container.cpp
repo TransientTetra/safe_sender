@@ -9,3 +9,8 @@ unsigned long DataContainer::getDataSize() const
 {
 	return data.size();
 }
+
+DataContainer::~DataContainer()
+{
+
+}

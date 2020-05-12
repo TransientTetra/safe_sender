@@ -22,8 +22,7 @@ Application::~Application()
 
 void Application::run()
 {
-	receiver.reset(new Receiver(ioService, DEFAULT_PORT));
-	receiver->attachApplication(this);
+	receiver.reset(new Receiver(ioService, DEFAULT_PORT, this));
 	receiver->listen();
 	receiverThread = std::thread([&]{ioService.run();});
 	MainFrame frame(&window, "Main frame");

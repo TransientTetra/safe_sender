@@ -21,3 +21,8 @@ void TextMessage::append(std::string str)
 {
 	data += RawBytes(str);
 }
+
+TextMessage::~TextMessage()
+{
+
+}

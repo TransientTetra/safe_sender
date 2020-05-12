@@ -16,3 +16,8 @@ InitializationVector::InitializationVector()
 {
 
 }
+
+InitializationVector::~InitializationVector()
+{
+
+}

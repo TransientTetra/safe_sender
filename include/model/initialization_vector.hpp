@@ -13,6 +13,7 @@ public:
 	InitializationVector();
 	InitializationVector(const std::string &str);
 	InitializationVector(RawBytes bytes);
+	~InitializationVector();
 };
 
 

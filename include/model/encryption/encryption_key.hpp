@@ -13,6 +13,7 @@ public:
 	EncryptionKey();
 	EncryptionKey(const std::string& str);
 	EncryptionKey(RawBytes bytes);
+	~EncryptionKey();
 };
 
 
