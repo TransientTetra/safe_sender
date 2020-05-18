@@ -62,7 +62,8 @@ void Sender::sendFile(File &file, EncryptionKey &key, InitializationVector &iv, 
 		packet.cipherMode = mode;
 		if (receivePacket().responseType != ACCEPT)
 		{
-			application->displayError("Server rejected the message");
+			//todo code never reaches here, instead the exception error below is displayed, fix
+			application->displayError("Error: Receiver rejected the file");
 			return;
 		}
 		if (file.isEncrypted())
@@ -75,7 +76,7 @@ void Sender::sendFile(File &file, EncryptionKey &key, InitializationVector &iv, 
 	}
 	catch (std::exception &e)
 	{
-		std::cerr << "Sending file failed\n" << std::flush;
+		application->displayError(std::string("Error: Sending file failed:\n") + e.what());
 	}
 }
 
@@ -94,7 +95,7 @@ void Sender::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVect
 		if (receivePacket().responseType != ACCEPT)
 		{
 			//todo code never reaches here, instead the exception error below is displayed, fix
-			application->displayError("Error: Server rejected the message");
+			application->displayError("Error: Receiver rejected the message");
 			return;
 		}
 		if (msg.isEncrypted())
@@ -106,7 +107,7 @@ void Sender::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVect
 	}
 	catch (std::exception &e)
 	{
-		application->displayError(std::string("Error: Sending text message failed: ") + e.what());
+		application->displayError(std::string("Error: Sending text message failed:\n") + e.what());
 	}
 }
 
