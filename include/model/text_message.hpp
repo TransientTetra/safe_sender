@@ -16,6 +16,7 @@ public:
 	~TextMessage();
 	void print(std::ostream &out);
 	void append(std::string str);
+	std::string toString();
 };
 
 

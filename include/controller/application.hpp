@@ -7,6 +7,7 @@
 #include <model/communication/sender.hpp>
 #include <view/window.hpp>
 #include <model/encryption/encryption.hpp>
+#include <view/yes_no_frame.hpp>
 #include "view/info_frame.hpp"
 
 enum ApplicationState
@@ -31,7 +32,9 @@ private:
 	std::unique_ptr<Sender> sender;
 	Window window;
 	asio::io_service ioService;
+
 	std::unique_ptr<InfoFrame> infoFrame;
+	std::unique_ptr<YesNoFrame> yesNoFrame;
 
 	InitializationVector iv;
 	CipherMode cipherMode;
@@ -66,6 +69,7 @@ public:
 	void encryptAndSendFile(std::string key);
 
 	void displayError(std::string e);
+	bool askYesNo(std::string m);
 
 	static bool validateIP(std::string ip);
 };

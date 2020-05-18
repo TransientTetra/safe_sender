@@ -26,3 +26,8 @@ TextMessage::~TextMessage()
 {
 
 }
+
+std::string TextMessage::toString()
+{
+	return data.toString();
+}

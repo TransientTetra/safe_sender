@@ -8,7 +8,6 @@ class InfoFrame : public Frame
 {
 private:
 	std::string text;
-	bool display;
 protected:
 public:
 	InfoFrame(Window *window, const std::string &name);
@@ -16,9 +15,6 @@ public:
 	void setText(const std::string &text);
 
 	void draw() override;
-
-	bool isDisplay() const;
-	void setDisplay(bool display);
 };
 
 

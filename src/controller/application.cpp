@@ -25,10 +25,13 @@ void Application::run()
 	receiver.reset(new Receiver(ioService, DEFAULT_PORT, this));
 	receiver->listen();
 	receiverThread = std::thread([&]{ioService.run();});
+
 	MainFrame frame(&window, "Main frame");
 	infoFrame.reset(new InfoFrame(&window, "Info"));
+	yesNoFrame.reset(new YesNoFrame(&window, "Query"));
 	frame.attachApplication(this);
 	infoFrame->attachApplication(this);
+	yesNoFrame->attachApplication(this);
 
 	while (window.isOpen())
 	{
@@ -44,6 +47,7 @@ void Application::run()
 		}
 		frame.draw();
 		infoFrame->draw();
+		yesNoFrame->draw();
 		window.render();
 	}
 }
@@ -103,13 +107,18 @@ void Application::setFilePath(std::string filePath)
 
 void Application::encryptAndSendMsg(std::string msg, std::string key)
 {
-	if (msg == "")
+	if (getState() == DISCONNECTED)
 	{
-		displayError("Error: Message is empty");
+		displayError("Error: Application not connected");
 		return;
 	}
 	if (getState() == CONNECTED)
 	{
+		if (msg == "")
+		{
+			displayError("Error: Message is empty");
+			return;
+		}
 		textMessage.reset(new TextMessage(msg));
 		EncryptionKey ekey(key);
 		if (key != "")
@@ -117,6 +126,8 @@ void Application::encryptAndSendMsg(std::string msg, std::string key)
 			encryption.reset(new EncryptionAES(getCipherMode()));
 			textMessage->encrypt(*encryption);
 		}
+		//todo start sender in its own thread
+		//todo fix sender - once it attempts a send it fails all of the next attempts
 		sender->sendTxtMsg(*textMessage, ekey, iv, getCipherMode());
 	}
 }
@@ -167,4 +178,12 @@ void Application::displayError(std::string e)
 {
 	infoFrame->setText(e);
 	infoFrame->setDisplay(true);
+}
+
+bool Application::askYesNo(std::string m)
+{
+	yesNoFrame->setQuestion(m);
+	yesNoFrame->setDisplay(true);
+	while (yesNoFrame->isDisplay());
+	return yesNoFrame->getAnswer();
 }

@@ -8,6 +8,7 @@ class Frame
 {
 private:
 protected:
+	bool display;
 	Application* application;
 	Window* window;
 	std::string name;
@@ -15,6 +16,8 @@ public:
 	Frame(Window* window, std::string name);
 	virtual void draw();
 	virtual void attachApplication(Application *application);
+	virtual bool isDisplay() const;
+	virtual void setDisplay(bool display);
 };
 
 

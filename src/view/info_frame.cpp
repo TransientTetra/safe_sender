@@ -14,26 +14,16 @@ void InfoFrame::setText(const std::string &text)
 
 void InfoFrame::draw()
 {
-	if (display)
-	{
-		Frame::draw();
-		ImGui::Begin(name.c_str());
+	if (!display) return;
 
-		ImGui::Text(text.c_str());
-		ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("Close").x) * 0.5f);
-		if (ImGui::Button("Close")) display = false;
+	Frame::draw();
 
-		ImGui::End();
-		ImGui::EndFrame();
-	}
-}
+	ImGui::Begin(name.c_str());
 
-bool InfoFrame::isDisplay() const
-{
-	return display;
-}
+	ImGui::Text(text.c_str());
+	ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("Close").x) * 0.5f);
+	if (ImGui::Button("Close")) display = false;
 
-void InfoFrame::setDisplay(bool display)
-{
-	this->display = display;
+	ImGui::End();
+	ImGui::EndFrame();
 }

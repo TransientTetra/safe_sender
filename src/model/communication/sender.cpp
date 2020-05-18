@@ -93,7 +93,8 @@ void Sender::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVect
 		sendPacket(packet);
 		if (receivePacket().responseType != ACCEPT)
 		{
-			application->displayError("Server rejected the message");
+			//todo code never reaches here, instead the exception error below is displayed, fix
+			application->displayError("Error: Server rejected the message");
 			return;
 		}
 		if (msg.isEncrypted())
@@ -105,7 +106,7 @@ void Sender::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVect
 	}
 	catch (std::exception &e)
 	{
-		std::cerr << "Sending text message failed\n" << std::flush;
+		application->displayError(std::string("Error: Sending text message failed: ") + e.what());
 	}
 }
 

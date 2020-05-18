@@ -23,10 +23,20 @@ RawBytes Session::receive(unsigned long size)
 
 void Session::handleIncoming(Packet packet)
 {
+	Packet responsePacket;
 	std::unique_ptr<Encryption> encryption;
 	bool isEncrypted = packet.isEncrypted;
-	//todo ask user if accepts here and send appropriate signal
-	Packet responsePacket;
+
+	//constructing the message to ask user
+	std::string displayQuestion = "Incoming ";
+	displayQuestion += (packet.messageType == TXT_MSG ? "text message" : "file");
+	displayQuestion += ". Do you accept?";
+
+	if (!application->askYesNo(displayQuestion))
+	{
+		responsePacket.responseType = REJECT;
+		return;
+	}
 	responsePacket.responseType = ACCEPT;
 	sendPacket(responsePacket);
 	try
@@ -50,8 +60,8 @@ void Session::handleIncoming(Packet packet)
 			case TXT_MSG:
 				msg.reset(new TextMessage(receive(packet.messageSize)));
 				if (isEncrypted) dynamic_cast<TextMessage*>(msg.get())->decrypt(*encryption);
-				//todo display msg
-				dynamic_cast<TextMessage*>(msg.get())->print(std::cout);
+				application->displayError("Received message: " +
+					dynamic_cast<TextMessage*>(msg.get())->toString());
 				break;
 			case FILE_MSG:
 				msg.reset(new File(receive(packet.messageSize)));
