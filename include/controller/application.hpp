@@ -7,8 +7,9 @@
 #include <model/communication/sender.hpp>
 #include <view/window.hpp>
 #include <model/encryption/encryption.hpp>
+#include <view/main_frame.hpp>
 #include <view/yes_no_frame.hpp>
-#include "view/info_frame.hpp"
+#include <view/info_frame.hpp>
 
 enum ApplicationState
 {
@@ -33,6 +34,7 @@ private:
 	Window window;
 	asio::io_service ioService;
 
+	std::unique_ptr<MainFrame> frame;
 	std::unique_ptr<InfoFrame> infoFrame;
 	std::unique_ptr<YesNoFrame> yesNoFrame;
 
@@ -72,6 +74,8 @@ public:
 	bool askYesNo(std::string m);
 
 	static bool validateIP(std::string ip);
+
+	const std::string &askPath();
 };
 
 

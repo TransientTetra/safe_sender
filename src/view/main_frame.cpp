@@ -2,18 +2,20 @@
 #include "controller/application.hpp"
 
 MainFrame::MainFrame(Window *window, const std::string &name)
-: Frame(window, name)
+: Frame(window, name), dirBrowser(ImGuiFileBrowserFlags_SelectDirectory)
 {
 	ipBuf[0] = '\0';
 	msgBuf[0] = '\0';
 	keyBuf[0] = '\0';
 	currentCipherModeChoice = 0;
 	fileBrowser.SetTitle("Choose file");
+	dirBrowser.SetTitle("Choose directory to save file to");
+	openDirBrowser = false;
+	dirBrowserOpened = false;
 }
 
 void MainFrame::draw()
 {
-
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window->getSDLWindow());
 	ImGui::NewFrame();
@@ -76,6 +78,12 @@ void MainFrame::draw()
 	{
 		application->encryptAndSendFile(std::string(keyBuf));
 	}
+	if (openDirBrowser)
+	{
+		dirBrowser.Open();
+		openDirBrowser = false;
+		dirBrowserOpened = true;
+	}
 
 	ImGui::End();
 	fileBrowser.Display();
@@ -84,5 +92,27 @@ void MainFrame::draw()
 		application->setFilePath(fileBrowser.GetSelected().string());
 		fileBrowser.ClearSelected();
 	}
+	dirBrowser.Display();
+	if (dirBrowser.HasSelected())
+	{
+		dirPath = dirBrowser.GetSelected().string();
+		dirBrowser.ClearSelected();
+		dirBrowserOpened = false;
+	}
 	//ImGui::EndFrame();
+}
+
+void MainFrame::setOpenDirBrowser(bool openDirBrowser)
+{
+	MainFrame::openDirBrowser = openDirBrowser;
+}
+
+bool MainFrame::isDirBrowserOpen() const
+{
+	return dirBrowserOpened;
+}
+
+const std::string &MainFrame::getDirPath() const
+{
+	return dirPath;
 }

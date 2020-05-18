@@ -26,10 +26,10 @@ void Application::run()
 	receiver->listen();
 	receiverThread = std::thread([&]{ioService.run();});
 
-	MainFrame frame(&window, "Main frame");
+	frame.reset(new MainFrame(&window, "Main frame"));
 	infoFrame.reset(new InfoFrame(&window, "Info"));
 	yesNoFrame.reset(new YesNoFrame(&window, "Query"));
-	frame.attachApplication(this);
+	frame->attachApplication(this);
 	infoFrame->attachApplication(this);
 	yesNoFrame->attachApplication(this);
 
@@ -45,7 +45,7 @@ void Application::run()
 				window.setClose();
 			}
 		}
-		frame.draw();
+		frame->draw();
 		infoFrame->draw();
 		yesNoFrame->draw();
 		window.render();
@@ -186,4 +186,11 @@ bool Application::askYesNo(std::string m)
 	yesNoFrame->setDisplay(true);
 	while (yesNoFrame->isDisplay());
 	return yesNoFrame->getAnswer();
+}
+
+const std::string &Application::askPath()
+{
+	frame->setOpenDirBrowser(true);
+	while(frame->isDirBrowserOpen());
+	return frame->getDirPath();
 }

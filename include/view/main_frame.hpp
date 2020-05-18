@@ -13,11 +13,21 @@ private:
 	char msgBuf[256];
 	char keyBuf[256];
 	ImGui::FileBrowser fileBrowser;
+
+	bool openDirBrowser;
+	bool dirBrowserOpened;
+	std::string dirPath;
+	ImGui::FileBrowser dirBrowser;
 protected:
 public:
 	MainFrame(Window *window, const std::string &name);
 
 	void draw() override;
+
+	void setOpenDirBrowser(bool openDirBrowser);
+	bool isDirBrowserOpen() const;
+
+	const std::string &getDirPath() const;
 };
 
 

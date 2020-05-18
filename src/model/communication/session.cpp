@@ -69,8 +69,7 @@ void Session::handleIncoming(Packet packet)
 				//todo fix this once metadata sending is resolved
 				//					dynamic_cast<File*>(msg)->setMetadata(
 				//						FileMetadata("test", "txt", packet.messageSize));
-				//todo handle path getting
-				dynamic_cast<File*>(msg.get())->save("/home/bsk/Temp/");
+				dynamic_cast<File*>(msg.get())->save(application->askPath());
 				break;
 			default:
 				break;
