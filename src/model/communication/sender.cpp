@@ -1,13 +1,13 @@
-#include "../../../include/model/communication/sender.hpp"
-#include "../../../include/model/encryption/encryption_key.hpp"
-#include "../../../include/model/initialization_vector.hpp"
+#include "model/communication/sender.hpp"
+#include "controller/application.hpp"
 
 #include <utility>
 #include <iostream>
 
-Sender::Sender(asio::io_service &ioService, std::string ip, unsigned int port)
+Sender::Sender(asio::io_service &ioService, std::string ip, unsigned int port, Application* application)
 : Communicator(ioService), receiverIP(std::move(ip))
 {
+	this->application = application;
 	this->port = port;
 	connected = false;
 }
@@ -62,7 +62,8 @@ void Sender::sendFile(File &file, EncryptionKey &key, InitializationVector &iv, 
 		packet.cipherMode = mode;
 		if (receivePacket().responseType != ACCEPT)
 		{
-			//todo handle server rejection
+			application->displayError("Server rejected the message");
+			return;
 		}
 		if (file.isEncrypted())
 		{
@@ -92,7 +93,8 @@ void Sender::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVect
 		sendPacket(packet);
 		if (receivePacket().responseType != ACCEPT)
 		{
-			//todo handle server rejection
+			application->displayError("Server rejected the message");
+			return;
 		}
 		if (msg.isEncrypted())
 		{

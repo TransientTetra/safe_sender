@@ -8,9 +8,6 @@ Frame::Frame(Window *window, std::string name)
 
 void Frame::draw()
 {
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame(window->getSDLWindow());
-	ImGui::NewFrame();
 }
 
 void Frame::attachApplication(Application *application)

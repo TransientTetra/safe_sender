@@ -26,7 +26,9 @@ void Application::run()
 	receiver->listen();
 	receiverThread = std::thread([&]{ioService.run();});
 	MainFrame frame(&window, "Main frame");
+	infoFrame.reset(new InfoFrame(&window, "Info"));
 	frame.attachApplication(this);
+	infoFrame->attachApplication(this);
 
 	while (window.isOpen())
 	{
@@ -41,6 +43,7 @@ void Application::run()
 			}
 		}
 		frame.draw();
+		infoFrame->draw();
 		window.render();
 	}
 }
@@ -67,14 +70,16 @@ void Application::setCipherMode(int mode)
 void Application::connect(std::string ip)
 {
 	if (!validateIP(ip))
-		//todo show error message
+	{
+		displayError("Error: Invalid IP address");
 		return;
-	sender.reset(new Sender(ioService, ip, DEFAULT_PORT));
+	}
+	sender.reset(new Sender(ioService, ip, DEFAULT_PORT, this));
 	if (sender->connect())
 		setState(CONNECTED);
 	else
 	{
-		//todo show error message
+		displayError("Error: Could not connect");
 		disconnect();
 	}
 }
@@ -100,7 +105,7 @@ void Application::encryptAndSendMsg(std::string msg, std::string key)
 {
 	if (msg == "")
 	{
-		//todo display error saying msg is empty
+		displayError("Error: Message is empty");
 		return;
 	}
 	if (getState() == CONNECTED)
@@ -156,4 +161,10 @@ bool Application::validateIP(std::string ip)
 CipherMode Application::getCipherMode() const
 {
 	return cipherMode;
+}
+
+void Application::displayError(std::string e)
+{
+	infoFrame->setText(e);
+	infoFrame->setDisplay(true);
 }

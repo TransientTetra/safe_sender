@@ -1,4 +1,5 @@
 #include "view/main_frame.hpp"
+#include "controller/application.hpp"
 
 MainFrame::MainFrame(Window *window, const std::string &name)
 : Frame(window, name)
@@ -12,7 +13,10 @@ MainFrame::MainFrame(Window *window, const std::string &name)
 
 void MainFrame::draw()
 {
-	Frame::draw();
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame(window->getSDLWindow());
+	ImGui::NewFrame();
 
 	ImGui::Begin(name.c_str());
 	ImGui::SetWindowSize(ImVec2(220 * 3, 380));
@@ -80,5 +84,5 @@ void MainFrame::draw()
 		application->setFilePath(fileBrowser.GetSelected().string());
 		fileBrowser.ClearSelected();
 	}
-	ImGui::EndFrame();
+	//ImGui::EndFrame();
 }

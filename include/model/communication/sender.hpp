@@ -8,16 +8,18 @@
 #include "../text_message.hpp"
 #include "../encryption/encryption_key.hpp"
 #include "../initialization_vector.hpp"
+class Application;
 
 class Sender : public Communicator
 {
 private:
 	std::string receiverIP;
 	void send(Sendable &data);
+	Application* application;
 protected:
 public:
 	//constructor used by client when sending data
-	Sender(asio::io_service &ioService, std::string ip, unsigned int port);
+	Sender(asio::io_service &ioService, std::string ip, unsigned int port, Application* application);
 
 	void setReceiverIPAndPort(std::string ip, unsigned int port);
 

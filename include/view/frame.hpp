@@ -1,8 +1,8 @@
 #ifndef SAFE_SENDER_FRAME_HPP
 #define SAFE_SENDER_FRAME_HPP
 
-#include "controller/application.hpp"
 #include "window.hpp"
+class Application;
 
 class Frame
 {
