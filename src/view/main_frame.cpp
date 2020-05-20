@@ -10,8 +10,7 @@ MainFrame::MainFrame(Window *window, const std::string &name)
 	currentCipherModeChoice = 0;
 	fileBrowser.SetTitle("Choose file");
 	dirBrowser.SetTitle("Choose directory to save file to");
-	openDirBrowser = false;
-	dirBrowserOpened = false;
+	dirBrowserOpen = false;
 }
 
 void MainFrame::draw()
@@ -78,12 +77,6 @@ void MainFrame::draw()
 	{
 		application->encryptAndSendFile(std::string(keyBuf));
 	}
-	if (openDirBrowser)
-	{
-		dirBrowser.Open();
-		openDirBrowser = false;
-		dirBrowserOpened = true;
-	}
 
 	ImGui::End();
 	fileBrowser.Display();
@@ -97,19 +90,20 @@ void MainFrame::draw()
 	{
 		dirPath = dirBrowser.GetSelected().string();
 		dirBrowser.ClearSelected();
-		dirBrowserOpened = false;
+		dirBrowserOpen = false;
 	}
 	//ImGui::EndFrame();
 }
 
-void MainFrame::setOpenDirBrowser(bool openDirBrowser)
+void MainFrame::openDirBrowser()
 {
-	MainFrame::openDirBrowser = openDirBrowser;
+	dirBrowserOpen = true;
+	dirBrowser.Open();
 }
 
 bool MainFrame::isDirBrowserOpen() const
 {
-	return dirBrowserOpened;
+	return dirBrowserOpen;
 }
 
 const std::string &MainFrame::getDirPath() const

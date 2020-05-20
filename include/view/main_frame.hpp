@@ -14,8 +14,7 @@ private:
 	char keyBuf[256];
 	ImGui::FileBrowser fileBrowser;
 
-	bool openDirBrowser;
-	bool dirBrowserOpened;
+	bool dirBrowserOpen;
 	std::string dirPath;
 	ImGui::FileBrowser dirBrowser;
 protected:
@@ -24,7 +23,7 @@ public:
 
 	void draw() override;
 
-	void setOpenDirBrowser(bool openDirBrowser);
+	void openDirBrowser();
 	bool isDirBrowserOpen() const;
 
 	const std::string &getDirPath() const;

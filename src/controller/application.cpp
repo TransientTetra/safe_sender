@@ -134,7 +134,29 @@ void Application::encryptAndSendMsg(std::string msg, std::string key)
 
 void Application::encryptAndSendFile(std::string key)
 {
-
+	if (getState() == DISCONNECTED)
+	{
+		displayError("Error: Application not connected");
+		return;
+	}
+	if (getState() == CONNECTED)
+	{
+		if (filePath == "")
+		{
+			displayError("Error: No file selected");
+			return;
+		}
+		file.reset(new File(filePath));
+		EncryptionKey ekey(key);
+		if (key != "")
+		{
+			encryption.reset(new EncryptionAES(getCipherMode()));
+			textMessage->encrypt(*encryption);
+		}
+		//todo start sender in its own thread
+		//todo fix sender - once it attempts a send it fails all of the next attempts
+		sender->sendFile(*file, ekey, iv, getCipherMode());
+	}
 }
 
 std::string Application::getIP()
@@ -190,7 +212,7 @@ bool Application::askYesNo(std::string m)
 
 const std::string &Application::askPath()
 {
-	frame->setOpenDirBrowser(true);
+	frame->openDirBrowser();
 	while(frame->isDirBrowserOpen());
 	return frame->getDirPath();
 }

@@ -60,6 +60,7 @@ void Sender::sendFile(File &file, EncryptionKey &key, InitializationVector &iv, 
 		packet.keySize = key.getDataSize();
 		packet.isEncrypted = file.isEncrypted();
 		packet.cipherMode = mode;
+		sendPacket(packet);
 		if (receivePacket().responseType != ACCEPT)
 		{
 			//todo code never reaches here, instead the exception error below is displayed, fix
