@@ -30,6 +30,7 @@ void MainFrame::draw()
 
 	ImGui::Text("Encryption progress");
 	ImGui::ProgressBar(application->getEncryptionProgress());
+	ImGui::NewLine();
 
 	ImGui::Text("Cipher mode");
 	if(ImGui::RadioButton("CFB", currentCipherModeChoice == 0)) currentCipherModeChoice = 0;
@@ -37,6 +38,7 @@ void MainFrame::draw()
 	if(ImGui::RadioButton("ECB", currentCipherModeChoice == 2)) currentCipherModeChoice = 2;
 	if(ImGui::RadioButton("OFB", currentCipherModeChoice == 3)) currentCipherModeChoice = 3;
 	application->setCipherMode(currentCipherModeChoice);
+	ImGui::NewLine();
 
 	ImGui::Text("Input IP to connect to");
 	ImGui::InputText("", ipBuf, sizeof(ipBuf) / sizeof(char));

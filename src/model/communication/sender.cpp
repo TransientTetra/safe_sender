@@ -86,12 +86,15 @@ void Sender::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVect
 	try
 	{
 		Packet packet;
+		packet.isEncrypted = msg.isEncrypted();
 		packet.messageType = TXT_MSG;
 		packet.messageSize = msg.getDataSize();
-		packet.ivSize = iv.getDataSize();
-		packet.keySize = key.getDataSize();
-		packet.isEncrypted = msg.isEncrypted();
-		packet.cipherMode = m;
+		if (msg.isEncrypted())
+		{
+			packet.ivSize = iv.getDataSize();
+			packet.keySize = key.getDataSize();
+			packet.cipherMode = m;
+		}
 		sendPacket(packet);
 		Packet response = receivePacket();
 		if (response.responseType != ACCEPT)

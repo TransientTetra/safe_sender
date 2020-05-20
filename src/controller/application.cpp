@@ -42,6 +42,8 @@ void Application::run()
 			if ((event.type == SDL_QUIT) || (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE
 				&& event.window.windowID == SDL_GetWindowID(window.getSDLWindow())))
 			{
+				//todo when sender is connected to receiver and receiver tries to exit program it hangs
+				//until sender quits
 				window.setClose();
 			}
 		}
@@ -127,8 +129,8 @@ void Application::encryptAndSendMsg(std::string msg, std::string key)
 			encryption.reset(new EncryptionAES(getCipherMode()));
 			textMessage->encrypt(*encryption);
 		}
-		//todo start sender in its own thread
-		sender->sendTxtMsg(*textMessage, ekey, iv, getCipherMode());
+		sendingThread = std::thread(&Sender::sendTxtMsg, sender.get(), std::ref(*textMessage),
+			std::ref(ekey), std::ref(iv), getCipherMode());
 	}
 }
 
@@ -153,8 +155,8 @@ void Application::encryptAndSendFile(std::string key)
 			encryption.reset(new EncryptionAES(getCipherMode()));
 			textMessage->encrypt(*encryption);
 		}
-		//todo start sender in its own thread
-		sender->sendFile(*file, ekey, iv, getCipherMode());
+		sendingThread = std::thread(&Sender::sendFile, sender.get(), std::ref(*file),
+					    std::ref(ekey), std::ref(iv), getCipherMode());
 	}
 }
 

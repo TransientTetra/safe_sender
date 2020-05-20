@@ -30,6 +30,7 @@ RawBytes Session::receive(unsigned long size)
 
 void Session::handleIncoming(Packet packet)
 {
+	//todo sometimes the incoming data is corrupted
 	Packet responsePacket;
 	std::unique_ptr<Encryption> encryption;
 	bool isEncrypted = packet.isEncrypted;
