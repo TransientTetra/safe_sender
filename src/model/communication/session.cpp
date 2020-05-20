@@ -10,7 +10,14 @@ Session::Session(tcp::socket &&socket, Application* application)
 
 void Session::start()
 {
-	handleIncoming(receivePacket());
+	try
+	{
+		handleIncoming(receivePacket());
+	}
+	catch(std::exception e)
+	{
+		//this handles when for example sender disconnects
+	}
 }
 
 
@@ -35,6 +42,7 @@ void Session::handleIncoming(Packet packet)
 	if (!application->askYesNo(displayQuestion))
 	{
 		responsePacket.responseType = REJECT;
+		sendPacket(responsePacket);
 		return;
 	}
 	responsePacket.responseType = ACCEPT;

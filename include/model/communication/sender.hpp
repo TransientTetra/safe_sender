@@ -20,6 +20,7 @@ protected:
 public:
 	//constructor used by client when sending data
 	Sender(asio::io_service &ioService, std::string ip, unsigned int port, Application* application);
+	~Sender();
 
 	void setReceiverIPAndPort(std::string ip, unsigned int port);
 
@@ -28,6 +29,7 @@ public:
 	float getProgress();
 
 	bool connect();
+	void disconnect();
 	void sendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode);
 	void sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, CipherMode m);
 };

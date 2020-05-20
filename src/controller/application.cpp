@@ -92,6 +92,7 @@ void Application::disconnect()
 {
 	if (getState() == CONNECTED)
 	{
+		sender->disconnect();
 		setState(DISCONNECTED);
 	}
 }
@@ -127,7 +128,6 @@ void Application::encryptAndSendMsg(std::string msg, std::string key)
 			textMessage->encrypt(*encryption);
 		}
 		//todo start sender in its own thread
-		//todo fix sender - once it attempts a send it fails all of the next attempts
 		sender->sendTxtMsg(*textMessage, ekey, iv, getCipherMode());
 	}
 }
@@ -154,7 +154,6 @@ void Application::encryptAndSendFile(std::string key)
 			textMessage->encrypt(*encryption);
 		}
 		//todo start sender in its own thread
-		//todo fix sender - once it attempts a send it fails all of the next attempts
 		sender->sendFile(*file, ekey, iv, getCipherMode());
 	}
 }

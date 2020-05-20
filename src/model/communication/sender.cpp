@@ -61,9 +61,9 @@ void Sender::sendFile(File &file, EncryptionKey &key, InitializationVector &iv, 
 		packet.isEncrypted = file.isEncrypted();
 		packet.cipherMode = mode;
 		sendPacket(packet);
-		if (receivePacket().responseType != ACCEPT)
+		Packet response = receivePacket();
+		if (response.responseType != ACCEPT)
 		{
-			//todo code never reaches here, instead the exception error below is displayed, fix
 			application->displayError("Error: Receiver rejected the file");
 			return;
 		}
@@ -93,9 +93,9 @@ void Sender::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVect
 		packet.isEncrypted = msg.isEncrypted();
 		packet.cipherMode = m;
 		sendPacket(packet);
-		if (receivePacket().responseType != ACCEPT)
+		Packet response = receivePacket();
+		if (response.responseType != ACCEPT)
 		{
-			//todo code never reaches here, instead the exception error below is displayed, fix
 			application->displayError("Error: Receiver rejected the message");
 			return;
 		}
@@ -110,10 +110,25 @@ void Sender::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVect
 	{
 		application->displayError(std::string("Error: Sending text message failed:\n") + e.what());
 	}
+	//this is a hack
+	disconnect();
+	connect();
 }
 
 float Sender::getProgress()
 {
 	//todo implement
 	return 0;
+}
+
+void Sender::disconnect()
+{
+	socket.cancel();
+	socket.close();
+	connected = false;
+}
+
+Sender::~Sender()
+{
+	if (connected) disconnect();
 }
