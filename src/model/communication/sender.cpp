@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <iostream>
+#include <model/communication/receiver_session.hpp>
 
 Sender::Sender(asio::io_service &ioService, std::string ip, unsigned int port, Application* application)
 : Communicator(ioService), receiverIP(std::move(ip))
@@ -50,6 +51,7 @@ void Sender::sendBinary(Sendable &data)
 }
 
 //todo merge below two functions
+//todo when receiver rejects message the next one is error: eof
 void Sender::handleSendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode)
 {
 	try

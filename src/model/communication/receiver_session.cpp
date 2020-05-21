@@ -1,14 +1,13 @@
 #include <iostream>
 #include <model/encryption/encryption_aes.hpp>
-#include "model/communication/session.hpp"
+#include "model/communication/receiver_session.hpp"
 
-Session::Session(tcp::socket &&socket, Application* application)
-: Communicator(std::move(socket))
+ReceiverSession::ReceiverSession(tcp::socket &&socket, Application* application)
+: Session(std::move(socket), application)
 {
-	this->application = application;
 }
 
-void Session::start()
+void ReceiverSession::start()
 {
 	try
 	{
@@ -21,14 +20,14 @@ void Session::start()
 }
 
 
-RawBytes Session::receive(unsigned long size)
+RawBytes ReceiverSession::receive(unsigned long size)
 {
 	asio::streambuf buf(size);
 	asio::read(socket, buf);
 	return RawBytes(asio::buffer_cast<const char*>(buf.data()));
 }
 
-void Session::handleIncoming(Packet packet)
+void ReceiverSession::handleIncoming(Packet packet)
 {
 	//todo sometimes the incoming data is corrupted
 	Packet responsePacket;

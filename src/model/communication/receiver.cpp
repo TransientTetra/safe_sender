@@ -1,5 +1,5 @@
 #include <iostream>
-#include <model/communication/session.hpp>
+#include <model/communication/receiver_session.hpp>
 #include "../../../include/model/communication/receiver.hpp"
 #include "../../../include/model/encryption/encryption_aes.hpp"
 #include "controller/application.hpp"
@@ -19,6 +19,6 @@ void Receiver::listen()
 
 void Receiver::handleAccept()
 {
-	std::make_shared<Session>(std::move(socket), application)->start();
+	std::make_shared<ReceiverSession>(std::move(socket), application)->start();
 	listen();
 }
