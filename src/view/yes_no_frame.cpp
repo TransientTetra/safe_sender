@@ -1,4 +1,4 @@
-#include "yes_no_frame.hpp"
+#include "view/yes_no_frame.hpp"
 
 YesNoFrame::YesNoFrame(Window *window, const std::string &name)
 : Frame(window, name)
@@ -14,7 +14,7 @@ void YesNoFrame::draw()
 
 	ImGui::Begin(name.c_str());
 
-	ImGui::SetWindowSize(ImVec2(300, 100));
+	ImGui::SetWindowSize(ImVec2(350, 100));
 	ImGui::Text(question.c_str());
 	if (ImGui::Button("Yes"))
 	{

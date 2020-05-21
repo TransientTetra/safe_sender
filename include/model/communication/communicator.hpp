@@ -2,6 +2,7 @@
 #define SAFE_SENDER_COMMUNICATOR_HPP
 
 #include <asio.hpp>
+#include <constants.hpp>
 #include "model/encryption/encryption.hpp"
 
 using namespace asio::ip;
@@ -25,8 +26,9 @@ struct Packet
 	unsigned long messageSize;
 	unsigned long ivSize;
 	unsigned long keySize;
-	unsigned long metadataSize;
 	bool isEncrypted;
+	char filename[PACKET_CHAR_BUFFER_SIZE];
+	char extension[PACKET_CHAR_BUFFER_SIZE];
 };
 
 class Communicator

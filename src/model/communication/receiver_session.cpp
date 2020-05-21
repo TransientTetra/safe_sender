@@ -36,7 +36,12 @@ void ReceiverSession::handleIncoming(Packet packet)
 
 	//constructing the message to ask user
 	std::string displayQuestion = "Incoming ";
-	displayQuestion += (packet.messageType == TXT_MSG ? "text message" : "file");
+	if (packet.messageType == FILE_MSG)
+	{
+		displayQuestion += "file " + std::string(packet.filename) + packet.extension;
+	}
+	else
+		displayQuestion += "text message";
 	displayQuestion += ". Do you accept?";
 
 	if (!application->askYesNo(displayQuestion))
@@ -60,10 +65,10 @@ void ReceiverSession::handleIncoming(Packet packet)
 		}
 		if (packet.messageType == FILE_MSG)
 		{
-//			asio::streambuf buf(packet.metadataSize);
-//			asio::read(socket, buf);
-//			const char *buffer = asio::buffer_cast<const char*>(buf.data());
-//			memcpy(&metadata, buffer, packet.metadataSize);
+			metadata.filename = std::string(packet.filename);
+			metadata.extension = std::string(packet.extension);
+			//todo messagesize been observed as 0, check
+			metadata.dataSize = packet.messageSize;
 		}
 		
 		std::unique_ptr<DataContainer> msg;

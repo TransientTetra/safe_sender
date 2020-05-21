@@ -52,6 +52,7 @@ void Sender::sendBinary(Sendable &data)
 
 //todo merge below two functions
 //todo when receiver rejects message the next one is error: eof
+//todo transition to sender session
 void Sender::handleSendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode)
 {
 	try
@@ -63,7 +64,9 @@ void Sender::handleSendFile(File &file, EncryptionKey &key, InitializationVector
 		packet.keySize = key.getDataSize();
 		packet.isEncrypted = file.isEncrypted();
 		packet.cipherMode = mode;
-		packet.metadataSize = sizeof(file.getMetadata());
+		//setting metadata info
+		strcpy(packet.filename, file.getMetadata().filename.c_str());
+		strcpy(packet.extension, file.getMetadata().extension.c_str());
 		sendPacket(packet);
 		Packet response = receivePacket();
 		if (response.responseType != ACCEPT)
@@ -77,10 +80,6 @@ void Sender::handleSendFile(File &file, EncryptionKey &key, InitializationVector
 			sendBinary(iv);
 		}
 
-//		char *buffer = new char[sizeof(file.getMetadata())];
-//		memcpy(buffer, &file.getMetadata(), sizeof(file.getMetadata()));
-//		asio::write(socket, asio::buffer(buffer, sizeof(file.getMetadata())));
-//		delete[] buffer;
 		sendBinary(file);
 	}
 	catch (std::exception &e)

@@ -25,9 +25,7 @@ File::File(RawBytes bytes)
 void File::save(const std::string& path)
 {
 	std::ofstream fileOut;
-	//fileOut.open(path + metadata.filename + metadata.extension);
-	//todo uncomment above, remove belowe temp line once metadata sending is resolved
-	fileOut.open(path + "test");
+	fileOut.open(path + metadata.filename + metadata.extension);
 	fileOut.write(reinterpret_cast<const char*>(data.BytePtr()), getDataSize());
 }
 
