@@ -14,7 +14,7 @@ class Sender : public Communicator
 {
 private:
 	std::string receiverIP;
-	void send(Sendable &data);
+	void sendBinary(Sendable &data);
 	Application* application;
 protected:
 public:
@@ -30,8 +30,8 @@ public:
 
 	bool connect();
 	void disconnect();
-	void sendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode);
-	void sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, CipherMode m);
+	void handleSendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode);
+	void handleSendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, CipherMode m);
 };
 
 

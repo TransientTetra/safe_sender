@@ -44,12 +44,13 @@ bool Sender::connect()
 	return true;
 }
 
-void Sender::send(Sendable &data)
+void Sender::sendBinary(Sendable &data)
 {
 	asio::write(socket, asio::buffer(data.getData().BytePtr(), data.getDataSize()));
 }
 
-void Sender::sendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode)
+//todo merge below two functions
+void Sender::handleSendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode)
 {
 	try
 	{
@@ -69,19 +70,22 @@ void Sender::sendFile(File &file, EncryptionKey &key, InitializationVector &iv, 
 		}
 		if (file.isEncrypted())
 		{
-			send(key);
-			send(iv);
+			sendBinary(key);
+			sendBinary(iv);
 		}
 		//todo send metadata here
-		send(file);
+		sendBinary(file);
 	}
 	catch (std::exception &e)
 	{
 		application->displayError(std::string("Error: Sending file failed:\n") + e.what());
 	}
+	//this is a hack
+	disconnect();
+	connect();
 }
 
-void Sender::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, CipherMode m)
+void Sender::handleSendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, CipherMode m)
 {
 	try
 	{
@@ -104,10 +108,10 @@ void Sender::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVect
 		}
 		if (msg.isEncrypted())
 		{
-			send(key);
-			send(iv);
+			sendBinary(key);
+			sendBinary(iv);
 		}
-		send(msg);
+		sendBinary(msg);
 	}
 	catch (std::exception &e)
 	{

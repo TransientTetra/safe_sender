@@ -129,8 +129,8 @@ void Application::encryptAndSendMsg(std::string msg, std::string key)
 			encryption.reset(new EncryptionAES(getCipherMode()));
 			textMessage->encrypt(*encryption);
 		}
-		sendingThread = std::thread(&Sender::sendTxtMsg, sender.get(), std::ref(*textMessage),
-			std::ref(ekey), std::ref(iv), getCipherMode());
+		sendingThread = std::thread(&Sender::handleSendTxtMsg, sender.get(), std::ref(*textMessage),
+					    std::ref(ekey), std::ref(iv), getCipherMode());
 	}
 }
 
@@ -155,7 +155,7 @@ void Application::encryptAndSendFile(std::string key)
 			encryption.reset(new EncryptionAES(getCipherMode()));
 			textMessage->encrypt(*encryption);
 		}
-		sendingThread = std::thread(&Sender::sendFile, sender.get(), std::ref(*file),
+		sendingThread = std::thread(&Sender::handleSendFile, sender.get(), std::ref(*file),
 					    std::ref(ekey), std::ref(iv), getCipherMode());
 	}
 }
