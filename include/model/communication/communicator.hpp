@@ -25,6 +25,7 @@ struct Packet
 	unsigned long messageSize;
 	unsigned long ivSize;
 	unsigned long keySize;
+	unsigned long metadataSize;
 	bool isEncrypted;
 };
 

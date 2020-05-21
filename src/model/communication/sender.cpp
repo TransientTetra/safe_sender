@@ -61,6 +61,7 @@ void Sender::handleSendFile(File &file, EncryptionKey &key, InitializationVector
 		packet.keySize = key.getDataSize();
 		packet.isEncrypted = file.isEncrypted();
 		packet.cipherMode = mode;
+		packet.metadataSize = sizeof(file.getMetadata());
 		sendPacket(packet);
 		Packet response = receivePacket();
 		if (response.responseType != ACCEPT)
@@ -73,7 +74,11 @@ void Sender::handleSendFile(File &file, EncryptionKey &key, InitializationVector
 			sendBinary(key);
 			sendBinary(iv);
 		}
-		//todo send metadata here
+
+//		char *buffer = new char[sizeof(file.getMetadata())];
+//		memcpy(buffer, &file.getMetadata(), sizeof(file.getMetadata()));
+//		asio::write(socket, asio::buffer(buffer, sizeof(file.getMetadata())));
+//		delete[] buffer;
 		sendBinary(file);
 	}
 	catch (std::exception &e)

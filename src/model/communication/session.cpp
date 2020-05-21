@@ -50,6 +50,7 @@ void Session::handleIncoming(Packet packet)
 	sendPacket(responsePacket);
 	try
 	{
+		FileMetadata metadata;
 		if (isEncrypted)
 		{
 			encryption.reset(new EncryptionAES(packet.cipherMode));
@@ -60,7 +61,10 @@ void Session::handleIncoming(Packet packet)
 		}
 		if (packet.messageType == FILE_MSG)
 		{
-			//todo handle file metadata receiving
+//			asio::streambuf buf(packet.metadataSize);
+//			asio::read(socket, buf);
+//			const char *buffer = asio::buffer_cast<const char*>(buf.data());
+//			memcpy(&metadata, buffer, packet.metadataSize);
 		}
 		
 		std::unique_ptr<DataContainer> msg;
@@ -75,9 +79,7 @@ void Session::handleIncoming(Packet packet)
 			case FILE_MSG:
 				msg.reset(new File(receive(packet.messageSize)));
 				if (isEncrypted) dynamic_cast<File*>(msg.get())->decrypt(*encryption);
-				//todo fix this once metadata sending is resolved
-				//					dynamic_cast<File*>(msg)->setMetadata(
-				//						FileMetadata("test", "txt", packet.messageSize));
+				dynamic_cast<File*>(msg.get())->setMetadata(metadata);
 				dynamic_cast<File*>(msg.get())->save(application->askPath());
 				break;
 			default:
@@ -86,6 +88,6 @@ void Session::handleIncoming(Packet packet)
 	}
 	catch (std::exception &e)
 	{
-		std::cerr << "Error while receiving data\n";
+		application->displayError(std::string("Error while receiving data:\n") + e.what());
 	}
 }
