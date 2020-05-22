@@ -13,7 +13,7 @@ protected:
 public:
 	ReceiverSession(tcp::socket&& socket, Application* application);
 
-	void start() override;
+	void start();
 };
 
 

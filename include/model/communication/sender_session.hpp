@@ -7,17 +7,16 @@
 class SenderSession : public Session
 {
 private:
-//	DataContainer& data;
-//	EncryptionKey& key;
-//	InitializationVector& iv;
-//	CipherMode cipherMode;
-
+	float progress;
 	void sendData();
+	void sendBinary(Sendable &data);
 protected:
 public:
 	SenderSession(tcp::socket &&socket, Application *application);
 
-	void start() override;
+	float getProgress() const;
+	void sendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode);
+	void sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, CipherMode m);
 };
 
 

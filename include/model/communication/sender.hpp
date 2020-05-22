@@ -14,8 +14,8 @@ class Sender : public Communicator
 {
 private:
 	std::string receiverIP;
-	void sendBinary(Sendable &data);
 	Application* application;
+	float progress;
 protected:
 public:
 	//constructor used by client when sending data

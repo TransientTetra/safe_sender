@@ -17,7 +17,6 @@ protected:
 public:
 	Session(tcp::socket&& socket, Application* application);
 
-	virtual void start() = 0;
 };
 
 
