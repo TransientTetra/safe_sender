@@ -46,17 +46,26 @@ bool Sender::connect()
 	return true;
 }
 
-//todo merge below two functions
 //todo when receiver rejects message the next one is error: eof
-//todo transition to sender session
-void Sender::handleSendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode)
+void Sender::handleSend(DataContainer* msg, EncryptionKey &key, InitializationVector &iv,
+			CipherMode mode, MessageType type)
 {
-	std::make_shared<SenderSession>(std::move(socket), application)->sendFile(file, key, iv, mode);
-}
-
-void Sender::handleSendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, CipherMode mode)
-{
-	std::make_shared<SenderSession>(std::move(socket), application)->sendTxtMsg(msg, key, iv, mode);
+	application->setState(SENDING);
+	Packet packet;
+	packet.messageType = type;
+	packet.messageSize = msg->getDataSize();
+	packet.ivSize = iv.getDataSize();
+	packet.keySize = key.getDataSize();
+	packet.isEncrypted = dynamic_cast<Encryptable*>(msg)->isEncrypted();
+	packet.cipherMode = mode;
+	if (type == FILE_MSG)
+	{
+		//setting metadata info
+		strcpy(packet.filename, dynamic_cast<File*>(msg)->getMetadata().filename.c_str());
+		strcpy(packet.extension, dynamic_cast<File*>(msg)->getMetadata().extension.c_str());
+	}
+	sendPacket(packet);
+	std::make_shared<SenderSession>(std::move(socket), application, msg, key, iv, mode, type)->start();
 }
 
 float Sender::getProgress()

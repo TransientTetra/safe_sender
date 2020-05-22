@@ -30,8 +30,8 @@ public:
 
 	bool connect();
 	void disconnect();
-	void handleSendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode);
-	void handleSendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, CipherMode m);
+	void handleSend(DataContainer* msg, EncryptionKey &key, InitializationVector &iv,
+		CipherMode mode, MessageType type);
 };
 
 

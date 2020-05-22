@@ -108,7 +108,6 @@ void Application::setFilePath(std::string filePath)
 	this->filePath = filePath;
 }
 
-//todo merge belowe two methods
 void Application::encryptAndSendMsg(std::string msg, std::string key)
 {
 	if (getState() == DISCONNECTED)
@@ -130,7 +129,7 @@ void Application::encryptAndSendMsg(std::string msg, std::string key)
 			encryption.reset(new EncryptionAES(getCipherMode()));
 			textMessage->encrypt(*encryption);
 		}
-		sender->handleSendTxtMsg(*textMessage, ekey, iv, getCipherMode());
+		sender->handleSend(textMessage.get(), ekey, iv, getCipherMode(), TXT_MSG);
 	}
 }
 
@@ -155,7 +154,7 @@ void Application::encryptAndSendFile(std::string key)
 			encryption.reset(new EncryptionAES(getCipherMode()));
 			textMessage->encrypt(*encryption);
 		}
-		sender->handleSendFile(*file, ekey, iv, getCipherMode());
+		sender->handleSend(file.get(), ekey, iv, getCipherMode(), FILE_MSG);
 	}
 }
 

@@ -1,8 +1,15 @@
 #include "model/communication/sender_session.hpp"
 
-SenderSession::SenderSession(tcp::socket &&socket, Application *application)
-: Session(std::move(socket), application)
-{}
+SenderSession::SenderSession(tcp::socket &&socket, Application *application, DataContainer* msg, EncryptionKey &key,
+			     InitializationVector &iv, CipherMode mode, MessageType messageType)
+: Session(std::move(socket), application), packetBuffer(sizeof(Packet))
+{
+	this->msg = msg;
+	this->key = &key;
+	this->iv = &iv;
+	cipherMode = mode;
+	this->messageType = messageType;
+}
 
 
 float SenderSession::getProgress() const
@@ -15,80 +22,41 @@ void SenderSession::sendBinary(Sendable &data)
 	asio::write(socket, asio::buffer(data.getData().BytePtr(), data.getDataSize()));
 }
 
-void SenderSession::sendFile(File &file, EncryptionKey &key, InitializationVector &iv, CipherMode mode)
+void SenderSession::start()
 {
-	application->setState(SENDING);
+	//todo make this multithreaded
+	//asio::async_read(socket, packetBuffer, std::bind(&SenderSession::handleResponse, this));
+	asio::read(socket, packetBuffer);
+	handleResponse();
+}
+
+void SenderSession::handleResponse()
+{
+	const char *buffer = asio::buffer_cast<const char*>(packetBuffer.data());
+	Packet response = deserializePacket(buffer);
+	if (response.responseType == ACCEPT)
+		sendData();
+	else
+		application->displayError("Error: Receiver rejected the file");
+}
+
+void SenderSession::sendData()
+{
 	try
 	{
-		Packet packet;
-		packet.messageType = FILE_MSG;
-		packet.messageSize = file.getDataSize();
-		packet.ivSize = iv.getDataSize();
-		packet.keySize = key.getDataSize();
-		packet.isEncrypted = file.isEncrypted();
-		packet.cipherMode = mode;
-//setting metadata info
-		strcpy(packet.filename, file.getMetadata().filename.c_str());
-		strcpy(packet.extension, file.getMetadata().extension.c_str());
-		sendPacket(packet);
-		Packet response = receivePacket();
-		if (response.responseType != ACCEPT)
+		if (dynamic_cast<Encryptable*>(msg)->isEncrypted())
 		{
-			application->displayError("Error: Receiver rejected the file");
-			return;
-		}
-		if (file.isEncrypted())
-		{
-			sendBinary(key);
-			sendBinary(iv);
+			sendBinary(*key);
+			sendBinary(*iv);
 		}
 
-		sendBinary(file);
+		sendBinary(*dynamic_cast<Sendable*>(msg));
 	}
 	catch (std::exception &e)
 	{
 		application->displayError(std::string("Error: Sending file failed:\n") + e.what());
 	}
 //this is a hack
-//	disconnect();
-//	connect();
-	application->setState(CONNECTED);
-}
-
-void SenderSession::sendTxtMsg(TextMessage &msg, EncryptionKey &key, InitializationVector &iv, CipherMode m)
-{
-	application->setState(SENDING);
-	try
-	{
-		Packet packet;
-		packet.isEncrypted = msg.isEncrypted();
-		packet.messageType = TXT_MSG;
-		packet.messageSize = msg.getDataSize();
-		if (msg.isEncrypted())
-		{
-			packet.ivSize = iv.getDataSize();
-			packet.keySize = key.getDataSize();
-			packet.cipherMode = m;
-		}
-		sendPacket(packet);
-		Packet response = receivePacket();
-		if (response.responseType != ACCEPT)
-		{
-			application->displayError("Error: Receiver rejected the message");
-			return;
-		}
-		if (msg.isEncrypted())
-		{
-			sendBinary(key);
-			sendBinary(iv);
-		}
-		sendBinary(msg);
-	}
-	catch (std::exception &e)
-	{
-		application->displayError(std::string("Error: Sending text message failed:\n") + e.what());
-	}
-	//this is a hack
 //	disconnect();
 //	connect();
 	application->setState(CONNECTED);
