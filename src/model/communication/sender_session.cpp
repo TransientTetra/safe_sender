@@ -37,7 +37,7 @@ void SenderSession::handleResponse()
 	if (response.responseType == ACCEPT)
 		sendData();
 	else
-		application->displayError("Error: Receiver rejected the file");
+		application->displayError("Error: Receiver rejected the data");
 }
 
 void SenderSession::sendData()
@@ -54,10 +54,7 @@ void SenderSession::sendData()
 	}
 	catch (std::exception &e)
 	{
-		application->displayError(std::string("Error: Sending file failed:\n") + e.what());
+		application->displayError(std::string("Error: Sending data failed:\n") + e.what());
 	}
-//this is a hack
-//	disconnect();
-//	connect();
 	application->setState(CONNECTED);
 }
