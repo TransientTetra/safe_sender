@@ -110,12 +110,12 @@ void Application::setFilePath(std::string filePath)
 
 void Application::encryptAndSendMsg(std::string msg, std::string key)
 {
-	if (getState() == DISCONNECTED)
-	{
-		displayError("Error: Application not connected");
-		return;
-	}
-	if (getState() == CONNECTED)
+//	if (getState() == DISCONNECTED)
+//	{
+//		displayError("Error: Application not connected");
+//		return;
+//	}
+//	if (getState() == CONNECTED)
 	{
 		if (msg == "")
 		{
@@ -127,6 +127,8 @@ void Application::encryptAndSendMsg(std::string msg, std::string key)
 		if (key != "")
 		{
 			encryption.reset(new EncryptionAES(getCipherMode()));
+			encryption->setEncryptionKey(ekey);
+			encryption->setIV(iv);
 			textMessage->encrypt(*encryption);
 		}
 		sender->handleSend(textMessage.get(), ekey, iv, getCipherMode(), TXT_MSG);
@@ -152,6 +154,8 @@ void Application::encryptAndSendFile(std::string key)
 		if (key != "")
 		{
 			encryption.reset(new EncryptionAES(getCipherMode()));
+			encryption->setEncryptionKey(ekey);
+			encryption->setIV(iv);
 			textMessage->encrypt(*encryption);
 		}
 		sender->handleSend(file.get(), ekey, iv, getCipherMode(), FILE_MSG);
