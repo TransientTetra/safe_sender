@@ -15,7 +15,6 @@ set(
         model/encryption/encryption_rsa.cpp
         model/encryption/encryption.cpp
         model/encryption/encryption_key.cpp
-        model/initialization_vector.cpp
         model/data_container.cpp
         model/communication/receiver.cpp
         model/communication/sender.cpp

@@ -11,7 +11,7 @@ private:
 protected:
 public:
 	RawBytes();
-	RawBytes(const std::string &str);
+	RawBytes(const unsigned char* str, unsigned long size);
 	RawBytes(unsigned long size);
 
 	std::string toString();

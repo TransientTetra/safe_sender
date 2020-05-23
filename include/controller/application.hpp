@@ -38,7 +38,6 @@ private:
 	std::unique_ptr<InfoFrame> infoFrame;
 	std::unique_ptr<YesNoFrame> yesNoFrame;
 
-	InitializationVector iv;
 	CipherMode cipherMode;
 	std::string filePath;
 	std::unique_ptr<File> file;

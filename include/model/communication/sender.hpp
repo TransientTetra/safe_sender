@@ -7,7 +7,6 @@
 #include "../file.hpp"
 #include "../text_message.hpp"
 #include "../encryption/encryption_key.hpp"
-#include "../initialization_vector.hpp"
 class Application;
 
 class Sender : public Communicator
@@ -30,8 +29,7 @@ public:
 
 	bool connect();
 	void disconnect();
-	void handleSend(DataContainer* msg, EncryptionKey &key, InitializationVector &iv,
-		CipherMode mode, MessageType type);
+	void handleSend(DataContainer* msg, EncryptionKey &key, CipherMode mode, MessageType type);
 };
 
 

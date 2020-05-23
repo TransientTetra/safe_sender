@@ -5,8 +5,7 @@
 #include "constants.hpp"
 
 Application::Application(std::string title)
-: window(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH),
-iv("0")
+: window(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH)
 {
 	this->title = title;
 	state = DISCONNECTED;
@@ -110,12 +109,12 @@ void Application::setFilePath(std::string filePath)
 
 void Application::encryptAndSendMsg(std::string msg, std::string key)
 {
-//	if (getState() == DISCONNECTED)
-//	{
-//		displayError("Error: Application not connected");
-//		return;
-//	}
-//	if (getState() == CONNECTED)
+	if (getState() == DISCONNECTED)
+	{
+		displayError("Error: Application not connected");
+		return;
+	}
+	if (getState() == CONNECTED)
 	{
 		if (msg == "")
 		{
@@ -128,10 +127,10 @@ void Application::encryptAndSendMsg(std::string msg, std::string key)
 		{
 			encryption.reset(new EncryptionAES(getCipherMode()));
 			encryption->setEncryptionKey(ekey);
-			encryption->setIV(iv);
+			//encryption->setIV(iv);
 			textMessage->encrypt(*encryption);
 		}
-		sender->handleSend(textMessage.get(), ekey, iv, getCipherMode(), TXT_MSG);
+		sender->handleSend(textMessage.get(), ekey, getCipherMode(), TXT_MSG);
 	}
 }
 
@@ -155,10 +154,9 @@ void Application::encryptAndSendFile(std::string key)
 		{
 			encryption.reset(new EncryptionAES(getCipherMode()));
 			encryption->setEncryptionKey(ekey);
-			encryption->setIV(iv);
 			textMessage->encrypt(*encryption);
 		}
-		sender->handleSend(file.get(), ekey, iv, getCipherMode(), FILE_MSG);
+		sender->handleSend(file.get(), ekey, getCipherMode(), FILE_MSG);
 	}
 }
 
@@ -188,7 +186,7 @@ void Application::setState(ApplicationState state)
 bool Application::validateIP(std::string ip)
 {
 	asio::error_code ec;
-	address::from_string(ip, ec);
+	auto ip_addr = address::from_string(ip, ec);
 	if (ec)
 		return false;
 	return true;

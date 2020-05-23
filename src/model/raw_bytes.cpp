@@ -12,8 +12,8 @@ RawBytes::RawBytes(unsigned long size)
 
 }
 
-RawBytes::RawBytes(const std::string &str)
-: CryptoPP::SecByteBlock(reinterpret_cast<const unsigned char*>(&str[0]), str.size())
+RawBytes::RawBytes(const unsigned char* str, unsigned long size)
+: CryptoPP::SecByteBlock(str, size)
 {
 
 }

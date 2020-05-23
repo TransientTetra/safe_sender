@@ -1,7 +1,8 @@
-#include "../../../include/model/encryption/encryption_aes.hpp"
+#include "model/encryption/encryption_aes.hpp"
 #include <ostream>
 #include "cryptopp/aes.h"
 #include "cryptopp/modes.h"
+#include <constants.hpp>
 
 void EncryptionAES::encrypt(RawBytes &data)
 {
@@ -39,8 +40,8 @@ void EncryptionAES::encryptCBC(RawBytes &data)
 
 void EncryptionAES::encryptCFB(RawBytes &data)
 {
-	CryptoPP::CFB_Mode<CryptoPP::AES>::Encryption encryption(encryptionKey.getData(),
-		encryptionKey.getDataSize(), initializationVector.getData());
+	CryptoPP::CFB_Mode<CryptoPP::AES>::Encryption encryption(encryptionKey.getData(), encryptionKey.getDataSize(),
+		CryptoPP::SecByteBlock(reinterpret_cast<const unsigned char *>(DEFAULT_IV), std::strlen(DEFAULT_IV)));
 	encryption.ProcessData(data.BytePtr(), data.BytePtr(), data.size());
 }
 
@@ -80,8 +81,8 @@ void EncryptionAES::decryptCBC(RawBytes &data)
 
 void EncryptionAES::decryptCFB(RawBytes &data)
 {
-	CryptoPP::CFB_Mode<CryptoPP::AES>::Decryption decryption(encryptionKey.getData(),
-		encryptionKey.getDataSize(), initializationVector.getData());
+	CryptoPP::CFB_Mode<CryptoPP::AES>::Decryption decryption(encryptionKey.getData(), encryptionKey.getDataSize(),
+		CryptoPP::SecByteBlock(reinterpret_cast<const unsigned char *>(DEFAULT_IV), std::strlen(DEFAULT_IV)));
 	decryption.ProcessData(data.BytePtr(), data.BytePtr(), data.size());
 }
 

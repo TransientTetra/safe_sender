@@ -19,7 +19,7 @@ void TextMessage::print(std::ostream &out)
 
 void TextMessage::append(std::string str)
 {
-	data += RawBytes(str);
+	data += RawBytes(reinterpret_cast<const unsigned char *>(str.c_str()), str.size());
 }
 
 TextMessage::~TextMessage()

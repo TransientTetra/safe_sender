@@ -9,7 +9,6 @@ class SenderSession : public Session
 private:
 	DataContainer* msg;
 	EncryptionKey* key;
-	InitializationVector* iv;
 	CipherMode cipherMode;
 	MessageType messageType;
 	float progress;
@@ -21,7 +20,7 @@ private:
 protected:
 public:
 	SenderSession(tcp::socket &&socket, Application *application, DataContainer* msg,
-		EncryptionKey &key, InitializationVector &iv, CipherMode mode, MessageType messageType);
+		EncryptionKey &key, CipherMode mode, MessageType messageType);
 
 	void start() override;
 

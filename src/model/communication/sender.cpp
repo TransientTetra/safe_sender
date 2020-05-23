@@ -49,14 +49,12 @@ bool Sender::connect()
 //todo when receiver rejects message the sender is disconnected (feature?)
 //todo files not getting sent (img)
 //todo encryption does not work, fails with 0 is not a valid key length
-void Sender::handleSend(DataContainer* msg, EncryptionKey &key, InitializationVector &iv,
-			CipherMode mode, MessageType type)
+void Sender::handleSend(DataContainer* msg, EncryptionKey &key, CipherMode mode, MessageType type)
 {
 	application->setState(SENDING);
 	Packet packet;
 	packet.messageType = type;
 	packet.messageSize = msg->getDataSize();
-	packet.ivSize = iv.getDataSize();
 	packet.keySize = key.getDataSize();
 	packet.isEncrypted = dynamic_cast<Encryptable*>(msg)->isEncrypted();
 	packet.cipherMode = mode;
@@ -67,7 +65,7 @@ void Sender::handleSend(DataContainer* msg, EncryptionKey &key, InitializationVe
 		strcpy(packet.extension, dynamic_cast<File*>(msg)->getMetadata().extension.c_str());
 	}
 	sendPacket(packet);
-	std::make_shared<SenderSession>(std::move(socket), application, msg, key, iv, mode, type)->start();
+	std::make_shared<SenderSession>(std::move(socket), application, msg, key, mode, type)->start();
 }
 
 float Sender::getProgress()

@@ -1,12 +1,11 @@
 #include "model/communication/sender_session.hpp"
 
 SenderSession::SenderSession(tcp::socket &&socket, Application *application, DataContainer* msg, EncryptionKey &key,
-			     InitializationVector &iv, CipherMode mode, MessageType messageType)
+			     CipherMode mode, MessageType messageType)
 : Session(std::move(socket), application), packetBuffer(sizeof(Packet))
 {
 	this->msg = msg;
 	this->key = &key;
-	this->iv = &iv;
 	cipherMode = mode;
 	this->messageType = messageType;
 }
@@ -47,7 +46,6 @@ void SenderSession::sendData()
 		if (dynamic_cast<Encryptable*>(msg)->isEncrypted())
 		{
 			sendBinary(*key);
-			sendBinary(*iv);
 		}
 
 		sendBinary(*dynamic_cast<Sendable*>(msg));

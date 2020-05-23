@@ -24,12 +24,11 @@ RawBytes ReceiverSession::receive(unsigned long size)
 {
 	asio::streambuf buf(size);
 	asio::read(socket, buf);
-	return RawBytes(asio::buffer_cast<const char*>(buf.data()));
+	return RawBytes(asio::buffer_cast<const unsigned char*>(buf.data()), size);
 }
 
 void ReceiverSession::handleIncoming(Packet packet)
 {
-	//todo sometimes the incoming data is corrupted
 	Packet responsePacket;
 	std::unique_ptr<Encryption> encryption;
 	bool isEncrypted = packet.isEncrypted;
@@ -59,9 +58,7 @@ void ReceiverSession::handleIncoming(Packet packet)
 		{
 			encryption.reset(new EncryptionAES(packet.cipherMode));
 			EncryptionKey aesKey = receive(packet.keySize);
-			InitializationVector iv = receive(packet.ivSize);
 			encryption->setEncryptionKey(aesKey);
-			encryption->setIV(iv);
 		}
 		if (packet.messageType == FILE_MSG)
 		{

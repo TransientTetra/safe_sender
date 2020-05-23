@@ -9,7 +9,7 @@ Encryptable::Encryptable()
 Encryptable::Encryptable(const std::string& str)
 {
 	encrypted = false;
-	data = RawBytes(str);
+	data = RawBytes(reinterpret_cast<const unsigned char *>(str.c_str()), str.size());
 }
 
 Encryptable::Encryptable(RawBytes &bytes)
