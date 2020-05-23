@@ -48,7 +48,6 @@ bool Sender::connect()
 
 //todo when receiver rejects message the sender is disconnected (feature?)
 //todo files not getting sent (img)
-//todo encryption does not work, fails with 0 is not a valid key length
 void Sender::handleSend(DataContainer* msg, EncryptionKey &key, CipherMode mode, MessageType type)
 {
 	application->setState(SENDING);
