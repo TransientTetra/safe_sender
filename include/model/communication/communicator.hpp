@@ -24,7 +24,6 @@ struct Packet
 	ResponseType responseType;
 	CipherMode cipherMode;
 	unsigned long messageSize;
-	unsigned long ivSize;
 	unsigned long keySize;
 	bool isEncrypted;
 	char filename[PACKET_CHAR_BUFFER_SIZE];
