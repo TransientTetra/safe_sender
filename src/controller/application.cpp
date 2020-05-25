@@ -154,7 +154,7 @@ void Application::encryptAndSendFile(std::string key)
 		{
 			encryption.reset(new EncryptionAES(getCipherMode()));
 			encryption->setEncryptionKey(ekey);
-			textMessage->encrypt(*encryption);
+			file->encrypt(*encryption);
 		}
 		sender->handleSend(file.get(), ekey, getCipherMode(), FILE_MSG);
 	}
