@@ -31,7 +31,13 @@ EncryptionAES::EncryptionAES(CipherMode cipherMode)
 
 void EncryptionAES::encryptECB(RawBytes &data)
 {
-
+	std::string result;
+	CryptoPP::AES::Encryption e(encryptionKey.getData(), encryptionKey.getDataSize());
+	CryptoPP::ECB_Mode_ExternalCipher::Encryption encryption(e, reinterpret_cast<const byte *>(DEFAULT_IV));
+	CryptoPP::StreamTransformationFilter filter(encryption, new CryptoPP::StringSink(result));
+	filter.Put(reinterpret_cast<const byte *>(data.toString().c_str()), data.toString().size());
+	filter.MessageEnd();
+	data.Assign(reinterpret_cast<const byte *>(result.c_str()), result.size());
 }
 
 void EncryptionAES::encryptCBC(RawBytes &data)
@@ -54,7 +60,13 @@ void EncryptionAES::encryptCFB(RawBytes &data)
 
 void EncryptionAES::encryptOFB(RawBytes &data)
 {
-
+	std::string result;
+	CryptoPP::AES::Encryption e(encryptionKey.getData(), encryptionKey.getDataSize());
+	CryptoPP::OFB_Mode_ExternalCipher::Encryption encryption(e, reinterpret_cast<const byte *>(DEFAULT_IV));
+	CryptoPP::StreamTransformationFilter filter(encryption, new CryptoPP::StringSink(result));
+	filter.Put(reinterpret_cast<const byte *>(data.toString().c_str()), data.toString().size());
+	filter.MessageEnd();
+	data.Assign(reinterpret_cast<const byte *>(result.c_str()), result.size());
 }
 
 void EncryptionAES::decrypt(RawBytes &data)
@@ -78,7 +90,13 @@ void EncryptionAES::decrypt(RawBytes &data)
 
 void EncryptionAES::decryptECB(RawBytes &data)
 {
-
+	std::string result;
+	CryptoPP::AES::Decryption e(encryptionKey.getData(), encryptionKey.getDataSize());
+	CryptoPP::ECB_Mode_ExternalCipher::Decryption decryption(e, reinterpret_cast<const byte *>(DEFAULT_IV));
+	CryptoPP::StreamTransformationFilter filter(decryption, new CryptoPP::StringSink(result));
+	filter.Put(reinterpret_cast<const byte *>(data.toString().c_str()), data.toString().size());
+	filter.MessageEnd();
+	data.Assign(reinterpret_cast<const byte *>(result.c_str()), result.size());
 }
 
 void EncryptionAES::decryptCBC(RawBytes &data)
@@ -101,5 +119,11 @@ void EncryptionAES::decryptCFB(RawBytes &data)
 
 void EncryptionAES::decryptOFB(RawBytes &data)
 {
-
+	std::string result;
+	CryptoPP::AES::Decryption e(encryptionKey.getData(), encryptionKey.getDataSize());
+	CryptoPP::OFB_Mode_ExternalCipher::Decryption decryption(e, reinterpret_cast<const byte *>(DEFAULT_IV));
+	CryptoPP::StreamTransformationFilter filter(decryption, new CryptoPP::StringSink(result));
+	filter.Put(reinterpret_cast<const byte *>(data.toString().c_str()), data.toString().size());
+	filter.MessageEnd();
+	data.Assign(reinterpret_cast<const byte *>(result.c_str()), result.size());
 }
