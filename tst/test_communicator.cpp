@@ -7,7 +7,6 @@ TEST(TestCommunicator, testPacketSerialization)
 	packet.messageType = TXT_MSG;
 	packet.messageSize = 697979;
 	packet.keySize = 12398567;
-	packet.ivSize = 236234734;
 	packet.isEncrypted = false;
 	packet.cipherMode = CFB;
 
@@ -18,7 +17,6 @@ TEST(TestCommunicator, testPacketSerialization)
 	ASSERT_EQ(packet.messageType, copy.messageType);
 	ASSERT_EQ(packet.messageSize, copy.messageSize);
 	ASSERT_EQ(packet.keySize, copy.keySize);
-	ASSERT_EQ(packet.ivSize, copy.ivSize);
 	ASSERT_EQ(packet.isEncrypted, copy.isEncrypted);
 	ASSERT_EQ(packet.cipherMode, copy.cipherMode);
 	std::unique_ptr<char> binary;
@@ -31,7 +29,6 @@ TEST(TestCommunicator, testPacketSerialization)
 	EXPECT_EQ(packet.messageType, copy.messageType);
 	EXPECT_EQ(packet.messageSize, copy.messageSize);
 	EXPECT_EQ(packet.keySize, copy.keySize);
-	EXPECT_EQ(packet.ivSize, copy.ivSize);
 	EXPECT_EQ(packet.isEncrypted, copy.isEncrypted);
 	EXPECT_EQ(packet.cipherMode, copy.cipherMode);
 }

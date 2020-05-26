@@ -1,7 +1,8 @@
 #include "model/encryption/encryption_aes.hpp"
 #include <ostream>
-#include "cryptopp/aes.h"
-#include "cryptopp/modes.h"
+#include <cryptopp/aes.h>
+#include <cryptopp/modes.h>
+#include <cryptopp/filters.h>
 #include <constants.hpp>
 
 void EncryptionAES::encrypt(RawBytes &data)
@@ -35,13 +36,19 @@ void EncryptionAES::encryptECB(RawBytes &data)
 
 void EncryptionAES::encryptCBC(RawBytes &data)
 {
-
+	std::string result;
+	CryptoPP::AES::Encryption e(encryptionKey.getData(), encryptionKey.getDataSize());
+	CryptoPP::CBC_Mode_ExternalCipher::Encryption encryption(e, reinterpret_cast<const byte *>(DEFAULT_IV));
+	CryptoPP::StreamTransformationFilter filter(encryption, new CryptoPP::StringSink(result));
+	filter.Put(reinterpret_cast<const byte *>(data.toString().c_str()), data.toString().size());
+	filter.MessageEnd();
+	data.Assign(reinterpret_cast<const byte *>(result.c_str()), result.size());
 }
 
 void EncryptionAES::encryptCFB(RawBytes &data)
 {
 	CryptoPP::CFB_Mode<CryptoPP::AES>::Encryption encryption(encryptionKey.getData(), encryptionKey.getDataSize(),
-		CryptoPP::SecByteBlock(reinterpret_cast<const unsigned char *>(DEFAULT_IV), std::strlen(DEFAULT_IV)));
+		CryptoPP::SecByteBlock(reinterpret_cast<const byte *>(DEFAULT_IV), std::strlen(DEFAULT_IV)));
 	encryption.ProcessData(data.BytePtr(), data.BytePtr(), data.size());
 }
 
@@ -76,7 +83,13 @@ void EncryptionAES::decryptECB(RawBytes &data)
 
 void EncryptionAES::decryptCBC(RawBytes &data)
 {
-
+	std::string result;
+	CryptoPP::AES::Decryption e(encryptionKey.getData(), encryptionKey.getDataSize());
+	CryptoPP::CBC_Mode_ExternalCipher::Decryption decryption(e, reinterpret_cast<const byte *>(DEFAULT_IV));
+	CryptoPP::StreamTransformationFilter filter(decryption, new CryptoPP::StringSink(result));
+	filter.Put(reinterpret_cast<const byte *>(data.toString().c_str()), data.toString().size());
+	filter.MessageEnd();
+	data.Assign(reinterpret_cast<const byte *>(result.c_str()), result.size());
 }
 
 void EncryptionAES::decryptCFB(RawBytes &data)
