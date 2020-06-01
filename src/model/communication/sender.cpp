@@ -48,23 +48,26 @@ bool Sender::connect()
 
 //todo when receiver rejects message the sender is disconnected (feature?)
 //todo files not getting sent (img)
-void Sender::handleSend(DataContainer* msg, EncryptionKey &key, CipherMode mode, MessageType type)
+void Sender::handleSend(DataContainer* msg, Encryption& encryption, MessageType messageType)
 {
 	application->setState(SENDING);
 	Packet packet;
-	packet.messageType = type;
+	packet.messageType = messageType;
 	packet.messageSize = msg->getDataSize();
-	packet.keySize = key.getDataSize();
+	packet.keySize = encryption.getEncryptionKey().getDataSize();
 	packet.isEncrypted = dynamic_cast<Encryptable*>(msg)->isEncrypted();
-	packet.cipherMode = mode;
-	if (type == FILE_MSG)
+	packet.cipherMode = encryption.getCipherMode();
+	strcpy(packet.iv, encryption.getIV().c_str());
+	if (messageType == FILE_MSG)
 	{
 		//setting metadata info
 		strcpy(packet.filename, dynamic_cast<File*>(msg)->getMetadata().filename.c_str());
 		strcpy(packet.extension, dynamic_cast<File*>(msg)->getMetadata().extension.c_str());
 	}
 	sendPacket(packet);
-	std::make_shared<SenderSession>(std::move(socket), application, msg, key, mode, type)->start();
+	std::make_shared<SenderSession>(std::move(socket), application, msg, encryption, messageType)->start();
+	//this is a hack
+	disconnect();
 }
 
 float Sender::getProgress()

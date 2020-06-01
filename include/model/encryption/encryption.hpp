@@ -18,12 +18,19 @@ private:
 protected:
 	CipherMode cipherMode;
 	EncryptionKey encryptionKey;
+	std::string iv;
 public:
 	virtual void encrypt(RawBytes &data) = 0;
 	virtual void decrypt(RawBytes &data) = 0;
 
-	virtual const EncryptionKey getEncryptionKey() const;
+	virtual const EncryptionKey& getEncryptionKey() const;
+
+	CipherMode getCipherMode() const;
+
+	const std::string &getIV() const;
+
 	virtual void setEncryptionKey(EncryptionKey &key);
+	virtual void setIV(const char* arr);
 
 	virtual float getProgress();
 };

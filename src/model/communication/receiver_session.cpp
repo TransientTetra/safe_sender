@@ -59,6 +59,7 @@ void ReceiverSession::handleIncoming(Packet packet)
 			encryption.reset(new EncryptionAES(packet.cipherMode));
 			EncryptionKey aesKey = receive(packet.keySize);
 			encryption->setEncryptionKey(aesKey);
+			encryption->setIV(packet.iv);
 		}
 		if (packet.messageType == FILE_MSG)
 		{

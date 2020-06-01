@@ -127,10 +127,10 @@ void Application::encryptAndSendMsg(std::string msg, std::string key)
 		{
 			encryption.reset(new EncryptionAES(getCipherMode()));
 			encryption->setEncryptionKey(ekey);
-			//encryption->setIV(iv);
+			encryption->setIV(DEFAULT_IV);
 			textMessage->encrypt(*encryption);
 		}
-		sender->handleSend(textMessage.get(), ekey, getCipherMode(), TXT_MSG);
+		sender->handleSend(textMessage.get(), *encryption, TXT_MSG);
 	}
 }
 
@@ -154,9 +154,10 @@ void Application::encryptAndSendFile(std::string key)
 		{
 			encryption.reset(new EncryptionAES(getCipherMode()));
 			encryption->setEncryptionKey(ekey);
+			encryption->setIV(DEFAULT_IV);
 			file->encrypt(*encryption);
 		}
-		sender->handleSend(file.get(), ekey, getCipherMode(), FILE_MSG);
+		sender->handleSend(file.get(), *encryption, FILE_MSG);
 	}
 }
 

@@ -20,7 +20,7 @@ private:
 protected:
 public:
 	SenderSession(tcp::socket &&socket, Application *application, DataContainer* msg,
-		EncryptionKey &key, CipherMode mode, MessageType messageType);
+		Encryption& encryption, MessageType messageType);
 
 	void start() override;
 

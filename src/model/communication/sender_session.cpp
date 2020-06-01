@@ -1,12 +1,12 @@
 #include "model/communication/sender_session.hpp"
 
-SenderSession::SenderSession(tcp::socket &&socket, Application *application, DataContainer* msg, EncryptionKey &key,
-			     CipherMode mode, MessageType messageType)
+SenderSession::SenderSession(tcp::socket &&socket, Application *application, DataContainer* msg,
+	Encryption& encryption, MessageType messageType)
 : Session(std::move(socket), application), packetBuffer(sizeof(Packet))
 {
 	this->msg = msg;
-	this->key = &key;
-	cipherMode = mode;
+	this->key = const_cast<EncryptionKey *>(&(encryption.getEncryptionKey()));
+	cipherMode = encryption.getCipherMode();
 	this->messageType = messageType;
 }
 
