@@ -28,7 +28,7 @@ struct Packet
 	bool isEncrypted;
 	char filename[PACKET_CHAR_BUFFER_SIZE];
 	char extension[PACKET_CHAR_BUFFER_SIZE];
-	char publicKey[DEFAULT_KEY_SIZE];
+	char publicKey[DEFAULT_SESSION_KEY_SIZE];
 	char iv[DEFAULT_IV_SIZE];
 };
 
