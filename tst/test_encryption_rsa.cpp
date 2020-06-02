@@ -1,5 +1,7 @@
 #include "gtest/gtest.h"
 #include "model/encryption/encryption_rsa.hpp"
+#include "model/encryption/encryption_aes.hpp"
+#include "model/encryption/encryption_sha_256.hpp"
 
 TEST(TestEncryptionRSA, testEncryptionDecryption)
 {
@@ -12,6 +14,50 @@ TEST(TestEncryptionRSA, testEncryptionDecryption)
 	ASSERT_NE(data.toString(), str);
 	e.decrypt(data);
 	ASSERT_EQ(data.toString(), str);
+}
+
+TEST(TestEncryptionRSA, testKeysSaving)
+{
+	EncryptionRSA e;
+	e.generateKeyPair();
+	EncryptionKey key("lol");
+	EncryptionSHA256 sha;
+	key.encrypt(sha);
+	e.encryptKeysToFile("./", key);
+	EncryptionRSA b;
+	b.decryptKeysFromFile("./", key);
+	std::string str("elo");
+	RawBytes data(reinterpret_cast<const unsigned char *>(str.c_str()), str.size());
+	e.encrypt(data);
+	b.decrypt(data);
+	ASSERT_EQ(data.toString(), str);
+	b.encrypt(data);
+	e.decrypt(data);
+	ASSERT_EQ(data.toString(), str);
+}
+
+TEST(TestEncryptionRSA, testKeysSavingNegative)
+{
+	EncryptionRSA e;
+	EncryptionSHA256 sha;
+	e.generateKeyPair();
+	EncryptionKey key("lol");
+	key.encrypt(sha);
+
+	EncryptionKey badKey("LoL");
+	badKey.encrypt(sha);
+
+	e.encryptKeysToFile("./", key);
+	EncryptionRSA b;
+	b.decryptKeysFromFile("./", badKey);
+	std::string str("elo");
+	RawBytes data(reinterpret_cast<const unsigned char *>(str.c_str()), str.size());
+	e.encrypt(data);
+	b.decrypt(data);
+	ASSERT_NE(data.toString(), str);
+	b.encrypt(data);
+	e.decrypt(data);
+	ASSERT_NE(data.toString(), str);
 }
 
 TEST(TestEncryptionRSA, testPacketEncryption)

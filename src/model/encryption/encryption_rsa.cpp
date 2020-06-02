@@ -1,6 +1,12 @@
 #include "model/encryption/encryption_rsa.hpp"
 #include <cryptopp/osrng.h>
+#include <cryptopp/files.h>
 #include <constants.hpp>
+#include <cryptopp/modes.h>
+#include <model/file.hpp>
+#include <model/encryption/encryption_aes.hpp>
+#include <filesystem>
+#include <model/encryption/encryption_sha_256.hpp>
 
 void EncryptionRSA::generateKeyPair()
 {
@@ -45,11 +51,74 @@ void EncryptionRSA::encrypt(RawBytes &data)
 
 void EncryptionRSA::decrypt(RawBytes &data)
 {
-	CryptoPP::AutoSeededRandomPool rng;
-	CryptoPP::RSAES_OAEP_SHA_Decryptor d(privateKey);
+	try
+	{
+		CryptoPP::AutoSeededRandomPool rng;
+		CryptoPP::RSAES_OAEP_SHA_Decryptor d(privateKey);
 
-	std::string decrypted;
-	CryptoPP::StringSource ss2(data.toString(), true,
-		new CryptoPP::PK_DecryptorFilter(rng, d, new CryptoPP::StringSink(decrypted)));
-	data.Assign(reinterpret_cast<const unsigned char *>(decrypted.c_str()), decrypted.size());
+		std::string decrypted;
+		CryptoPP::StringSource ss2(data.toString(), true,
+					   new CryptoPP::PK_DecryptorFilter(rng, d, new CryptoPP::StringSink(decrypted)));
+		data.Assign(reinterpret_cast<const unsigned char *>(decrypted.c_str()), decrypted.size());
+	}
+	catch (std::exception e)
+	{
+		CryptoPP::AutoSeededRandomPool rnd;
+		RawBytes temp(DEFAULT_SESSION_KEY_SIZE);
+		EncryptionSHA256 sha;
+		sha.encrypt(temp);
+		data = temp;
+	}
+}
+
+void EncryptionRSA::decryptKeysFromFile(std::string path, EncryptionKey& key)
+{
+	try
+	{
+		File priv("keys/private/private.dat");
+		File publ("keys/public/public.dat");
+		EncryptionAES encryption(CBC);
+		encryption.setEncryptionKey(key);
+		encryption.setIV(DEFAULT_IV);
+		priv.decrypt(encryption);
+		publ.decrypt(encryption);
+		priv.save("keys/private/");
+		publ.save("keys/public/");
+		{
+			CryptoPP::FileSource input("keys/private/private.dat", true);
+			privateKey.BERDecode(input);
+			CryptoPP::FileSource input2("keys/public/public.dat", true);
+			publicKey.BERDecode(input2);
+		}
+		priv.encrypt(encryption);
+		publ.encrypt(encryption);
+		priv.save("keys/private/");
+		publ.save("keys/public/");
+	}
+	catch (std::exception e)
+	{
+		generateKeyPair();
+	}
+}
+
+void EncryptionRSA::encryptKeysToFile(std::string path, EncryptionKey& key)
+{
+	std::filesystem::create_directory(path + "/keys/");
+	std::filesystem::create_directory(path + "/keys/private/");
+	std::filesystem::create_directory(path + "/keys/public");
+	{
+		CryptoPP::FileSink output((path + "/keys/private/private.dat").c_str(), true);
+		privateKey.DEREncode(output);
+		CryptoPP::FileSink output2((path + "/keys/public/public.dat").c_str(), true);
+		publicKey.DEREncode(output2);
+	}
+	File priv(path + "/keys/private/private.dat");
+	File publ(path + "/keys/public/public.dat");
+	EncryptionAES encryption(CBC);
+	encryption.setEncryptionKey(key);
+	encryption.setIV(DEFAULT_IV);
+	priv.encrypt(encryption);
+	publ.encrypt(encryption);
+	priv.save("keys/private/");
+	publ.save("keys/public/");
 }

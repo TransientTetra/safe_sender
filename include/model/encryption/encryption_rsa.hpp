@@ -24,6 +24,9 @@ public:
 
 	void setPublicKey(const CryptoPP::RSA::PublicKey &publicKey);
 
+	void encryptKeysToFile(std::string path, EncryptionKey& key);
+	void decryptKeysFromFile(std::string path, EncryptionKey& key);
+
 	void generateKeyPair();
 };
 
