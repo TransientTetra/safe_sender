@@ -28,8 +28,11 @@ struct Packet
 	bool isEncrypted;
 	char filename[PACKET_CHAR_BUFFER_SIZE];
 	char extension[PACKET_CHAR_BUFFER_SIZE];
-	char publicKey[DEFAULT_SESSION_KEY_SIZE];
+	char sessionKey[DEFAULT_SESSION_KEY_SIZE];
 	char iv[DEFAULT_IV_SIZE];
+
+	std::shared_ptr<char> serialize();
+	void deserialize(const char* arr);
 };
 
 class Communicator
@@ -48,9 +51,6 @@ public:
 	Communicator(tcp::socket&& socket);
 	virtual void sendPacket(Packet frame);
 	virtual Packet receivePacket();
-
-	static char *serializePacket(Packet packet);
-	static Packet deserializePacket(const char* binary);
 };
 
 

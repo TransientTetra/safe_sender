@@ -4,6 +4,7 @@
 
 #include "encryption.hpp"
 #include <cryptopp/rsa.h>
+#include <model/communication/communicator.hpp>
 
 class EncryptionRSA : public Encryption
 {

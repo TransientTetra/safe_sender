@@ -54,10 +54,13 @@ void Sender::handleSend(DataContainer* msg, Encryption& encryption, MessageType 
 	Packet packet;
 	packet.messageType = messageType;
 	packet.messageSize = msg->getDataSize();
-	packet.keySize = encryption.getEncryptionKey().getDataSize();
 	packet.isEncrypted = dynamic_cast<Encryptable*>(msg)->isEncrypted();
-	packet.cipherMode = encryption.getCipherMode();
-	strcpy(packet.iv, encryption.getIV().c_str());
+	if (packet.isEncrypted)
+	{
+		packet.keySize = encryption.getEncryptionKey().getDataSize();
+		packet.cipherMode = encryption.getCipherMode();
+		strcpy(packet.iv, encryption.getIV().c_str());
+	}
 	if (messageType == FILE_MSG)
 	{
 		//setting metadata info

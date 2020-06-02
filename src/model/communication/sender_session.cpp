@@ -5,9 +5,12 @@ SenderSession::SenderSession(tcp::socket &&socket, Application *application, Dat
 : Session(std::move(socket), application), packetBuffer(sizeof(Packet))
 {
 	this->msg = msg;
-	this->key = const_cast<EncryptionKey *>(&(encryption.getEncryptionKey()));
-	cipherMode = encryption.getCipherMode();
 	this->messageType = messageType;
+	if (dynamic_cast<Encryptable*>(msg)->isEncrypted())
+	{
+		this->key = const_cast<EncryptionKey *>(&(encryption.getEncryptionKey()));
+		cipherMode = encryption.getCipherMode();
+	}
 }
 
 
@@ -32,7 +35,8 @@ void SenderSession::start()
 void SenderSession::handleResponse()
 {
 	const char *buffer = asio::buffer_cast<const char*>(packetBuffer.data());
-	Packet response = deserializePacket(buffer);
+	Packet response;
+	response.deserialize(buffer);
 	if (response.responseType == ACCEPT)
 		sendData();
 	else

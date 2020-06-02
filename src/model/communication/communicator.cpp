@@ -13,9 +13,8 @@ Communicator::Communicator(tcp::socket&& socket)
 
 void Communicator::sendPacket(Packet packet)
 {
-	char *buffer = serializePacket(packet);
-	asio::write(socket, asio::buffer(buffer, sizeof(Packet)));
-	delete[] buffer;
+	std::shared_ptr<char> buffer = packet.serialize();
+	asio::write(socket, asio::buffer(buffer.get(), sizeof(Packet)));
 }
 
 Packet Communicator::receivePacket()
@@ -23,19 +22,20 @@ Packet Communicator::receivePacket()
 	asio::streambuf buf(sizeof(Packet));
 	asio::read(socket, buf);
 	const char *buffer = asio::buffer_cast<const char*>(buf.data());
-	return deserializePacket(buffer);
-}
-
-char *Communicator::serializePacket(Packet packet)
-{
-	char *buffer = new char[sizeof(Packet)];
-	memcpy(buffer, &packet, sizeof(Packet));
-	return buffer;
-}
-
-Packet Communicator::deserializePacket(const char *binary)
-{
 	Packet ret;
-	memcpy(&ret, binary, sizeof(Packet));
+	ret.deserialize(buffer);
 	return ret;
+}
+
+std::shared_ptr<char> Packet::serialize()
+{
+	std::shared_ptr<char> ret;
+	ret.reset(new char[sizeof(Packet)]);
+	memcpy(ret.get(), this, sizeof(Packet));
+	return ret;
+}
+
+void Packet::deserialize(const char *arr)
+{
+	memcpy(this, arr, sizeof(Packet));
 }
