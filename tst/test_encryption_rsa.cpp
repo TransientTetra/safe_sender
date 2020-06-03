@@ -55,8 +55,15 @@ TEST(TestEncryptionRSA, testKeysSavingNegative)
 	e.encrypt(data);
 	b.decrypt(data);
 	ASSERT_NE(data.toString(), str);
+
+	str = data.toString();
 	b.encrypt(data);
 	e.decrypt(data);
+	ASSERT_NE(data.toString(), str);
+
+	str = data.toString();
+	b.encrypt(data);
+	b.decrypt(data);
 	ASSERT_NE(data.toString(), str);
 }
 

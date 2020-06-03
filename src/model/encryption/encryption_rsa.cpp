@@ -97,7 +97,11 @@ void EncryptionRSA::decryptKeysFromFile(std::string path, EncryptionKey& key)
 	}
 	catch (std::exception e)
 	{
+		//creating mismatched key pair
 		generateKeyPair();
+		CryptoPP::RSA::PublicKey temp = getPublicKey();
+		generateKeyPair();
+		setPublicKey(temp);
 	}
 }
 
