@@ -52,6 +52,8 @@ public:
 	Communicator(tcp::socket&& socket);
 	virtual void sendPacket(Packet frame);
 	virtual Packet receivePacket();
+	virtual void sendEncryptedPacket(RawBytes bytes);
+	virtual RawBytes receiveEncryptedPacket();
 	virtual void sendKey(CryptoPP::RSA::PublicKey& key);
 	virtual CryptoPP::RSA::PublicKey receiveKey();
 };

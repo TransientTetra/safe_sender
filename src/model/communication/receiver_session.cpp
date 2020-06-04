@@ -30,9 +30,12 @@ RawBytes ReceiverSession::receive(unsigned long size)
 void ReceiverSession::handleIncoming(CryptoPP::RSA::PublicKey receivedKey)
 {
 	sendKey(application->getPublicKey());
-	Packet responsePacket;
 	std::unique_ptr<Encryption> encryption;
-	Packet packet = receivePacket();
+	RawBytes temp = receiveEncryptedPacket();
+	application->getEncryption().decrypt(temp);
+
+	Packet packet;
+	packet.deserialize(reinterpret_cast<const char *>(temp.BytePtr()));
 	bool isEncrypted = packet.isEncrypted;
 
 	//constructing the message to ask user
@@ -45,6 +48,7 @@ void ReceiverSession::handleIncoming(CryptoPP::RSA::PublicKey receivedKey)
 		displayQuestion += "text message";
 	displayQuestion += ". Do you accept?";
 
+	Packet responsePacket;
 	if (!application->askYesNo(displayQuestion))
 	{
 		responsePacket.responseType = REJECT;

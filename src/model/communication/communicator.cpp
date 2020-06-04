@@ -54,6 +54,19 @@ CryptoPP::RSA::PublicKey Communicator::receiveKey()
 	return encryption.getPublicKey();
 }
 
+void Communicator::sendEncryptedPacket(RawBytes temp)
+{
+	asio::write(socket, asio::buffer(temp.BytePtr(), temp.size()));
+}
+
+RawBytes Communicator::receiveEncryptedPacket()
+{
+	int size = PACKET_ENCRYPTED_SIZE;
+	asio::streambuf buf(size);
+	asio::read(socket, buf);
+	return RawBytes(asio::buffer_cast<const unsigned char*>(buf.data()), size);
+}
+
 std::shared_ptr<char> Packet::serialize()
 {
 	std::shared_ptr<char> ret;

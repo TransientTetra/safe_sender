@@ -67,13 +67,14 @@ void Sender::handleSend(DataContainer* msg, Encryption& encryption, MessageType 
 		strcpy(packet.filename, dynamic_cast<File*>(msg)->getMetadata().filename.c_str());
 		strcpy(packet.extension, dynamic_cast<File*>(msg)->getMetadata().extension.c_str());
 	}
+
 	sendKey(application->getPublicKey());
 	CryptoPP::RSA::PublicKey receiverKey = receiveKey();
 	EncryptionRSA e;
 	e.setPublicKey(receiverKey);
 	RawBytes temp(reinterpret_cast<const unsigned char *>(packet.serialize().get()), sizeof(Packet));
 	e.encrypt(temp);
-	sendPacket(packet);
+	sendEncryptedPacket(temp);
 	std::make_shared<SenderSession>(std::move(socket), application, msg, encryption, messageType)->start();
 	//this is a hack
 	disconnect();
