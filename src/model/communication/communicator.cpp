@@ -1,3 +1,5 @@
+#include <model/file.hpp>
+#include <model/encryption/encryption_rsa.hpp>
 #include "../../../include/model/communication/communicator.hpp"
 
 Communicator::Communicator(asio::io_service &ioService)
@@ -25,6 +27,31 @@ Packet Communicator::receivePacket()
 	Packet ret;
 	ret.deserialize(buffer);
 	return ret;
+}
+
+void Communicator::sendKey(CryptoPP::RSA::PublicKey& key)
+{
+	std::string tempPath = "/tmp/temp.dat";
+	EncryptionRSA encryption;
+	encryption.setPublicKey(key);
+	encryption.savePublicKey(tempPath);
+	File tempFile(tempPath);
+
+	asio::write(socket, asio::buffer(tempFile.getData().BytePtr(), tempFile.getData().size()));
+}
+
+CryptoPP::RSA::PublicKey Communicator::receiveKey()
+{
+	std::string tempPath = "/tmp/tempReceived.dat";
+	CryptoPP::RSA::PublicKey ret;
+	asio::streambuf buf(RSA_KEY_TRANSFER_SIZE);
+	asio::read(socket, buf);
+	const char *buffer = asio::buffer_cast<const char*>(buf.data());
+	File tempFile(RawBytes(reinterpret_cast<const unsigned char *>(buffer), RSA_KEY_TRANSFER_SIZE));
+	tempFile.save(tempPath);
+	EncryptionRSA encryption;
+	encryption.loadPublicKey(tempPath);
+	return encryption.getPublicKey();
 }
 
 std::shared_ptr<char> Packet::serialize()

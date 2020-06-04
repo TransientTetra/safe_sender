@@ -11,6 +11,9 @@ class EncryptionRSA : public Encryption
 private:
 	CryptoPP::RSA::PrivateKey privateKey;
 	CryptoPP::RSA::PublicKey publicKey;
+
+	void saveKeysToFile(std::string privPath, std::string publPath);
+	void loadKeysFromFile(std::string privPath, std::string publPath);
 protected:
 public:
 	void encrypt(RawBytes &data) override;
@@ -20,9 +23,12 @@ public:
 
 	void setPrivateKey(const CryptoPP::RSA::PrivateKey &privateKey);
 
-	const CryptoPP::RSA::PublicKey &getPublicKey() const;
+	CryptoPP::RSA::PublicKey &getPublicKey();
 
 	void setPublicKey(const CryptoPP::RSA::PublicKey &publicKey);
+
+	void savePublicKey(std::string path);
+	void loadPublicKey(std::string path);
 
 	void encryptKeysToFile(std::string privPath, std::string publPath, EncryptionKey& key);
 	bool decryptKeysFromFile(std::string privPath, std::string publPath, EncryptionKey& key);

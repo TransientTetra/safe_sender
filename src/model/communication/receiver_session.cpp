@@ -29,6 +29,7 @@ RawBytes ReceiverSession::receive(unsigned long size)
 
 void ReceiverSession::handleIncoming(Packet packet)
 {
+	CryptoPP::RSA::PublicKey receivedKey = receiveKey();
 	Packet responsePacket;
 	std::unique_ptr<Encryption> encryption;
 	bool isEncrypted = packet.isEncrypted;

@@ -85,6 +85,7 @@ public:
 	const std::string &askPath();
 
 	void login(std::string password);
+	CryptoPP::RSA::PublicKey& getPublicKey();
 };
 
 

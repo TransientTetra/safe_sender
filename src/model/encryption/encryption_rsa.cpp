@@ -28,7 +28,7 @@ void EncryptionRSA::setPrivateKey(const CryptoPP::RSA::PrivateKey &privateKey)
 	EncryptionRSA::privateKey = privateKey;
 }
 
-const CryptoPP::RSA::PublicKey &EncryptionRSA::getPublicKey() const
+CryptoPP::RSA::PublicKey &EncryptionRSA::getPublicKey()
 {
 	return publicKey;
 }
@@ -71,14 +71,36 @@ void EncryptionRSA::decrypt(RawBytes &data)
 	}
 }
 
+void EncryptionRSA::savePublicKey(std::string path)
+{
+	CryptoPP::FileSink output2(path.c_str(), true);
+	publicKey.DEREncode(output2);
+}
+
+void EncryptionRSA::loadPublicKey(std::string path)
+{
+	CryptoPP::FileSource input2(path.c_str(), true);
+	publicKey.BERDecode(input2);
+}
+
+void EncryptionRSA::saveKeysToFile(std::string privPath, std::string publPath)
+{
+	CryptoPP::FileSink output(privPath.c_str(), true);
+	privateKey.DEREncode(output);
+	savePublicKey(publPath);
+}
+
+void EncryptionRSA::loadKeysFromFile(std::string privPath, std::string publPath)
+{
+	CryptoPP::FileSource input(privPath.c_str(), true);
+	privateKey.BERDecode(input);
+	loadPublicKey(publPath);
+}
+
+
 void EncryptionRSA::encryptKeysToFile(std::string privPath, std::string publPath, EncryptionKey& key)
 {
-	{
-		CryptoPP::FileSink output(privPath.c_str(), true);
-		privateKey.DEREncode(output);
-		CryptoPP::FileSink output2(publPath.c_str(), true);
-		publicKey.DEREncode(output2);
-	}
+	saveKeysToFile(privPath, publPath);
 	File priv(privPath);
 	File publ(publPath);
 	EncryptionAES encryption(CBC);
@@ -103,12 +125,9 @@ bool EncryptionRSA::decryptKeysFromFile(std::string privPath, std::string publPa
 		publ.decrypt(encryption);
 		priv.save(privPath);
 		publ.save(publPath);
-		{
-			CryptoPP::FileSource input(privPath.c_str(), true);
-			privateKey.BERDecode(input);
-			CryptoPP::FileSource input2(publPath.c_str(), true);
-			publicKey.BERDecode(input2);
-		}
+
+		loadKeysFromFile(privPath, publPath);
+
 		priv.encrypt(encryption);
 		publ.encrypt(encryption);
 		priv.save(privPath);

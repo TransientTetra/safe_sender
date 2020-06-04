@@ -16,7 +16,7 @@ TEST(TestEncryptionRSA, testEncryptionDecryption)
 	ASSERT_EQ(data.toString(), str);
 }
 
-TEST(TestEncryptionRSA, testKeysSaving)
+TEST(TestEncryptionRSA, testKeysEncryptionSaving)
 {
 	std::string privPath = "./private.dat";
 	std::string publPath = "./public.dat";

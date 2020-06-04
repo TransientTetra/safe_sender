@@ -22,10 +22,6 @@ Application::~Application()
 
 void Application::run()
 {
-	receiver.reset(new Receiver(ioService, DEFAULT_PORT, this));
-	receiver->listen();
-	receiverThread = std::thread([&]{ioService.run();});
-
 	frame.reset(new MainFrame(&window, "Main frame"));
 	infoFrame.reset(new InfoFrame(&window, "Info"));
 	yesNoFrame.reset(new YesNoFrame(&window, "Query"));
@@ -235,11 +231,12 @@ const std::string &Application::askPath()
 void Application::login(std::string password)
 {
 	setState(DISCONNECTED);
-	std::filesystem::create_directory("./keys/");
-	std::filesystem::create_directory("./keys/private/");
-	std::filesystem::create_directory("./keys/public/");
-	std::string privPath = "./keys/private/private.dat";
-	std::string publPath = "./keys/public/public.dat";
+	std::string currPath = std::filesystem::current_path();
+	std::filesystem::create_directory(currPath + "/keys/");
+	std::filesystem::create_directory(currPath + "/keys/private/");
+	std::filesystem::create_directory(currPath + "/keys/public/");
+	std::string privPath = currPath + "/keys/private/private.dat";
+	std::string publPath = currPath + "/keys/public/public.dat";
 
 	EncryptionKey userKey(password);
 	EncryptionSHA256 sha;
@@ -255,5 +252,12 @@ void Application::login(std::string password)
 	{
 		loginCorrect = encryptionRSA.decryptKeysFromFile(privPath, publPath, userKey);
 	}
-	userKey.encrypt(sha);
+	receiver.reset(new Receiver(ioService, DEFAULT_PORT, this));
+	receiver->listen();
+	receiverThread = std::thread([&]{ioService.run();});
+}
+
+CryptoPP::RSA::PublicKey& Application::getPublicKey()
+{
+	return encryptionRSA.getPublicKey();
 }

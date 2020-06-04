@@ -3,6 +3,7 @@
 
 #include <asio.hpp>
 #include <constants.hpp>
+#include <cryptopp/rsa.h>
 #include "model/encryption/encryption.hpp"
 
 using namespace asio::ip;
@@ -51,6 +52,8 @@ public:
 	Communicator(tcp::socket&& socket);
 	virtual void sendPacket(Packet frame);
 	virtual Packet receivePacket();
+	virtual void sendKey(CryptoPP::RSA::PublicKey& key);
+	virtual CryptoPP::RSA::PublicKey receiveKey();
 };
 
 

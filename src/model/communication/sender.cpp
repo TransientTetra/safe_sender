@@ -68,6 +68,7 @@ void Sender::handleSend(DataContainer* msg, Encryption& encryption, MessageType 
 		strcpy(packet.extension, dynamic_cast<File*>(msg)->getMetadata().extension.c_str());
 	}
 	sendPacket(packet);
+	sendKey(application->getPublicKey());
 	std::make_shared<SenderSession>(std::move(socket), application, msg, encryption, messageType)->start();
 	//this is a hack
 	disconnect();
