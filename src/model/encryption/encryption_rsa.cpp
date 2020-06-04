@@ -71,7 +71,7 @@ void EncryptionRSA::decrypt(RawBytes &data)
 	}
 }
 
-void EncryptionRSA::decryptKeysFromFile(std::string path, EncryptionKey& key)
+bool EncryptionRSA::decryptKeysFromFile(std::string path, EncryptionKey& key)
 {
 	try
 	{
@@ -94,6 +94,7 @@ void EncryptionRSA::decryptKeysFromFile(std::string path, EncryptionKey& key)
 		publ.encrypt(encryption);
 		priv.save("keys/private/");
 		publ.save("keys/public/");
+		return true;
 	}
 	catch (std::exception e)
 	{
@@ -102,6 +103,7 @@ void EncryptionRSA::decryptKeysFromFile(std::string path, EncryptionKey& key)
 		CryptoPP::RSA::PublicKey temp = getPublicKey();
 		generateKeyPair();
 		setPublicKey(temp);
+		return false;
 	}
 }
 
