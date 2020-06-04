@@ -25,7 +25,10 @@ File::File(RawBytes bytes)
 void File::save(const std::string& path)
 {
 	std::ofstream fileOut;
-	fileOut.open(path + metadata.filename + metadata.extension);
+	if (std::filesystem::is_directory(path))
+		fileOut.open(path + metadata.filename + metadata.extension);
+	else
+		fileOut.open(path);
 	fileOut.write(reinterpret_cast<const char*>(data.BytePtr()), getDataSize());
 }
 

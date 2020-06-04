@@ -71,29 +71,48 @@ void EncryptionRSA::decrypt(RawBytes &data)
 	}
 }
 
-bool EncryptionRSA::decryptKeysFromFile(std::string path, EncryptionKey& key)
+void EncryptionRSA::encryptKeysToFile(std::string privPath, std::string publPath, EncryptionKey& key)
+{
+	{
+		CryptoPP::FileSink output(privPath.c_str(), true);
+		privateKey.DEREncode(output);
+		CryptoPP::FileSink output2(publPath.c_str(), true);
+		publicKey.DEREncode(output2);
+	}
+	File priv(privPath);
+	File publ(publPath);
+	EncryptionAES encryption(CBC);
+	encryption.setEncryptionKey(key);
+	encryption.setIV(DEFAULT_IV);
+	priv.encrypt(encryption);
+	publ.encrypt(encryption);
+	priv.save(privPath);
+	publ.save(publPath);
+}
+
+bool EncryptionRSA::decryptKeysFromFile(std::string privPath, std::string publPath, EncryptionKey &key)
 {
 	try
 	{
-		File priv("keys/private/private.dat");
-		File publ("keys/public/public.dat");
+		File priv(privPath);
+		File publ(publPath);
 		EncryptionAES encryption(CBC);
 		encryption.setEncryptionKey(key);
 		encryption.setIV(DEFAULT_IV);
 		priv.decrypt(encryption);
 		publ.decrypt(encryption);
-		priv.save("keys/private/");
-		publ.save("keys/public/");
+		priv.save(privPath);
+		publ.save(publPath);
 		{
-			CryptoPP::FileSource input("keys/private/private.dat", true);
+			CryptoPP::FileSource input(privPath.c_str(), true);
 			privateKey.BERDecode(input);
-			CryptoPP::FileSource input2("keys/public/public.dat", true);
+			CryptoPP::FileSource input2(publPath.c_str(), true);
 			publicKey.BERDecode(input2);
 		}
 		priv.encrypt(encryption);
 		publ.encrypt(encryption);
-		priv.save("keys/private/");
-		publ.save("keys/public/");
+		priv.save(privPath);
+		publ.save(publPath);
 		return true;
 	}
 	catch (std::exception e)
@@ -105,26 +124,4 @@ bool EncryptionRSA::decryptKeysFromFile(std::string path, EncryptionKey& key)
 		setPublicKey(temp);
 		return false;
 	}
-}
-
-void EncryptionRSA::encryptKeysToFile(std::string path, EncryptionKey& key)
-{
-	std::filesystem::create_directory(path + "/keys/");
-	std::filesystem::create_directory(path + "/keys/private/");
-	std::filesystem::create_directory(path + "/keys/public");
-	{
-		CryptoPP::FileSink output((path + "/keys/private/private.dat").c_str(), true);
-		privateKey.DEREncode(output);
-		CryptoPP::FileSink output2((path + "/keys/public/public.dat").c_str(), true);
-		publicKey.DEREncode(output2);
-	}
-	File priv(path + "/keys/private/private.dat");
-	File publ(path + "/keys/public/public.dat");
-	EncryptionAES encryption(CBC);
-	encryption.setEncryptionKey(key);
-	encryption.setIV(DEFAULT_IV);
-	priv.encrypt(encryption);
-	publ.encrypt(encryption);
-	priv.save("keys/private/");
-	publ.save("keys/public/");
 }

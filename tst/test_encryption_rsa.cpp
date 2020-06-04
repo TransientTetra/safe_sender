@@ -18,14 +18,16 @@ TEST(TestEncryptionRSA, testEncryptionDecryption)
 
 TEST(TestEncryptionRSA, testKeysSaving)
 {
+	std::string privPath = "./private.dat";
+	std::string publPath = "./public.dat";
 	EncryptionRSA e;
 	e.generateKeyPair();
 	EncryptionKey key("lol");
 	EncryptionSHA256 sha;
 	key.encrypt(sha);
-	e.encryptKeysToFile("./", key);
+	e.encryptKeysToFile(privPath, publPath, key);
 	EncryptionRSA b;
-	b.decryptKeysFromFile("./", key);
+	b.decryptKeysFromFile(privPath, publPath, key);
 	std::string str("elo");
 	RawBytes data(reinterpret_cast<const unsigned char *>(str.c_str()), str.size());
 	e.encrypt(data);
@@ -38,6 +40,8 @@ TEST(TestEncryptionRSA, testKeysSaving)
 
 TEST(TestEncryptionRSA, testKeysSavingNegative)
 {
+	std::string privPath = "./private.dat";
+	std::string publPath = "./public.dat";
 	EncryptionRSA e;
 	EncryptionSHA256 sha;
 	e.generateKeyPair();
@@ -47,9 +51,9 @@ TEST(TestEncryptionRSA, testKeysSavingNegative)
 	EncryptionKey badKey("LoL");
 	badKey.encrypt(sha);
 
-	e.encryptKeysToFile("./", key);
+	e.encryptKeysToFile(privPath, publPath, key);
 	EncryptionRSA b;
-	b.decryptKeysFromFile("./", badKey);
+	b.decryptKeysFromFile(privPath, publPath, badKey);
 	std::string str("elo");
 	RawBytes data(reinterpret_cast<const unsigned char *>(str.c_str()), str.size());
 	e.encrypt(data);
