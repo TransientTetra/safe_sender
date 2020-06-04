@@ -86,6 +86,7 @@ public:
 
 	void login(std::string password);
 	CryptoPP::RSA::PublicKey& getPublicKey();
+	EncryptionRSA& getEncryption();
 };
 
 

@@ -11,7 +11,7 @@ void ReceiverSession::start()
 {
 	try
 	{
-		handleIncoming(receivePacket());
+		handleIncoming(receiveKey());
 	}
 	catch(std::exception e)
 	{
@@ -27,11 +27,12 @@ RawBytes ReceiverSession::receive(unsigned long size)
 	return RawBytes(asio::buffer_cast<const unsigned char*>(buf.data()), size);
 }
 
-void ReceiverSession::handleIncoming(Packet packet)
+void ReceiverSession::handleIncoming(CryptoPP::RSA::PublicKey receivedKey)
 {
-	CryptoPP::RSA::PublicKey receivedKey = receiveKey();
+	sendKey(application->getPublicKey());
 	Packet responsePacket;
 	std::unique_ptr<Encryption> encryption;
+	Packet packet = receivePacket();
 	bool isEncrypted = packet.isEncrypted;
 
 	//constructing the message to ask user

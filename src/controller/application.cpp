@@ -261,3 +261,8 @@ CryptoPP::RSA::PublicKey& Application::getPublicKey()
 {
 	return encryptionRSA.getPublicKey();
 }
+
+EncryptionRSA &Application::getEncryption()
+{
+	return encryptionRSA;
+}
