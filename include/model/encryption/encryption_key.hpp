@@ -14,6 +14,8 @@ public:
 	EncryptionKey(const std::string& str);
 	EncryptionKey(RawBytes bytes);
 	~EncryptionKey();
+
+	std::string toString();
 };
 
 

@@ -28,6 +28,7 @@ public:
 	CipherMode getCipherMode() const;
 
 	const std::string &getIV() const;
+	virtual std::string getKey();
 
 	virtual void setEncryptionKey(EncryptionKey &key);
 	virtual void setIV(const char* arr);

@@ -59,7 +59,8 @@ void Sender::handleSend(DataContainer* msg, Encryption& encryption, MessageType 
 	{
 		packet.keySize = encryption.getEncryptionKey().getDataSize();
 		packet.cipherMode = encryption.getCipherMode();
-		strcpy(packet.iv, encryption.getIV().c_str());
+		memcpy(packet.iv, encryption.getIV().c_str(), sizeof(packet.iv));
+		memcpy(packet.sessionKey, encryption.getKey().c_str(), sizeof(packet.sessionKey));
 	}
 	if (messageType == FILE_MSG)
 	{

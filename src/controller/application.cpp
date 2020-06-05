@@ -1,6 +1,8 @@
 #include <filesystem>
 #include <model/encryption/encryption_aes.hpp>
 #include <model/encryption/encryption_sha_256.hpp>
+#include <cryptopp/osrng.h>
+#include <iostream>
 #include "view/main_frame.hpp"
 #include "controller/application.hpp"
 #include "constants.hpp"
@@ -129,14 +131,18 @@ void Application::encryptAndSendMsg(std::string msg, std::string key)
 			return;
 		}
 		textMessage.reset(new TextMessage(msg));
-		EncryptionKey ekey(key);
-		if (key != "")
-		{
-			encryption.reset(new EncryptionAES(getCipherMode()));
-			encryption->setEncryptionKey(ekey);
-			encryption->setIV(DEFAULT_IV);
-			textMessage->encrypt(*encryption);
-		}
+		CryptoPP::AutoSeededRandomPool rng;
+		RawBytes key(0x00, DEFAULT_SESSION_KEY_SIZE);
+		RawBytes iv(0x00, DEFAULT_IV_SIZE);
+		rng.GenerateBlock(key, key.size());
+		rng.GenerateBlock(iv, iv.size());
+		EncryptionKey sessionKey(key);
+		EncryptionSHA256 sha;
+		sessionKey.encrypt(sha);
+		encryption.reset(new EncryptionAES(getCipherMode()));
+		encryption->setEncryptionKey(sessionKey);
+		encryption->setIV(iv.toString().c_str());
+		textMessage->encrypt(*encryption);
 		sender->handleSend(textMessage.get(), *encryption, TXT_MSG);
 	}
 }
@@ -156,14 +162,16 @@ void Application::encryptAndSendFile(std::string key)
 			return;
 		}
 		file.reset(new File(filePath));
-		EncryptionKey ekey(key);
-		if (key != "")
-		{
-			encryption.reset(new EncryptionAES(getCipherMode()));
-			encryption->setEncryptionKey(ekey);
-			encryption->setIV(DEFAULT_IV);
-			file->encrypt(*encryption);
-		}
+		CryptoPP::AutoSeededRandomPool rng;
+		RawBytes key(0x00, DEFAULT_SESSION_KEY_SIZE);
+		rng.GenerateBlock(key, key.size());
+		EncryptionKey sessionKey(key);
+		EncryptionSHA256 sha;
+		sessionKey.encrypt(sha);
+		encryption.reset(new EncryptionAES(getCipherMode()));
+		encryption->setEncryptionKey(sessionKey);
+		encryption->setIV(DEFAULT_IV);
+		file->encrypt(*encryption);
 		sender->handleSend(file.get(), *encryption, FILE_MSG);
 	}
 }

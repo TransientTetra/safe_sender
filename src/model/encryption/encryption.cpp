@@ -29,3 +29,8 @@ const std::string &Encryption::getIV() const
 {
 	return iv;
 }
+
+std::string Encryption::getKey()
+{
+	return encryptionKey.toString();
+}

@@ -49,29 +49,43 @@ void ReceiverSession::handleIncoming(CryptoPP::RSA::PublicKey receivedKey)
 	displayQuestion += ". Do you accept?";
 
 	Packet responsePacket;
+	EncryptionRSA e;
+	e.setPublicKey(receivedKey);
 	if (!application->askYesNo(displayQuestion))
 	{
 		responsePacket.responseType = REJECT;
-		sendPacket(responsePacket);
+		RawBytes temp2(reinterpret_cast<const unsigned char *>(responsePacket.serialize().get()), sizeof(Packet));
+		e.encrypt(temp2);
+		sendEncryptedPacket(temp2);
 		return;
 	}
 	responsePacket.responseType = ACCEPT;
-	sendPacket(responsePacket);
+	RawBytes temp2(reinterpret_cast<const unsigned char *>(responsePacket.serialize().get()), sizeof(Packet));
+	e.encrypt(temp2);
+	sendEncryptedPacket(temp2);
+
 	try
 	{
 		FileMetadata metadata;
 		if (isEncrypted)
 		{
 			encryption.reset(new EncryptionAES(packet.cipherMode));
-			EncryptionKey aesKey = receive(packet.keySize);
+			//todo
+			char key[packet.keySize + 1];
+			memcpy(key, packet.sessionKey, sizeof(key) - 1);
+			key[packet.keySize] = '\0';
+			EncryptionKey aesKey(key);
 			encryption->setEncryptionKey(aesKey);
-			encryption->setIV(packet.iv);
+			//todo
+			char iv[DEFAULT_IV_SIZE + 1];
+			memcpy(iv, packet.iv, sizeof(iv) - 1);
+			iv[DEFAULT_IV_SIZE] = '\0';
+			encryption->setIV(iv);
 		}
 		if (packet.messageType == FILE_MSG)
 		{
 			metadata.filename = std::string(packet.filename);
 			metadata.extension = std::string(packet.extension);
-			//todo messagesize been observed as 0, check
 			metadata.dataSize = packet.messageSize;
 		}
 		

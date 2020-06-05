@@ -21,3 +21,8 @@ EncryptionKey::~EncryptionKey()
 {
 
 }
+
+std::string EncryptionKey::toString()
+{
+	return data.toString();
+}
