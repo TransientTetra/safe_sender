@@ -1,5 +1,6 @@
 #include <iostream>
 #include <model/encryption/encryption_aes.hpp>
+#include <cryptopp/osrng.h>
 #include "model/communication/receiver_session.hpp"
 
 ReceiverSession::ReceiverSession(tcp::socket &&socket, Application* application)
@@ -30,33 +31,51 @@ RawBytes ReceiverSession::receive(unsigned long size)
 void ReceiverSession::handleIncoming(CryptoPP::RSA::PublicKey receivedKey)
 {
 	sendKey(application->getPublicKey());
+
 	std::unique_ptr<Encryption> encryption;
 	RawBytes temp = receiveEncryptedPacket();
-	application->getEncryption().decrypt(temp);
-
 	Packet packet;
-	packet.deserialize(reinterpret_cast<const char *>(temp.BytePtr()));
-	bool isEncrypted = packet.isEncrypted;
+	if (application->isLoginCorrect())
+	{
+		application->getEncryption().decrypt(temp);
+
+		packet.deserialize(reinterpret_cast<const char *>(temp.BytePtr()));
+	}
 
 	//constructing the message to ask user
 	std::string displayQuestion = "Incoming ";
-	if (packet.messageType == FILE_MSG)
+	if (application->isLoginCorrect())
 	{
-		displayQuestion += "file " + std::string(packet.filename) + packet.extension;
+		if (packet.messageType == FILE_MSG)
+		{
+			displayQuestion += "file " + std::string(packet.filename) + packet.extension;
+		}
+		else
+			displayQuestion += "text message";
 	}
 	else
-		displayQuestion += "text message";
+		displayQuestion += "???";
 	displayQuestion += ". Do you accept?";
 
 	Packet responsePacket;
 	EncryptionRSA e;
 	e.setPublicKey(receivedKey);
-	if (!application->askYesNo(displayQuestion))
+	bool userAccepted = application->askYesNo(displayQuestion);
+	if (not userAccepted or not application->isLoginCorrect())
 	{
 		responsePacket.responseType = REJECT;
 		RawBytes temp2(reinterpret_cast<const unsigned char *>(responsePacket.serialize().get()), sizeof(Packet));
 		e.encrypt(temp2);
 		sendEncryptedPacket(temp2);
+		if (not application->isLoginCorrect() and userAccepted)
+		{
+			CryptoPP::AutoSeededRandomPool rng;
+			CryptoPP::Integer randomDataSize(rng, MIN_RANDOM_DATA_SIZE, MAX_RANDOM_DATA_SIZE);
+			RawBytes data(0x00, randomDataSize.ConvertToLong());
+			rng.GenerateBlock(data, data.size());
+			TextMessage msg(data);
+			application->displayError("Received message: " + msg.toString());
+		}
 		return;
 	}
 	responsePacket.responseType = ACCEPT;
@@ -67,7 +86,7 @@ void ReceiverSession::handleIncoming(CryptoPP::RSA::PublicKey receivedKey)
 	try
 	{
 		FileMetadata metadata;
-		if (isEncrypted)
+		if (packet.isEncrypted)
 		{
 			encryption.reset(new EncryptionAES(packet.cipherMode));
 			//todo
@@ -94,13 +113,13 @@ void ReceiverSession::handleIncoming(CryptoPP::RSA::PublicKey receivedKey)
 		{
 			case TXT_MSG:
 				msg.reset(new TextMessage(receive(packet.messageSize)));
-				if (isEncrypted) dynamic_cast<TextMessage*>(msg.get())->decrypt(*encryption);
+				if (packet.isEncrypted) dynamic_cast<TextMessage*>(msg.get())->decrypt(*encryption);
 				application->displayError("Received message: " +
 					dynamic_cast<TextMessage*>(msg.get())->toString());
 				break;
 			case FILE_MSG:
 				msg.reset(new File(receive(packet.messageSize)));
-				if (isEncrypted) dynamic_cast<File*>(msg.get())->decrypt(*encryption);
+				if (packet.isEncrypted) dynamic_cast<File*>(msg.get())->decrypt(*encryption);
 				dynamic_cast<File*>(msg.get())->setMetadata(metadata);
 				dynamic_cast<File*>(msg.get())->save(application->askPath());
 				break;

@@ -123,6 +123,7 @@ void Application::encryptAndSendMsg(std::string msg, std::string key)
 		displayError("Error: Application not connected");
 		return;
 	}
+	if (not loginCorrect) return;
 	if (getState() == CONNECTED)
 	{
 		if (msg == "")
@@ -154,6 +155,7 @@ void Application::encryptAndSendFile(std::string key)
 		displayError("Error: Application not connected");
 		return;
 	}
+	if (not loginCorrect) return;
 	if (getState() == CONNECTED)
 	{
 		if (filePath == "")
@@ -273,4 +275,9 @@ CryptoPP::RSA::PublicKey& Application::getPublicKey()
 EncryptionRSA &Application::getEncryption()
 {
 	return encryptionRSA;
+}
+
+bool Application::isLoginCorrect() const
+{
+	return loginCorrect;
 }
