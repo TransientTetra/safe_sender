@@ -20,7 +20,7 @@ void MainFrame::draw()
 	ImGui::NewFrame();
 
 	ImGui::Begin(name.c_str());
-	ImGui::SetWindowSize(ImVec2(220 * 3, 380));
+	ImGui::SetWindowSize(ImVec2(220 * 3, 330));
 	ImGui::Columns(3);
 	ImGui::SetColumnWidth(0, 220);
 	ImGui::SetColumnWidth(1, 220);
@@ -52,9 +52,6 @@ void MainFrame::draw()
 	ImGui::InputTextMultiline("##msgwin", msgBuf, sizeof(msgBuf) / sizeof(char),
 		ImVec2(200, 250));
 
-	ImGui::Text("Enter encryption key");
-	ImGui::Text("leave empty for no encryption");
-	ImGui::InputText("##key", keyBuf, sizeof(keyBuf) / sizeof(char));
 
 	ImGui::NextColumn();
 	ImGui::Text("Connected to:");
