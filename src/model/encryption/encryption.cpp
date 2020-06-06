@@ -5,7 +5,7 @@ void Encryption::setEncryptionKey(EncryptionKey &key)
 	encryptionKey = key;
 }
 
-const EncryptionKey Encryption::getEncryptionKey() const
+const EncryptionKey& Encryption::getEncryptionKey() const
 {
 	return encryptionKey;
 }
@@ -13,4 +13,24 @@ const EncryptionKey Encryption::getEncryptionKey() const
 float Encryption::getProgress()
 {
 	return 0;
+}
+
+void Encryption::setIV(const char *arr)
+{
+	iv = std::string(arr);
+}
+
+CipherMode Encryption::getCipherMode() const
+{
+	return cipherMode;
+}
+
+const std::string &Encryption::getIV() const
+{
+	return iv;
+}
+
+std::string Encryption::getKey()
+{
+	return encryptionKey.toString();
 }

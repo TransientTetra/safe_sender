@@ -29,7 +29,7 @@ public:
 
 	bool connect();
 	void disconnect();
-	void handleSend(DataContainer* msg, EncryptionKey &key, CipherMode mode, MessageType type);
+	void handleSend(DataContainer* msg, Encryption& encryption, MessageType messageType);
 };
 
 

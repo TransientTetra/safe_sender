@@ -7,7 +7,7 @@
 class ReceiverSession : public Session
 {
 private:
-	void handleIncoming(Packet packet);
+	void handleIncoming(CryptoPP::RSA::PublicKey receivedKey);
 	RawBytes receive(unsigned long size);
 protected:
 public:

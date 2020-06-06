@@ -1,13 +1,16 @@
 #include "model/communication/sender_session.hpp"
 
-SenderSession::SenderSession(tcp::socket &&socket, Application *application, DataContainer* msg, EncryptionKey &key,
-			     CipherMode mode, MessageType messageType)
-: Session(std::move(socket), application), packetBuffer(sizeof(Packet))
+SenderSession::SenderSession(tcp::socket &&socket, Application *application, DataContainer* msg,
+	Encryption& encryption, MessageType messageType)
+: Session(std::move(socket), application), packetBuffer(PACKET_ENCRYPTED_SIZE)
 {
 	this->msg = msg;
-	this->key = &key;
-	cipherMode = mode;
 	this->messageType = messageType;
+	if (dynamic_cast<Encryptable*>(msg)->isEncrypted())
+	{
+		this->key = const_cast<EncryptionKey *>(&(encryption.getEncryptionKey()));
+		cipherMode = encryption.getCipherMode();
+	}
 }
 
 
@@ -32,7 +35,10 @@ void SenderSession::start()
 void SenderSession::handleResponse()
 {
 	const char *buffer = asio::buffer_cast<const char*>(packetBuffer.data());
-	Packet response = deserializePacket(buffer);
+	RawBytes temp(reinterpret_cast<const unsigned char *>(buffer), PACKET_ENCRYPTED_SIZE);
+	application->getEncryption().decrypt(temp);
+	Packet response;
+	response.deserialize(reinterpret_cast<const char *>(temp.BytePtr()));
 	if (response.responseType == ACCEPT)
 		sendData();
 	else
@@ -43,11 +49,6 @@ void SenderSession::sendData()
 {
 	try
 	{
-		if (dynamic_cast<Encryptable*>(msg)->isEncrypted())
-		{
-			sendBinary(*key);
-		}
-
 		sendBinary(*dynamic_cast<Sendable*>(msg));
 	}
 	catch (std::exception &e)

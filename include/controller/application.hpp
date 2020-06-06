@@ -10,13 +10,16 @@
 #include <view/main_frame.hpp>
 #include <view/yes_no_frame.hpp>
 #include <view/info_frame.hpp>
+#include <view/text_input_frame.hpp>
+#include <model/encryption/encryption_rsa.hpp>
 
 enum ApplicationState
 {
 	DISCONNECTED,
 	CONNECTED,
 	ENCRYPTING,
-	SENDING
+	SENDING,
+	WAITING_FOR_LOGIN
 };
 
 class Application
@@ -37,12 +40,17 @@ private:
 	std::unique_ptr<MainFrame> frame;
 	std::unique_ptr<InfoFrame> infoFrame;
 	std::unique_ptr<YesNoFrame> yesNoFrame;
+	std::unique_ptr<TextInputFrame> textInputFrame;
 
 	CipherMode cipherMode;
 	std::string filePath;
 	std::unique_ptr<File> file;
 	std::unique_ptr<TextMessage> textMessage;
 	std::unique_ptr<Encryption> encryption;
+
+	bool loginCorrect;
+
+	EncryptionRSA encryptionRSA;
 protected:
 public:
 	Application(std::string title);
@@ -75,6 +83,12 @@ public:
 	static bool validateIP(std::string ip);
 
 	const std::string &askPath();
+
+	void login(std::string password);
+	CryptoPP::RSA::PublicKey& getPublicKey();
+	EncryptionRSA& getEncryption();
+
+	bool isLoginCorrect() const;
 };
 
 
