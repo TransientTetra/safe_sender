@@ -93,7 +93,7 @@ void ReceiverSession::handleIncoming(CryptoPP::RSA::PublicKey receivedKey)
 			char key[packet.keySize + 1];
 			memcpy(key, packet.sessionKey, sizeof(key) - 1);
 			key[packet.keySize] = '\0';
-			EncryptionKey aesKey(key);
+			EncryptionKey aesKey(std::string(key, packet.keySize));
 			encryption->setEncryptionKey(aesKey);
 			//todo
 			char iv[DEFAULT_IV_SIZE + 1];
